@@ -1,13 +1,13 @@
 :root {
     --color-white-solid: #fff;
-	--color-white-bg: #f9fafb;
     --color-dark-1: #101828;
     --color-dark-2: #4a5565;
     --color-grey: rgba(10, 10, 10, 0.5);
 	--color-grey-light: #e5e7eb;
+	--color-grey-bg: #f9fafb;
 	--color-slate: #364153;
-	--color-primary: #1447e6;
-	--color-primary-hover: #155dfc;
+	--color-primary: #155dfc;
+	--color-primary-hover: #1447e6;
 	--color-red: #e7000b;
 	--color-pink: #fde2e4;
 	--color-green: #00c950;

@@ -1,0 +1,20 @@
+.field {
+    position: relative;
+}
+
+.field input  {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start; 
+	width: 384px;
+	height: 48px;
+	padding: 12px 0;
+	border-radius: var(--border-radius);
+	border: var(--border);
+}
+
+
+.field label {
+    color: var(--color-slate);
+    pointer-events: none;
+}
