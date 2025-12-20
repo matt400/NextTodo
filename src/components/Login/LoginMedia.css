@@ -1,0 +1,13 @@
+@media (max-width: 480px) {
+	.login {
+		padding: 20px;
+	}
+
+	.login__header {
+		font-size: 18px;
+	}
+
+	.login__text {
+		font-size: 14px;
+	}
+}

@@ -1,20 +1,26 @@
 .field {
-    position: relative;
+	position: relative;
 }
 
-.field input  {
+.field input {
 	display: flex;
 	flex-direction: row;
-	align-items: flex-start; 
+	align-items: flex-start;
 	width: 384px;
 	height: 48px;
-	padding: 12px 0;
+	color: var(--color-grey);
+	
+	padding-left: 50px;
 	border-radius: var(--border-radius);
 	border: var(--border);
 }
 
+.field input:focus {
+	outline: none;
+}
 
 .field label {
-    color: var(--color-slate);
-    pointer-events: none;
+	color: var(--color-slate);
+	pointer-events: none;
+
 }

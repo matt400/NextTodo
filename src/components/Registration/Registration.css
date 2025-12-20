@@ -1,0 +1,44 @@
+.registration {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 564.8px;
+	width: 448px;
+	border: 1px solid black;
+	background-color: var(--color-white-solid);
+	border: var(--border);
+	border-radius: var(--border-radius);
+	gap: 25px;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.05);
+}
+
+.registration__header {
+	font-weight: 500;
+	font-size: 22px;
+	line-height: 160%;
+	text-align: center;
+	color: var(--color-dark-1);
+	padding-bottom: 10px;
+}
+
+.registration__text {
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 160%;
+	text-align: center;
+	color: var(--color-dark-2);
+}
+
+.login__registration-link {
+	text-decoration: none;
+	color: var(--color-primary);
+}
+
+.icon {
+	position: absolute;
+	left: 15px;
+	top: 50%;
+	color: var(--color-grey);
+	pointer-events: none;
+}
