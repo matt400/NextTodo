@@ -1,0 +1,13 @@
+@media (max-width: 480px) {
+	.registration {
+		padding: 20px;
+	}
+
+	.registration__header {
+		font-size: 18px;
+	}
+
+	.registration__text {
+		font-size: 14px;
+	}
+}

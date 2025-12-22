@@ -1,44 +1,37 @@
-import { Link } from 'react-router-dom';
 import './Login.css';
-import './LoginMedia.css';
-import MailIcon from '../../assets/icons/MailIcon.jsx'
-import PasswordIcon from '../../assets/icons/PasswordIcon.jsx'
+import './Login-media.css';
+import Heading from '../Heading.jsx';
+import Field from '../Field.jsx';
+import MailIcon from '../../assets/icons/MailIcon.jsx';
+import PasswordIcon from '../../assets/icons/PasswordIcon.jsx';
+import Button from '../Button.jsx';
+import Linking from '../Linking.jsx';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
 	return (
 		<div className='login'>
-			<div className='heading-section'>
-				<h1 className='login__header'>Welcome Back</h1>
-				<p className='login__text'>Sign in to manage your tasks</p>
-			</div>
+			<Heading title='Welcome Back' text='Sign in to manage your tasks' />
 
-			<div className='field email'>
-				<MailIcon className = "icon"/>
-				<label htmlFor='email'>Email</label>
-				<input
-					className='email-input'
-					id='email'
-					type='email'
-					placeholder='Enter your email'
-				/>
-			</div>
-			<div className='field password'>
-				<PasswordIcon className = "icon"/>
-				<label htmlFor='password'>Password</label>
-				<span className='icon'></span>
-				<input
-					className='password-input'
-					id='password'
-					type='password'
-					placeholder='Enter your password'
-				/>
-			</div>
+			<Field
+				innerText='Enter your email'
+				Icon={MailIcon}
+				id='email'
+				type='email'
+				label='Email'
+			/>
 
-			<button className='button login__sign-in-btn'>Sign In</button>
+			<Field
+				innerText='Enter your password'
+				Icon={PasswordIcon}
+				id='password'
+				type='password'
+				label='Password'
+			/>
 
-			<Link className='login__registration-link' to='/registration'>
-				Don't have an account? Sign up
-			</Link>
+			<Button inner='Sign in' to='/mainpage' />
+			<Linking to='/register' innerText="Don't have an account? Sign up" />
+			<Linking to='/settings' innerText='Settings' />
 		</div>
 	);
 };
