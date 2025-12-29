@@ -42,14 +42,14 @@ If Node.js is not installed, download it from:
 git clone https://github.com/matt400/NextTodo
 cd NextTodo
 npm install
-npm run dev
+npm run dev:client
 ```
 
 ---
 
-### Application URL
+### Client URL
 
-By default, the app will be available at:
+By default, the client app will be available at:
 
 ```
 http://localhost:5173
