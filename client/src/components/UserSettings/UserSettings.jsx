@@ -1,6 +1,6 @@
 import './UserSettings.css'
-import Navbar from "../Navbar";
-import Button from '../Button';
+import Navbar from "../Navbar.jsx";
+import Button from '../Button.jsx';
 import Field from '../Field.jsx'
 import MailIcon from '../../assets/icons/MailIcon.jsx';
 import PasswordIcon from '../../assets/icons/PasswordIcon.jsx';
