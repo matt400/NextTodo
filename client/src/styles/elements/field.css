@@ -9,7 +9,6 @@
 	width: 384px;
 	height: 48px;
 	color: var(--color-grey);
-	
 	padding-left: 50px;
 	border-radius: var(--border-radius);
 	border: var(--border);
@@ -22,7 +21,6 @@
 .field label {
 	color: var(--color-slate);
 	pointer-events: none;
-
 }
 
 .icon {
@@ -31,4 +29,16 @@
 	top: 50%;
 	color: var(--color-grey);
 	pointer-events: none;
+}
+
+.input--error {
+	background: var(--color-pink);
+}
+
+.field-error {
+	position: absolute;
+	left: 10px;
+	top: 73px;
+	color: var(--color-red);
+	font-size: 0.8rem;
 }
