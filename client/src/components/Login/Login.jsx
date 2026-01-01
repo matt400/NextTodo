@@ -31,7 +31,6 @@ const Login = () => {
 
 			<Button inner='Sign in' to='/mainpage' />
 			<Linking to='/register' innerText="Don't have an account? Sign up" />
-			<Linking to='/settings' innerText='Settings' />
 		</div>
 	);
 };

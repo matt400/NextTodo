@@ -1,0 +1,32 @@
+.empty-state {
+  width: 100vw;
+  max-width: 864px;
+  min-height: 140px;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: var(--color-white-solid);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+
+/* Nagłówek */
+.empty-state h1 {
+  margin: 0;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-dark-1);
+}
+
+/* Paragraf */
+.empty-state p {
+  margin: 0;
+  text-align: center;
+  color: var(--color-grey);
+  font-size: 1rem;
+  line-height: 1.4;
+}

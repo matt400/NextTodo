@@ -1,23 +1,21 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 100px 30px;
-    font-family: 'Inter', sans-serif;
-    background-color:  var(--color-grey-bg);
-
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 100px 0;
+	font-family: 'Inter', sans-serif;
+	background-color: var(--color-grey-bg);
 }
 
 input,
 label,
 button {
-    transition-duration: var(--transition-duration) ;
+	transition-duration: var(--transition-duration);
 }
 
-
 :focus-visible {
-    outline: 2px dashed var();
-    outline-offset: 4px;
-    transition-duration: 0s !important;
+	outline: 2px dashed var();
+	outline-offset: 4px;
+	transition-duration: 0s !important;
 }
