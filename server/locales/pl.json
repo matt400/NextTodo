@@ -1,0 +1,6 @@
+{
+    "AUTH_SUCCESS": "Zalogowano pomyślnie",
+    "AUTH_FAILED": "Nieprawidłowe dane logowania",
+    "NO_TOKEN": "Brak tokena!",
+    "INVALID_TOKEN": "Nieprawidłowy token."
+}
