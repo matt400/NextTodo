@@ -1,7 +1,7 @@
 import i18next from 'i18next';
 
-import pl from '../locales/pl.json' assert { type: 'json' };
-import en from '../locales/en.json' assert { type: 'json' };
+import pl from '../locales/pl.json' with { type: 'json' };
+import en from '../locales/en.json' with { type: 'json' };
 
 export default async function i18nPlugin(fastify) {
     await i18next.init({
