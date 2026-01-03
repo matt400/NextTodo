@@ -3,7 +3,9 @@ import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 
-import customDecorators from './plugins/decorators.js';
+import prismaPl from './plugins/prisma.js';
+import i18nPl from './plugins/i18n.js';
+import customDecoratorsPl from './plugins/decorators.js';
 
 import authAPI from './api/auth.js';
 import userAPI from './api/user.js';
@@ -11,12 +13,16 @@ import userAPI from './api/user.js';
 const fastify = Fastify({ logger: true });
 
 // Decorators register
-fastify.register(customDecorators);
+fastify.register(customDecoratorsPl);
+
+fastify.register(i18nPl);
 
 // CORS register, to allow requests from vite 
 await fastify.register(cors, { 
     origin: "http://localhost:5173" 
 });
+
+await fastify.register(prismaPl);
 
 // JWT Register
 fastify.register(jwt, { secret: 'SUPER_SECRET_KEY123' });
