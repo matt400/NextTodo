@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String
+  email     String
+  password  String
+  isActive  Boolean
+  lastLogin DateTime @default(now())
+}
+
+model Tasks {
+  id         Int      @id @default(autoincrement())
+  taskName   String
+  created    DateTime
+  isFinished Boolean
+  userId     Int
+}
+
+model Pomo {
+  id       Int     @id @default(autoincrement())
+  timeLeft Int
+  isActive Boolean
+  taskId   Int
+}
