@@ -3,14 +3,25 @@
     "private": true,
     "version": "0.0.0",
     "type": "module",
-    "main": "index.js",
+    "main": "./src/server.js",
     "scripts": {
-        "start": "node index.js",
-        "dev": "node --watch index.js"
+        "postinstall": "prisma generate",
+        "start": "node ./src/server.js",
+        "dev": "node --watch ./src/server.js"
     },
     "dependencies": {
-        "fastify": "^5.6.2",
+        "@fastify/cookie": "^11.0.2",
         "@fastify/cors": "^11.2.0",
-        "cors": "^2.8.5"
+        "@fastify/jwt": "^10.0.0",
+        "@prisma/adapter-better-sqlite3": "^7.2.0",
+        "@prisma/client": "^7.2.0",
+        "better-sqlite3": "^12.5.0",
+        "cors": "^2.8.5",
+        "fastify": "^5.6.2",
+        "fastify-plugin": "^5.1.0",
+        "i18next": "^25.7.3"
+    },
+    "devDependencies": {
+        "prisma": "^7.2.0"
     }
 }
