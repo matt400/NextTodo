@@ -9,18 +9,20 @@
     "dev:client": "npm run dev -w client",
     "dev:server": "npm run dev -w server",
     "install:all": "npm install",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
+    "ctest": "cd client && vitest",
+    "ctest:ui": "cd client && vitest --ui",
+    "stest": "cd server && vitest",
+    "stest:ui": "cd server && vitest --ui",
     "test:db-setup": "dotenv -e .env.test -- npx prisma migrate deploy",
     "test:full": "npm run test:db-setup && vitest"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.1",
+    "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.16",
     "@vitest/ui": "^4.0.16",
     "dotenv-cli": "^11.0.0",
-    "jsdom": "^27.4.0",
+    "globals": "^17.0.0",
     "vitest": "^4.0.16"
   }
 }
