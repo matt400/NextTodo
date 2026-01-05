@@ -14,7 +14,7 @@
 .box {
   width: 100%;
   padding: 24px;
-  box-sizing: border-box; /* aby padding nie zmniejszał width */
+  box-sizing: border-box; 
 }
 
 .box-header {
@@ -41,7 +41,7 @@
 }
 
 .delete-all:hover {
-  background-color: #c9000a;
+  background-color: var(--color-red-hover);
 }
 
 
