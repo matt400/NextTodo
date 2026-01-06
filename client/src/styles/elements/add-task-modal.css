@@ -3,9 +3,9 @@
   bottom: 24px;
   right: 24px;
   width: 380px;
-  background: #fff;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
+  background: var(--color-white-solid);
+  border: var(--border);
+  border-radius: var(--border-radius);
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
   animation: slideUp 0.25s ease forwards;
   z-index: 50;
@@ -128,3 +128,19 @@
 .btn.add:hover {
   background: #1d4ed8;
 }
+
+@media (max-width: 480px) {
+  .addtask-modal {
+    left: 0;
+    right: 0;
+    bottom: 24px;
+
+    margin: 0 auto;
+
+    width: min(380px, calc(100% - 32px));
+    transform: none;   
+  }
+}
+
+
+
