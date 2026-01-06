@@ -1,11 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import EditTaskModal from './EditTaskModal';
-import { Pencil, Trash2, CirclePlus, Calendar } from 'lucide-react';
+import {
+	Pencil,
+	Trash2,
+	CirclePlus,
+	Calendar,
+	AlarmClock,
+	Play,
+	Pause,
+	X,
+} from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import '../../styles/elements/todo-item.css';
 
 const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
+	const formatTime = (total) => {
+		const m = Math.floor(total / 60);
+		const s = total % 60;
+		return `${m}:${s.toString().padStart(2, '0')}`;
+	};
 	const [showModal, setShowModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showCalendarModal, setShowCalendarModal] = useState(false);
@@ -16,6 +30,48 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 	};
 	const isToday =
 		dueDate && new Date(dueDate).toDateString() === new Date().toDateString();
+	const togglePomodoro = () => {
+		if (showPomodoro) {
+			setShowPomodoro(false);
+			setSeconds(0);
+		} else {
+			setShowPomodoro(true);
+		}
+	};
+
+	const [showPomodoro, setShowPomodoro] = useState(false);
+	const [seconds, setSeconds] = useState(0);
+	const [isPaused, setIsPaused] = useState(false);
+	useEffect(() => {
+		if (!showPomodoro || isPaused) return;
+
+		const interval = setInterval(() => {
+			setSeconds((prev) => {
+				if (prev >= 10) {
+					clearInterval(interval);
+
+					setShowAlarm(true);
+
+					if (audioRef.current) {
+						audioRef.current.currentTime = 0;
+						audioRef.current.play();
+					}
+
+					return prev;
+				}
+
+				return prev + 1;
+			});
+		}, 1000);
+
+		return () => clearInterval(interval);
+	}, [showPomodoro, isPaused]);
+
+	const togglePomodoroPause = () => {
+		setIsPaused((prev) => !prev);
+	};
+	const [showAlarm, setShowAlarm] = useState(false);
+	const audioRef = useRef(null);
 
 	return (
 		<>
@@ -29,6 +85,17 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 				<p className={`todo-text ${task.done ? 'done' : ''}`}>{task.text}</p>
 
 				<div className='todo-actions desktop'>
+					{showPomodoro && (
+						<button className='pomodoro-alarm' onClick={togglePomodoroPause}>
+							{isPaused ? <Play size={20} /> : <Pause size={20} />}
+							<p
+								className='pomodoro-time'
+								style={{ color: 'var(--color-red)' }}>
+								{formatTime(seconds)}
+							</p>
+						</button>
+					)}
+
 					{dueDate && (
 						<span className={`todo-date ${isToday ? 'todo-date--today' : ''}`}>
 							{dueDate.toLocaleDateString('en-US', {
@@ -39,6 +106,11 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 					)}
 
 					<button
+						className='todo-action-btn pomodoro-btn'
+						onClick={togglePomodoro}>
+						<AlarmClock size={20} style={{ color: 'var(--color-red)' }} />
+					</button>
+					<button
 						className='todo-action-btn calendar-btn'
 						onClick={() => setShowCalendarModal(true)}>
 						<Calendar
@@ -47,7 +119,7 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 						/>
 					</button>
 					<button
-						className='todo-action-btn'
+						className='todo-action-btn edit-btn'
 						onClick={() => setShowEditModal(true)}>
 						<Pencil size={20} />
 					</button>
@@ -55,11 +127,21 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 					<button
 						className='todo-action-btn delete-btn'
 						onClick={() => onDelete(task.id)}>
-						<Trash2 size={20} style={{ color: 'var(--color-red)' }} />
+						<Trash2 size={20} />
 					</button>
 				</div>
 
 				<div className='todo-actions mobile'>
+					{showPomodoro && (
+						<button className='pomodoro-alarm' onClick={togglePomodoroPause}>
+							{isPaused ? <Play size={18} /> : <Pause size={18} />}
+							<p
+								className='pomodoro-time'
+								style={{ color: 'var(--color-red)' }}>
+								{formatTime(seconds)}
+							</p>
+						</button>
+					)}
 					{dueDate && (
 						<span className={`todo-date ${isToday ? 'todo-date--today' : ''}`}>
 							{dueDate.toLocaleDateString('en-US', {
@@ -78,33 +160,53 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 				</div>
 			</div>
 
+			{showAlarm && (
+				<div className='alarm-modal'>
+					<div className='alarm-header'>
+						<h3>Take a break</h3> 
+						<AlarmClock />
+					</div>
+					<div className='alarm-content'>
+						<button
+							className='ok-button'
+							onClick={() => {
+								setShowAlarm(false);
+								setShowPomodoro(false);
+								setSeconds(0);
+								setIsPaused(false);
+
+								if (audioRef.current) {
+									audioRef.current.pause();
+									audioRef.current.currentTime = 0;
+								}
+							}}>
+							OK
+						</button>
+					</div>
+				</div>
+			)}
+
 			{showModal && (
 				<div className='todo-modal'>
-					<button onClick={openCalendar}>
-						<Calendar
-							className='todo-btn'
-							size={20}
-							style={{ color: 'var(--color-dark-2)' }}
-						/>
+					<button className='todo-btn' onClick={togglePomodoro}>
+						<AlarmClock size={20} style={{ color: 'var(--color-dark-2)' }} />
+						Start Pomodoro
+					</button>
+					<button onClick={openCalendar} className='todo-btn'>
+						<Calendar size={20} style={{ color: 'var(--color-dark-2)' }} />
 						Set Date
 					</button>
-					<button onClick={() => setShowEditModal(true)}>
-						<Pencil
-							className='todo-btn'
-							size={20}
-							style={{ color: 'var(--color-dark-2)' }}
-						/>{' '}
-						Edit Task
+					<button onClick={() => setShowEditModal(true)} className='todo-btn'>
+						<Pencil size={20} style={{ color: 'var(--color-dark-2)' }} /> Edit
+						Task
 					</button>
-					<button onClick={() => onDelete(task.id)}>
-						<Trash2
-							className='todo-btn'
-							style={{ color: 'var(--color-dark-2)' }}
-							size={20}
-						/>{' '}
-						Delete Task
+					<button onClick={() => onDelete(task.id)} className='todo-btn'>
+						<Trash2 style={{ color: 'var(--color-dark-2)' }} size={20} /> Delete
+						Task
 					</button>
-					<button onClick={() => setShowModal(false)}>Close</button>
+					<button onClick={() => setShowModal(false)} className='todo-btn'>
+						<X style={{ color: 'var(--color-dark-2)' }} size={20} /> Close
+					</button>
 				</div>
 			)}
 			{showEditModal && (
@@ -148,6 +250,7 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 					</div>
 				</div>
 			)}
+			<audio ref={audioRef} src='/alarm-clock-beep.wav' loop />
 		</>
 	);
 };
