@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
@@ -11,25 +8,25 @@ datasource db {
 }
 
 model User {
-  id  Int @id @default(autoincrement())
-  username String
-  email String
-  password String
-  isActive Boolean
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  isActive  Boolean
   lastLogin DateTime @default(now())
 }
 
 model Tasks {
-  id Int @id @default(autoincrement())
-  taskName String
-  created DateTime
+  id         Int      @id @default(autoincrement())
+  taskName   String
+  created    DateTime
   isFinished Boolean
-  userId Int
+  userId     Int
 }
 
 model Pomo {
-  id Int @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   timeLeft Int
   isActive Boolean
-  taskId Int
+  taskId   Int
 }

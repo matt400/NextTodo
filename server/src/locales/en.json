@@ -2,5 +2,6 @@
     "LOGIN_SUCCESS": "Logged successfully",
     "AUTH_FAILED": "Invalid login data",
     "NO_TOKEN": "No token!",
-    "INVALID_TOKEN": "Invalid token."
+    "INVALID_TOKEN": "Invalid token.",
+    "LOGGED_OUT": "Wylogowano"
 }
