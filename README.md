@@ -37,10 +37,16 @@ If Node.js is not installed, download it from:
 ---
 
 ### Run the project
-
+*1. Install npm inside main directory:*
 ```bash
 git clone https://github.com/matt400/NextTodo
 cd NextTodo
+npm install
+```
+
+*2. Then change directory to the "Client" folder and run npm install again:*
+```bash
+cd Client
 npm install
 npm run dev:client
 ```
