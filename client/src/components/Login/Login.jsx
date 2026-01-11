@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import './Login-media.css';
 import Heading from '../Heading.jsx';
@@ -15,42 +16,44 @@ const Login = () => {
 	});
 
 	const [errors, setErrors] = useState({});
+	const [submitted, setSubmitted] = useState(false);
 
-	const validateLive = (field, value) => {
-		let message = '';
+	const validate = (vals) => {
+		let temp = {};
 
-		if (field === 'email') {
-			if (!value) message = 'Email is required';
-			else if (!/\S+@\S+\.\S+/.test(value))
-				message = 'Enter a correct email address';
+		if (!vals.email) temp.email = 'Email is required';
+		else if (!/\S+@\S+\.\S+/.test(vals.email))
+			temp.email = 'Enter a correct email address';
+
+		if (!vals.password) temp.password = 'Password is required';
+		else if (vals.password.length < 8)
+			temp.password = 'Password must be at least 8 characters long';
+		else if (vals.password.length > 64)
+			temp.password = 'Password can have a maximum of 64 characters';
+		else if (!/[a-z]/.test(vals.password))
+			temp.password = 'Password must contain at least one lowercase letter';
+		else if (!/[A-Z]/.test(vals.password))
+			temp.password = 'Password must contain at least one uppercase letter';
+		else if (!/[0-9]/.test(vals.password))
+			temp.password = 'Password must contain at least one digit';
+		else if (!/[!@#$%^&*()_\-+=\[\]{};:\'",.<>/?`~\\|]/.test(vals.password))
+			temp.password = 'Password must contain at least one special character';
+		else if (/\s/.test(vals.password))
+			temp.password = 'Password cannot contain spaces';
+
+		return temp;
+	};
+
+	const handleSubmit = () => {
+		setSubmitted(true);
+
+		const validationErrors = validate(values);
+		setErrors(validationErrors);
+
+		if (Object.keys(validationErrors).length !== 0) {
+			return false;
 		}
-
-		if (field === 'password') {
-			if (!value) {
-				message = 'Password is required';
-			} else if (value.length < 8) {
-				message = 'Password must be at least 8 characters long';
-			} else if (value.length > 64) {
-				message = 'Password can have a maximum of 64 characters';
-			} else if (!/[a-z]/.test(value)) {
-				message = 'Password must contain at least one lowercase letter';
-			} else if (!/[A-Z]/.test(value)) {
-				message = 'Password must contain at least one uppercase letter';
-			} else if (!/[0-9]/.test(value)) {
-				message = 'Password must contain at least one digit';
-			} else if (!/[!@#$%^&*()_\-+=\[\]{};:\'",.<>/?`~\\|]/.test(value)) {
-				message = 'Password must contain at least one special character';
-			} else if (/\s/.test(value)) {
-				message = 'Password cannot contain spaces';
-			} else {
-				message = '';
-			}
-		}
-
-		setErrors((prev) => ({
-			...prev,
-			[field]: message,
-		}));
+		return true;
 	};
 
 	const handleChange = (e) => {
@@ -60,8 +63,6 @@ const Login = () => {
 			...prev,
 			[id]: value,
 		}));
-
-		validateLive(id, value);
 	};
 
 	return (
@@ -76,7 +77,7 @@ const Login = () => {
 				label='Email'
 				value={values.email}
 				onChange={handleChange}
-				error={errors.email}
+				error={submitted ? errors.email : ''}
 			/>
 
 			<Field
@@ -87,10 +88,11 @@ const Login = () => {
 				label='Password'
 				value={values.password}
 				onChange={handleChange}
-				error={errors.password}
+				error={submitted ? errors.password : ''}
 			/>
 
-			<Button inner='Sign in' to='/mainpage' />
+			<Button inner="Sign in" to="/mainpage" onClick={handleSubmit} />
+
 
 			<Linking to='/register' innerText="Don't have an account? Sign up" />
 		</div>
