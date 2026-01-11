@@ -41,7 +41,7 @@ If Node.js is not installed, download it from:
 ```bash
 git clone https://github.com/matt400/NextTodo
 cd NextTodo
-npm install
+npm install:all
 npm run dev:client
 ```
 
@@ -56,6 +56,16 @@ http://localhost:5173
 ```
 
 > If the port is already in use, Vite will automatically select another one and display it in the console.
+
+---
+
+### Server
+
+To run server, type in terminal:
+
+```bash
+npm run dev:server
+```
 
 ---
 
