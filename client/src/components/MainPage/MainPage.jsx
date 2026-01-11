@@ -10,10 +10,10 @@ import { Plus } from 'lucide-react';
 
 const MainPage = () => {
 	const [tasks, setTasks] = useState([]);
-
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const activeTasks = tasks.filter((t) => !t.done);
 	const completedTasks = tasks.filter((t) => t.done);
+	const [activePomodoroId, setActivePomodoroId] = useState(null);
 
 	const addTask = (text) => {
 		const nextId =
@@ -26,6 +26,17 @@ const MainPage = () => {
 	const updateTask = (id, newText) => {
 		setTasks((prev) =>
 			prev.map((t) => (t.id === id ? { ...t, text: newText } : t))
+		);
+	};
+
+	const toggleTask = (id) => {
+		setTasks((prev) =>
+			prev.map((t) => {
+				if (t.id === id && !t.done) {
+					setActivePomodoroId(null);
+				}
+				return t.id === id ? { ...t, done: !t.done } : t;
+			})
 		);
 	};
 
@@ -47,11 +58,25 @@ const MainPage = () => {
 				<div className='todo-container'>
 					{activeTasks.length === 0 && <EmptyState />}
 					{activeTasks.length > 0 && (
-						<ActiveState tasks={activeTasks} setTasks={setTasks} onEdit={updateTask}/>
+						<ActiveState
+							tasks={activeTasks}
+							setTasks={setTasks}
+							onEdit={updateTask}
+							onToggle={toggleTask}
+							activePomodoroId={activePomodoroId}
+							setActivePomodoroId={setActivePomodoroId}
+						/>
 					)}
 
 					{completedTasks.length > 0 && (
-						<CompletedState tasks={completedTasks} setTasks={setTasks} onEdit={updateTask} />
+						<CompletedState
+							tasks={completedTasks}
+							setTasks={setTasks}
+							onEdit={updateTask}
+							onToggle={toggleTask}
+							activePomodoroId={activePomodoroId}
+							setActivePomodoroId={setActivePomodoroId}
+						/>
 					)}
 				</div>
 				{showCreateModal && (

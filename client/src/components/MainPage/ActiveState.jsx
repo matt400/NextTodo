@@ -1,23 +1,30 @@
 import DeleteAllButton from './DeleteAllButton';
 import TodoItem from './ToDoItem';
 
-const ActiveState = ({ tasks, setTasks, onEdit }) => {
+const ActiveState = ({
+	tasks,
+	setTasks,
+	onEdit,
+	activePomodoroId,
+	setActivePomodoroId,
+}) => {
 	const handleDeleteAll = () => {
-		setTasks([]);
+		setTasks((prev) => prev.filter((t) => t.done));
 	};
 
 	const toggleDone = (id) => {
 		setTasks((prev) =>
-			prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
+			prev.map((t) => {
+				if (t.id === id && !t.done) {
+					setActivePomodoroId(null);
+				}
+				return t.id === id ? { ...t, done: !t.done } : t;
+			})
 		);
 	};
 
 	const deleteTask = (id) => {
 		setTasks((prev) => prev.filter((t) => t.id !== id));
-	};
-
-	const editTask = (id) => {
-		console.log('Editing', id);
 	};
 
 	return (
@@ -34,6 +41,8 @@ const ActiveState = ({ tasks, setTasks, onEdit }) => {
 					onToggle={toggleDone}
 					onDelete={deleteTask}
 					onEdit={onEdit}
+					activePomodoroId={activePomodoroId}
+					setActivePomodoroId={setActivePomodoroId}
 				/>
 			))}
 		</div>

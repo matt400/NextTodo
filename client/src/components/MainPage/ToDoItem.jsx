@@ -14,7 +14,14 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import '../../styles/elements/todo-item.css';
 
-const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
+const TodoItem = ({
+	task,
+	onToggle,
+	onDelete,
+	onEdit,
+	activePomodoroId,
+	setActivePomodoroId,
+}) => {
 	const formatTime = (total) => {
 		const m = Math.floor(total / 60);
 		const s = total % 60;
@@ -31,15 +38,24 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 	const isToday =
 		dueDate && new Date(dueDate).toDateString() === new Date().toDateString();
 	const togglePomodoro = () => {
-		if (showPomodoro) {
-			setShowPomodoro(false);
+		if (activePomodoroId === task.id) {
+			setActivePomodoroId(null);
 			setSeconds(0);
+			setIsPaused(false);
 		} else {
-			setShowPomodoro(true);
+			setActivePomodoroId(task.id);
+			setSeconds(0);
+			setIsPaused(false);
 		}
 	};
+	useEffect(() => {
+		if (activePomodoroId !== task.id) {
+			setSeconds(0);
+			setIsPaused(false);
+		}
+	}, [activePomodoroId]);
 
-	const [showPomodoro, setShowPomodoro] = useState(false);
+	const showPomodoro = activePomodoroId === task.id;
 	const [seconds, setSeconds] = useState(0);
 	const [isPaused, setIsPaused] = useState(false);
 	useEffect(() => {
@@ -105,24 +121,32 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 						</span>
 					)}
 
-					<button
-						className='todo-action-btn pomodoro-btn'
-						onClick={togglePomodoro}>
-						<AlarmClock size={20} style={{ color: 'var(--color-red)' }} />
-					</button>
-					<button
-						className='todo-action-btn calendar-btn'
-						onClick={() => setShowCalendarModal(true)}>
-						<Calendar
-							size={20}
-							style={{ color: 'var(--color-primary-hover)' }}
-						/>
-					</button>
-					<button
-						className='todo-action-btn edit-btn'
-						onClick={() => setShowEditModal(true)}>
-						<Pencil size={20} />
-					</button>
+					{!task.done && (
+						<>
+							{(activePomodoroId === null || activePomodoroId === task.id) && (
+								<button
+									className='todo-action-btn pomodoro-btn'
+									onClick={togglePomodoro}>
+									<AlarmClock size={20} style={{ color: 'var(--color-red)' }} />
+								</button>
+							)}
+
+							<button
+								className='todo-action-btn calendar-btn'
+								onClick={() => setShowCalendarModal(true)}>
+								<Calendar
+									size={20}
+									style={{ color: 'var(--color-primary-hover)' }}
+								/>
+							</button>
+
+							<button
+								className='todo-action-btn edit-btn'
+								onClick={() => setShowEditModal(true)}>
+								<Pencil size={20} />
+							</button>
+						</>
+					)}
 
 					<button
 						className='todo-action-btn delete-btn'
@@ -163,7 +187,7 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 			{showAlarm && (
 				<div className='alarm-modal'>
 					<div className='alarm-header'>
-						<h3>Take a break</h3> 
+						<h3>Take a break</h3>
 						<AlarmClock />
 					</div>
 					<div className='alarm-content'>
@@ -171,7 +195,7 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 							className='ok-button'
 							onClick={() => {
 								setShowAlarm(false);
-								setShowPomodoro(false);
+								setActivePomodoroId(null);
 								setSeconds(0);
 								setIsPaused(false);
 
@@ -188,27 +212,34 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit }) => {
 
 			{showModal && (
 				<div className='todo-modal'>
-					<button className='todo-btn' onClick={togglePomodoro}>
-						<AlarmClock size={20} style={{ color: 'var(--color-dark-2)' }} />
-						Start Pomodoro
-					</button>
-					<button onClick={openCalendar} className='todo-btn'>
-						<Calendar size={20} style={{ color: 'var(--color-dark-2)' }} />
-						Set Date
-					</button>
-					<button onClick={() => setShowEditModal(true)} className='todo-btn'>
-						<Pencil size={20} style={{ color: 'var(--color-dark-2)' }} /> Edit
-						Task
-					</button>
+					{!task.done && (
+						<>
+							<button className='todo-btn' onClick={togglePomodoro}>
+								<AlarmClock size={20} /> Start Pomodoro
+							</button>
+
+							<button onClick={openCalendar} className='todo-btn'>
+								<Calendar size={20} /> Set Date
+							</button>
+
+							<button
+								onClick={() => setShowEditModal(true)}
+								className='todo-btn'>
+								<Pencil size={20} /> Edit Task
+							</button>
+						</>
+					)}
+
 					<button onClick={() => onDelete(task.id)} className='todo-btn'>
-						<Trash2 style={{ color: 'var(--color-dark-2)' }} size={20} /> Delete
-						Task
+						<Trash2 size={20} /> Delete Task
 					</button>
+
 					<button onClick={() => setShowModal(false)} className='todo-btn'>
-						<X style={{ color: 'var(--color-dark-2)' }} size={20} /> Close
+						<X size={20} /> Close
 					</button>
 				</div>
 			)}
+
 			{showEditModal && (
 				<EditTaskModal
 					task={task}
