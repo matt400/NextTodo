@@ -1,12 +1,25 @@
+import { onlyGuest } from "../../utils/api.js";
 import { loginController, registerController } from "./controller.js";
 import { loginSchema, registerSchema } from "./schema.js";
 
 export default async function authRoutes(fastify) {
-  fastify.post("/login", { schema: loginSchema }, loginController);
+  fastify.register(async (guestGroup) => {
+    guestGroup.addHook("preValidation", onlyGuest);
 
-  fastify.post("/logout", async (req, reply) => {
-    reply.clearCookie("access_token").send({ message: "Wylogowano" });
+    guestGroup.post(
+      "/login",
+      { schema: loginSchema, bodyLimit: 200 },
+      loginController,
+    );
+
+    guestGroup.post(
+      "/register",
+      { schema: registerSchema, bodyLimit: 200 },
+      registerController,
+    );
   });
 
-  fastify.post("/register", { schema: registerSchema }, registerController);
+  fastify.post("/logout", async (req, reply) => {
+    reply.clearCookie("access_token").ok("LOGGED_OUT");
+  });
 }

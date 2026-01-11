@@ -4,19 +4,20 @@ export const loginSchema = {
     required: ["email", "password"],
     properties: {
       email: { type: "string", format: "email" },
-      password: { type: "string", minLength: 8 }
-    }
-  }
-}
+      password: { type: "string", minLength: 8 },
+    },
+  },
+};
 
 export const registerSchema = {
   body: {
     type: "object",
-    required: ["username", "email", "password"],
+    required: ["username", "email", "password", "confirm_password"],
     properties: {
       username: { type: "string", minLength: 3 },
       email: { type: "string", format: "email" },
-      password: { type: "string", minLength: 8 }
-    }
-  }
-}
+      password: { type: "string", minLength: 8 },
+      confirm_password: { type: "string", minLength: 8 },
+    },
+  },
+};

@@ -1,7 +1,12 @@
 {
-    "AUTH_SUCCESS": "Zalogowano pomyślnie",
-    "AUTH_FAILED": "Nieprawidłowe dane logowania",
-    "NO_TOKEN": "Brak tokena!",
-    "INVALID_TOKEN": "Nieprawidłowy token.",
-    "LOGGED_OUT": "Wylogowano"
+  "AUTH_SUCCESS": "Zalogowano pomyślnie",
+  "AUTH_FAILED": "Nieprawidłowe dane logowania.",
+  "NO_TOKEN": "Brak tokena!",
+  "INVALID_TOKEN": "Nieprawidłowy token.",
+  "LOGGED_OUT": "Wylogowano",
+  "ALREADY_REGISTERED": "Jesteś juz zalogowany.",
+  "WRONG_USERNAME": "Ta nazwa użytkownika jest już zajęta.",
+  "WRONG_EMAIL": "Ten email jest już używany na innym koncie.",
+  "WRONG_PASSWORDS": "Hasła nie pasują do siebie.",
+  "REGISTER_SUCCESS": "Zostałeś zarejestrowany."
 }
