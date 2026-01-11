@@ -3,6 +3,7 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "target": "ES2023",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowJs": true,
     "checkJs": true,

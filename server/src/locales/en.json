@@ -1,7 +1,12 @@
 {
-    "LOGIN_SUCCESS": "Logged successfully",
-    "AUTH_FAILED": "Invalid login data",
-    "NO_TOKEN": "No token!",
-    "INVALID_TOKEN": "Invalid token.",
-    "LOGGED_OUT": "Wylogowano"
+  "LOGIN_SUCCESS": "Logged successfully",
+  "AUTH_FAILED": "Invalid login data.",
+  "NO_TOKEN": "No token!",
+  "INVALID_TOKEN": "Invalid token.",
+  "LOGGED_OUT": "You've been logged out",
+  "ALREADY_REGISTERED": "You are logged in already.",
+  "WRONG_USERNAME": "This username is already taken.",
+  "WRONG_EMAIL": "This email is used already on another account.",
+  "WRONG_PASSWORDS": "Password does not match",
+  "REGISTER_SUCCESS": "You've been registered."
 }
