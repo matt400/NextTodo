@@ -5,11 +5,23 @@ const Button = ({ inner, to, onClick }) => {
 	const navigate = useNavigate();
 
 	const handleClick = (e) => {
-    if (onClick) onClick(e); 
-    if (to) navigate(to); 
-  };
+		let shouldNavigate = true;
 
-	return <button className='button' onClick = {handleClick}>{inner}</button>;
+		if (onClick) {
+			const result = onClick(e);
+			if (result === false) shouldNavigate = false;
+		}
+
+		if (to && shouldNavigate) {
+			navigate(to);
+		}
+	};
+
+	return (
+		<button className='button' onClick={handleClick}>
+			{inner}
+		</button>
+	);
 };
 
 export default Button;

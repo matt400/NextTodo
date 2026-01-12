@@ -9,104 +9,107 @@ import Button from '../Button.jsx';
 import Linking from '../Linking.jsx';
 
 const Registration = () => {
-  const [values, setValues] = useState({
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
+	const [values, setValues] = useState({
+		email: '',
+		password: '',
+		confirmPassword: '',
+	});
 
-  const [errors, setErrors] = useState({});
+	const [errors, setErrors] = useState({});
+	const [submitted, setSubmitted] = useState(false);
 
-  const validateLive = (field, value) => {
-    let message = '';
+	const validate = (vals) => {
+		let temp = {};
 
-    if (field === 'email') {
-      if (!value) message = 'Email is required';
-      else if (!/\S+@\S+\.\S+/.test(value))
-        message = 'Enter a correct email address';
-    }
+		if (!vals.name) temp.name = 'Name is required';
 
-    if (field === 'password') {
-      if (!value) message = 'Password is required';
-      else if (value.length < 8) message = 'Password must be at least 8 characters long';
-      else if (value.length > 64) message = 'Password can have a maximum of 64 characters';
-      else if (!/[a-z]/.test(value)) message = 'Password must contain at least one lowercase letter';
-      else if (!/[A-Z]/.test(value)) message = 'Password must contain at least one uppercase letter';
-      else if (!/[0-9]/.test(value)) message = 'Password must contain at least one digit';
-      else if (!/[!@#$%^&*()_\-+=\[\]{};:\'",.<>/?`~\\|]/.test(value))
-        message = 'Password must contain at least one special character';
-      else if (/\s/.test(value)) message = 'Password cannot contain spaces';
-    }
+		if (!vals.email) temp.email = 'Email is required';
+		else if (!/\S+@\S+\.\S+/.test(vals.email))
+			temp.email = 'Enter a correct email address';
 
-    if (field === 'confirmPassword') {
-      if (!value) message = 'Please repeat your password';
-      else if (value !== values.password) message = 'Passwords do not match';
-    }
+		if (!vals.password) temp.password = 'Password is required';
+		else if (vals.password.length < 8)
+			temp.password = 'Password must be at least 8 characters long';
+		else if (!/[a-z]/.test(vals.password))
+			temp.password = 'Must contain lowercase letter';
+		else if (!/[A-Z]/.test(vals.password))
+			temp.password = 'Must contain uppercase letter';
+		else if (!/[0-9]/.test(vals.password))
+			temp.password = 'Must contain a digit';
+		else if (!/[!@#$%^&*()_\-+=\[\]{};:\'",.<>/?`~\\|]/.test(vals.password))
+			temp.password = 'Must contain a special character';
 
-    setErrors(prev => ({
-      ...prev,
-      [field]: message
-    }));
-  };
+		if (!vals.confirmPassword) temp.confirmPassword = 'Confirm your password';
+		else if (vals.password !== vals.confirmPassword)
+			temp.confirmPassword = 'Passwords do not match';
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
+		return temp;
+	};
 
-    setValues(prev => ({
-      ...prev,
-      [id]: value
-    }));
+	const handleChange = (e) => {
+		const { id, value } = e.target;
 
-    validateLive(id, value);
+		setValues((prev) => ({
+			...prev,
+			[id]: value,
+		}));
+	};
 
-    if (id === 'password') {
-      validateLive('confirmPassword', values.confirmPassword);
-    }
-  };
+	const handleSubmit = () => {
+		setSubmitted(true);
 
-  return (
-    <div className='registration'>
-      <Heading title='Create Account' text='Sign up to get started' />
+		const validationErrors = validate(values);
+		setErrors(validationErrors);
 
-      <Field
-        innerText='Enter your email'
-        Icon={MailIcon}
-        id='email'
-        type='email'
-        label='Email'
-        value={values.email}
-        onChange={handleChange}
-        error={errors.email}
-      />
+		if (Object.keys(validationErrors).length !== 0) {
+			return false;
+		}
 
-      <Field
-        innerText='Enter your password'
-        Icon={PasswordIcon}
-        id='password'
-        type='password'
-        label='Password'
-        value={values.password}
-        onChange={handleChange
-        }
-        error={errors.password}
-      />
+		return true;
+	};
 
-      <Field
-        innerText='Confirm your password'
-        Icon={PasswordIcon}
-        id='confirmPassword'
-        type='password'
-        label='Confirm password'
-        value={values.confirmPassword}
-        onChange={handleChange}
-        error={errors.confirmPassword}
-      />
+	return (
+		<div className='registration'>
+			<Heading title='Create Account' text='Sign up to get started' />
 
-      <Button inner='Sign up' />
+			<Field
+				innerText='Enter your email'
+				Icon={MailIcon}
+				id='email'
+				type='email'
+				label='Email'
+				value={values.email}
+				onChange={handleChange}
+				error={submitted ? errors.email : ''}
+			/>
 
-      <Linking to='/login' innerText='Already have an account? Sign in' />
-    </div>
-  );
+			<Field
+				innerText='Enter your password'
+				Icon={PasswordIcon}
+				id='password'
+				type='password'
+				label='Password'
+				value={values.password}
+				onChange={handleChange}
+				error={submitted ? errors.password : ''}
+			/>
+
+			<Field
+				innerText='Confirm your password'
+				Icon={PasswordIcon}
+				id='confirmPassword'
+				type='password'
+				label='Confirm password'
+				value={values.confirmPassword}
+				onChange={handleChange}
+				error={submitted ? errors.confirmPassword : ''}
+			/>
+
+			<Button inner='Create account' to='/login' onClick={handleSubmit} />
+
+			<Linking to='/login' innerText='Already have an account? Sign in' />
+		</div>
+	);
 };
 
 export default Registration;
