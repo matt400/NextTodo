@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import '../MainPage/MainPage.css';
-import Navbar from '../Navbar';
-import CreateTaskButton from './CreateTaskButton';
-import EmptyState from './EmptyState';
-import ActiveState from './ActiveState';
-import CompletedState from './CompletedState';
-import AddTaskModal from './AddTaskModal';
+import styles from './MainPage.module.css';
+import Navbar from '../Navbar/Navbar';
+import CreateTaskButton from './CreateTaskButton/CreateTaskButton';
+import EmptyState from './EmptyState/EmptyState';
+import ActiveState from './ActiveState/ActiveState';
+import CompletedState from './CompletedState/CompletedState';
+import AddTaskModal from './AddTaskModal/AddTaskModal';
 import { Plus } from 'lucide-react';
 
 const MainPage = () => {
@@ -44,7 +44,7 @@ const MainPage = () => {
 		<>
 			<Navbar title='My Tasks' showBack={false} showSettings={true} />
 
-			<div className='main-content'>
+			<div className={`${styles.mainContent}`}>
 				<CreateTaskButton
 					onClick={() => setShowCreateModal(true)}
 					inner={
@@ -55,7 +55,7 @@ const MainPage = () => {
 					}
 				/>
 
-				<div className='todo-container'>
+				<div className={`${styles.todoContainer}`}>
 					{activeTasks.length === 0 && <EmptyState />}
 					{activeTasks.length > 0 && (
 						<ActiveState

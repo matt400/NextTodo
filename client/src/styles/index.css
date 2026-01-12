@@ -3,7 +3,3 @@
 @import './globals.css';
 @import './fonts.css';
 
-@import './elements/field.css';
-@import './elements/todo-item.css';
-@import './elements/button.css';
-@import './elements/navbar.css';

@@ -1,0 +1,26 @@
+.mainContent {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	padding: 1rem;
+}
+
+.todoContainer {
+	width: 100%;
+	max-width: 864px;
+	display: flex;
+	flex-direction: column;
+}
+
+
+.delete-all-button:hover {
+	background-color: #ce0000;
+}
+
+
+.completed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
