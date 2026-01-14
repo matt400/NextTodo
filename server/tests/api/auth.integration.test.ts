@@ -3,16 +3,16 @@ import { buildApp } from "@server/app.js";
 vi.mock("bcrypt", () => ({
   default: {
     compare: vi.fn().mockResolvedValue(true),
-    hash: vi.fn().mockResolvedValue("hashed") }
-  }
-));
+    hash: vi.fn().mockResolvedValue("hashed"),
+  },
+}));
 
 test("login works", async () => {
   const app = await buildApp();
 
   app.prisma.user.findUnique = vi.fn().mockResolvedValue({
     email: "example@email.com",
-    password: "123123123"
+    password: "123123123",
   });
 
   const res = await app.inject({

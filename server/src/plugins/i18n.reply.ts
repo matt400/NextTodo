@@ -1,6 +1,11 @@
 import fp from "fastify-plugin";
 
-async function customDecorators(fastify, options) {
+import type { FastifyInstance, FastifyServerOptions } from "fastify";
+
+async function customDecorators(
+  fastify: FastifyInstance,
+  options: FastifyServerOptions,
+) {
   // i18n decorator - Success
   fastify.decorateReply("ok", function (messageKey = "SUCCESS") {
     const t = this.request.t || ((key) => key);

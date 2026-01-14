@@ -1,4 +1,6 @@
-export default async function userRoutes(fastify) {
+import type { FastifyInstance } from "fastify";
+
+export default async function userRoutes(fastify: FastifyInstance) {
   fastify.addHook("preValidation", async (request, reply) => {
     try {
       await request.jwtVerify();

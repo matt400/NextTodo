@@ -1,7 +1,17 @@
 import { loginUser, registerUser } from "./service.js";
 import { createToken } from "../../utils/api.js";
 
-export async function loginController(request, reply) {
+import type { FastifyRequest, FastifyReply } from "fastify";
+
+interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export async function loginController(
+  request: FastifyRequest<{ Body: LoginRequest }>,
+  reply: FastifyReply,
+) {
   const { email, password } = request.body;
 
   // Check if user exists
@@ -28,8 +38,23 @@ export async function loginController(request, reply) {
     .ok("LOGIN_SUCCESS");
 }
 
-export async function registerController(request, reply) {
-  const token = request.cookies.access_token === true;
+interface RegisterRequest {
+  Body: {
+    username: string;
+    email: string;
+    password: string;
+    confirm_password: string;
+  };
+  Cookies: {
+    access_token?: string;
+  };
+}
+
+export async function registerController(
+  request: FastifyRequest<RegisterRequest>,
+  reply: FastifyReply,
+) {
+  const token = request.cookies.access_token;
   if (token) return reply.fail("ALREADY_REGISTERED");
 
   const { username, email, password, confirm_password } = request.body;

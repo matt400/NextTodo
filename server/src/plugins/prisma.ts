@@ -1,7 +1,12 @@
 import fp from "fastify-plugin";
 import { prisma } from "../lib/prisma.js";
 
-async function prismaConnector(fastify, options) {
+import type { FastifyInstance, FastifyServerOptions } from "fastify";
+
+async function prismaConnector(
+  fastify: FastifyInstance,
+  options: FastifyServerOptions,
+) {
   await prisma.$connect();
 
   // Add prisma to fastify instance

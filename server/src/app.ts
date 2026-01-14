@@ -11,7 +11,7 @@ import bcrypt from "./plugins/bcrypt.js";
 import authRoutes from "./api/auth/routes.js";
 import userRoutes from "./api/user/routes.js";
 
-export async function buildApp() {
+export async function buildApp(): Promise<Fastify.FastifyInstance> {
   const fastify = Fastify({ logger: true });
 
   fastify.setErrorHandler((error, request, reply) => {
