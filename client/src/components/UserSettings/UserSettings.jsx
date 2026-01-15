@@ -1,7 +1,7 @@
 import './UserSettings.css';
-import Navbar from '../Navbar';
-import Button from '../Button';
-import Field from '../Field.jsx';
+import Navbar from '../Navbar/Navbar';
+import Button from "../Button/Button";
+import Field from '../Field/Field';
 import MailIcon from '../../assets/icons/MailIcon.jsx';
 import PasswordIcon from '../../assets/icons/PasswordIcon.jsx';
 

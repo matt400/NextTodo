@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.css';
-import './Login-media.css';
-import Heading from '../Heading.jsx';
-import Field from '../Field.jsx';
+import Heading from '../Heading/Heading.jsx';
+import Field from '../Field/Field.jsx';
 import MailIcon from '../../assets/icons/MailIcon.jsx';
 import PasswordIcon from '../../assets/icons/PasswordIcon.jsx';
-import Button from '../Button.jsx';
-import Linking from '../Linking.jsx';
+import Button from '../Button/Button';
+import Linking from '../Linking/Linking.jsx';
+import styles from  './Login.module.css';
 
 const Login = () => {
 	const [values, setValues] = useState({
@@ -17,6 +16,7 @@ const Login = () => {
 
 	const [errors, setErrors] = useState({});
 	const [submitted, setSubmitted] = useState(false);
+	const navigate = useNavigate();
 
 	const validate = (vals) => {
 		let temp = {};
@@ -51,9 +51,10 @@ const Login = () => {
 		setErrors(validationErrors);
 
 		if (Object.keys(validationErrors).length !== 0) {
-			return false;
+			return;
 		}
-		return true;
+
+		navigate('/mainpage');
 	};
 
 	const handleChange = (e) => {
@@ -66,7 +67,7 @@ const Login = () => {
 	};
 
 	return (
-		<div className='login'>
+		<div className= {`${styles.login}`}>
 			<Heading title='Welcome Back' text='Sign in to manage your tasks' />
 
 			<Field
@@ -91,7 +92,7 @@ const Login = () => {
 				error={submitted ? errors.password : ''}
 			/>
 
-			<Button inner="Sign in" to="/mainpage" onClick={handleSubmit} />
+			<Button inner="Sign in" onClick={handleSubmit} />
 
 
 			<Linking to='/register' innerText="Don't have an account? Sign up" />

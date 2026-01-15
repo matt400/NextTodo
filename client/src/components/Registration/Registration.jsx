@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import './Registration.css';
-import './Registration-media.css';
-import Heading from '../Heading.jsx';
-import Field from '../Field.jsx';
+import Heading from '../Heading/Heading.jsx';
+import Field from '../Field/Field.jsx';
 import MailIcon from '../../assets/icons/MailIcon.jsx';
 import PasswordIcon from '../../assets/icons/PasswordIcon.jsx';
-import Button from '../Button.jsx';
-import Linking from '../Linking.jsx';
+import Button from "../Button/Button.jsx";
+import Linking from '../Linking/Linking.jsx';
+import styles from './Registration.module.css';
 
 const Registration = () => {
 	const [values, setValues] = useState({
@@ -69,7 +68,7 @@ const Registration = () => {
 	};
 
 	return (
-		<div className='registration'>
+		<div className= {`${styles.Registration}`}>
 			<Heading title='Create Account' text='Sign up to get started' />
 
 			<Field

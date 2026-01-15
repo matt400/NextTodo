@@ -1,0 +1,22 @@
+.CompletedState {
+  width: 100vw;
+  max-width: 864px;
+  min-height: 140px;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: var(--color-white-solid);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.CompletedStateCount {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 400;
+	color: var(--color-dark-1);
+}
+
+

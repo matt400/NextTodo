@@ -1,0 +1,16 @@
+.headingTitle {
+	font-weight: 500;
+	font-size: 22px;
+	line-height: 160%;
+	text-align: center;
+	color: var(--color-dark-1);
+	padding-bottom: 10px;
+}
+
+.hhadingText {
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 160%;
+	text-align: center;
+	color: var(--color-dark-2);
+}
