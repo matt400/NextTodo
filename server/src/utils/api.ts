@@ -1,8 +1,8 @@
-export function createToken(jwt, payload) {
+export function createToken(jwt: any, payload: any) {
   return jwt.sign(payload);
 }
 
-export const onlyGuest = async (request, reply) => {
+export const onlyGuest = async (request: any, reply: any) => {
   const token = request.cookies.access_token;
   if (token) {
     try {

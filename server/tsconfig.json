@@ -1,19 +1,43 @@
 {
+  "$schema": "https://www.schemastore.org/tsconfig",
+  "display": "Node LTS (24)",
+  "_version": "24.0.0",
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "target": "ES2023",
-    "resolveJsonModule": true,
+    /* Base Options: */
     "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2024",
     "allowJs": true,
-    "checkJs": true,
-    "noEmit": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    /* Strictness */
     "strict": true,
-    "noImplicitAny": false,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    /* If transpiling with TypeScript: */
+    "module": "NodeNext",
+    "outDir": "dist",
+    "sourceMap": true,
+
+    "lib": [
+      "es2024",
+      "ESNext.Array",
+      "ESNext.Collection",
+      "ESNext.Iterator",
+      "ESNext.Promise",
+    ],
+    "moduleResolution": "node16",
+
     "baseUrl": ".",
     "paths": {
       "@server/*": ["src/*"],
     },
+    "typeRoots": ["./node_modules/@types", "src/typescript"],
   },
-  "include": ["src"],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"],
 }

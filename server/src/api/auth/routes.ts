@@ -2,7 +2,9 @@ import { onlyGuest } from "../../utils/api.js";
 import { loginController, registerController } from "./controller.js";
 import { loginSchema, registerSchema } from "./schema.js";
 
-export default async function authRoutes(fastify) {
+import type { FastifyInstance } from "fastify";
+
+export default async function authRoutes(fastify: FastifyInstance) {
   fastify.register(async (guestGroup) => {
     guestGroup.addHook("preValidation", onlyGuest);
 

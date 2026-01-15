@@ -1,4 +1,5 @@
 import path from "path";
+
 import { fileURLToPath } from "url";
 import { defineConfig } from "vitest/config";
 
@@ -13,8 +14,8 @@ export default defineConfig({
   test: {
     name: "server",
     globals: true,
-    environment: "node",
-    setupFiles: ["./server/vitest.setup.js"],
-    include: ["tests/**/*.{test,spec}.js"],
+    // environment: "node",
+    setupFiles: ["./server/vitest.setup.ts"],
+    include: ["./tests/**/*.{test,spec}.ts"],
   },
 });

@@ -1,10 +1,12 @@
+import type { FastifyInstance } from "fastify/types/instance.js";
+
 import fp from "fastify-plugin";
 import i18next from "i18next";
 
 import pl from "../locales/pl.json" with { type: "json" };
 import en from "../locales/en.json" with { type: "json" };
 
-async function i18nPlugin(fastify) {
+async function i18nPlugin(fastify: FastifyInstance) {
   await i18next.init({
     lng: "pl",
     fallbackLng: "en",

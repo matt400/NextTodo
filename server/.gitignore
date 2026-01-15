@@ -5,3 +5,4 @@ undefined
 *.db
 
 /src/generated/prisma
+/dist
