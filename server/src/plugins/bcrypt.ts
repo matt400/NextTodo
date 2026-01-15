@@ -2,7 +2,7 @@ import fp from "fastify-plugin";
 import bcrypt from "bcrypt";
 
 import type { FastifyInstance } from "fastify";
-import type BcryptDecorator from "../types/interfaces/bcryptDecorator.js";
+import type BcryptDecorator from "../interfaces/bcryptDecorator.js";
 
 async function bCryptPlugin(fastify: FastifyInstance) {
   const bcryptObject: BcryptDecorator = {

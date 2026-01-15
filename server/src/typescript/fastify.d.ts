@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 
-import type BcryptDecorator from "./interfaces/bcryptDecorator.ts";
+import type BcryptDecorator from "../interfaces/bcryptDecorator.ts";
 
 declare module "fastify" {
   interface FastifyInstance {

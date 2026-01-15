@@ -10,7 +10,7 @@ async function prismaConnector(
   await prisma.$connect();
 
   // Add prisma to fastify instance
-  fastify.decorate("prisma", prisma);
+  fastify.decorate("prisma", prisma as any);
 
   // Closes connection when server is shutting down
   fastify.addHook("onClose", async (server) => {

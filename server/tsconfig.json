@@ -36,7 +36,8 @@
     "paths": {
       "@server/*": ["src/*"],
     },
-    "types": ["vitest/globals"],
+    "typeRoots": ["./node_modules/@types", "src/typescript"],
   },
-  "include": ["src"],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"],
 }

@@ -3,10 +3,10 @@
   "type": "module",
   "private": true,
   "version": "0.0.0",
-  "main": "./src/server.js",
+  "main": "./src/server.ts",
   "scripts": {
-    "start": "node ./src/server.js",
-    "dev": "node --watch ./src/server.js"
+    "dev": "tsx watch ./src/server.ts",
+    "start": "tsx ./src/server.ts"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
@@ -27,6 +27,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^25.0.3",
     "prisma": "^6.19.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }
