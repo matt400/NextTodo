@@ -1,19 +1,24 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../../api/auth';
+import { useLocation } from 'react-router-dom';
+
 import Heading from '../Heading/Heading.jsx';
 import Field from '../Field/Field.jsx';
 import MailIcon from '../../assets/icons/MailIcon.jsx';
 import PasswordIcon from '../../assets/icons/PasswordIcon.jsx';
 import Button from '../Button/Button';
 import Linking from '../Linking/Linking.jsx';
-import styles from  './Login.module.css';
+
+import styles from './Login.module.css';
 
 const Login = () => {
 	const [values, setValues] = useState({
 		email: '',
 		password: '',
 	});
-
+	const location = useLocation();
+	const registered = location.state?.registered;
 	const [errors, setErrors] = useState({});
 	const [submitted, setSubmitted] = useState(false);
 	const navigate = useNavigate();
@@ -67,8 +72,14 @@ const Login = () => {
 	};
 
 	return (
-		<div className= {`${styles.login}`}>
+		<div className={`${styles.login}`}>
 			<Heading title='Welcome Back' text='Sign in to manage your tasks' />
+			
+			{registered && (
+				<p style={{ color: 'green', marginBottom: '1rem' }}>
+					Your account has been created successfully. 
+				</p>
+			)}
 
 			<Field
 				innerText='Enter your email'
@@ -92,8 +103,7 @@ const Login = () => {
 				error={submitted ? errors.password : ''}
 			/>
 
-			<Button inner="Sign in" onClick={handleSubmit} />
-
+			<Button inner='Sign in' onClick={handleSubmit} />
 
 			<Linking to='/register' innerText="Don't have an account? Sign up" />
 		</div>

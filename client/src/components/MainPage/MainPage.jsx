@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import styles from './MainPage.module.css';
+import { useEffect, useState } from 'react';
+import { getMe } from '../../api/auth';
+
 import Navbar from '../Navbar/Navbar';
 import CreateTaskButton from './CreateTaskButton/CreateTaskButton';
 import EmptyState from './EmptyState/EmptyState';
@@ -8,12 +9,25 @@ import CompletedState from './CompletedState/CompletedState';
 import AddTaskModal from './AddTaskModal/AddTaskModal';
 import { Plus } from 'lucide-react';
 
+import styles from './MainPage.module.css';
+
 const MainPage = () => {
+	const [user, setUser] = useState(null);
 	const [tasks, setTasks] = useState([]);
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const activeTasks = tasks.filter((t) => !t.done);
 	const completedTasks = tasks.filter((t) => t.done);
 	const [activePomodoroId, setActivePomodoroId] = useState(null);
+
+	useEffect(() => {
+		getMe().then((u) => {
+			if (!u) {
+				navigate('/login');
+			} else {
+				setUser(u);
+			}
+		});
+	}, []);
 
 	const addTask = (text) => {
 		const nextId =
