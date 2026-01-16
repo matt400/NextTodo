@@ -25,31 +25,17 @@ const Login = () => {
 
 	const validate = (vals) => {
 		let temp = {};
-
-		if (!vals.email) temp.email = 'Email is required';
-		else if (!/\S+@\S+\.\S+/.test(vals.email))
-			temp.email = 'Enter a correct email address';
-
-		if (!vals.password) temp.password = 'Password is required';
-		else if (vals.password.length < 8)
-			temp.password = 'Password must be at least 8 characters long';
-		else if (vals.password.length > 64)
-			temp.password = 'Password can have a maximum of 64 characters';
-		else if (!/[a-z]/.test(vals.password))
-			temp.password = 'Password must contain at least one lowercase letter';
-		else if (!/[A-Z]/.test(vals.password))
-			temp.password = 'Password must contain at least one uppercase letter';
-		else if (!/[0-9]/.test(vals.password))
-			temp.password = 'Password must contain at least one digit';
-		else if (!/[!@#$%^&*()_\-+=\[\]{};:\'",.<>/?`~\\|]/.test(vals.password))
-			temp.password = 'Password must contain at least one special character';
-		else if (/\s/.test(vals.password))
-			temp.password = 'Password cannot contain spaces';
+		if (!vals.email) {
+			temp.email = 'Email is required';
+		}
+		if (!vals.password) {
+			temp.password = 'Password is required';
+		}
 
 		return temp;
 	};
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		setSubmitted(true);
 
 		const validationErrors = validate(values);
@@ -59,7 +45,14 @@ const Login = () => {
 			return;
 		}
 
-		navigate('/mainpage');
+		try {
+			await login(values.email, values.password);
+			navigate('/mainpage');
+		} catch (err) {
+			setErrors({
+				password: 'Wrong email or password',
+			});
+		}
 	};
 
 	const handleChange = (e) => {
@@ -74,10 +67,10 @@ const Login = () => {
 	return (
 		<div className={`${styles.login}`}>
 			<Heading title='Welcome Back' text='Sign in to manage your tasks' />
-			
+
 			{registered && (
 				<p style={{ color: 'green', marginBottom: '1rem' }}>
-					Your account has been created successfully. 
+					Your account has been created successfully.
 				</p>
 			)}
 
