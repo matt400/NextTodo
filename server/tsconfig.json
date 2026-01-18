@@ -17,9 +17,11 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
 
     /* If transpiling with TypeScript: */
-    "module": "NodeNext",
+    "module": "preserve",
     "outDir": "dist",
     "sourceMap": true,
 
@@ -30,11 +32,12 @@
       "ESNext.Iterator",
       "ESNext.Promise",
     ],
-    "moduleResolution": "node16",
+    "moduleResolution": "bundler",
 
     "baseUrl": ".",
     "paths": {
       "@server/*": ["src/*"],
+      "@prismagl": ["src/generated/prisma/client.ts"],
     },
     "typeRoots": ["./node_modules/@types", "src/typescript"],
   },
