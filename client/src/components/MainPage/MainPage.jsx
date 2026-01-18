@@ -29,17 +29,24 @@ const MainPage = () => {
 		});
 	}, []);
 
-	const addTask = (text) => {
+	const addTask = ({ title, description }) => {
 		const nextId =
 			tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
-		const newTask = { id: nextId, text, done: false };
+
+		const newTask = {
+			id: nextId,
+			title,
+			description: description || '',
+			done: false,
+		};
+
 		setTasks((prev) => [...prev, newTask]);
 		setShowCreateModal(false);
 	};
 
-	const updateTask = (id, newText) => {
+	const updateTask = (id, updates) => {
 		setTasks((prev) =>
-			prev.map((t) => (t.id === id ? { ...t, text: newText } : t))
+			prev.map((t) => (t.id === id ? { ...t, ...updates } : t)),
 		);
 	};
 
@@ -50,7 +57,7 @@ const MainPage = () => {
 					setActivePomodoroId(null);
 				}
 				return t.id === id ? { ...t, done: !t.done } : t;
-			})
+			}),
 		);
 	};
 
