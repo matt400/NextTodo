@@ -1,6 +1,8 @@
 import repository from "./repository.js";
 
 import type { FastifyInstance } from "fastify";
+import type { User } from "@server/generated/prisma/client";
+
 type Prisma = FastifyInstance["prisma"];
 type Bcrypt = FastifyInstance["bcrypt"];
 
@@ -9,12 +11,12 @@ export async function loginUser(
   bcrypt: Bcrypt,
   email: string,
   password: string,
-) {
+): Promise<Boolean | User> {
   const user = await repository(prisma).findByEmail(email);
-  if (!user) return null;
+  if (!user) return false;
 
   const comparePasswords = await bcrypt.compare(password, user.password);
-  if (!comparePasswords) return null;
+  if (!comparePasswords) return false;
 
   return user;
 }
@@ -32,7 +34,7 @@ export async function registerUser(
   );
   if (existingUsername) return 3;
 
-  const password = await bcrypt.hash(userData.password, 10);
+  const password = await bcrypt.hash(userData.password);
   const createUser = await repository(prisma).create({
     username: userData.username,
     email: userData.email,

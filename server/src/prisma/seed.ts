@@ -1,4 +1,5 @@
 import { prisma } from "../lib/prisma.ts";
+import bcrypt from "bcrypt";
 
 async function main() {
   const admin = await prisma.user.upsert({
@@ -7,7 +8,7 @@ async function main() {
     create: {
       username: "admin",
       email: "admin@example.io",
-      password: "",
+      password: await bcrypt.hash("admin", 10),
       isActive: true,
     },
   });

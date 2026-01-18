@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "@prismagl";
 
 const authRepository = (prisma: PrismaClient) => ({
   findByEmail: (email: string) => prisma.user.findUnique({ where: { email } }),
