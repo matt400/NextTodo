@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import styles from './MainPage.module.css';
+import { useEffect, useState } from 'react';
+import { getMe } from '../../api/auth';
+
 import Navbar from '../Navbar/Navbar';
 import CreateTaskButton from './CreateTaskButton/CreateTaskButton';
 import EmptyState from './EmptyState/EmptyState';
@@ -8,24 +9,44 @@ import CompletedState from './CompletedState/CompletedState';
 import AddTaskModal from './AddTaskModal/AddTaskModal';
 import { Plus } from 'lucide-react';
 
+import styles from './MainPage.module.css';
+
 const MainPage = () => {
+	const [user, setUser] = useState(null);
 	const [tasks, setTasks] = useState([]);
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const activeTasks = tasks.filter((t) => !t.done);
 	const completedTasks = tasks.filter((t) => t.done);
 	const [activePomodoroId, setActivePomodoroId] = useState(null);
 
-	const addTask = (text) => {
+	useEffect(() => {
+		getMe().then((u) => {
+			if (!u) {
+				navigate('/login');
+			} else {
+				setUser(u);
+			}
+		});
+	}, []);
+
+	const addTask = ({ title, description }) => {
 		const nextId =
 			tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
-		const newTask = { id: nextId, text, done: false };
+
+		const newTask = {
+			id: nextId,
+			title,
+			description: description || '',
+			done: false,
+		};
+
 		setTasks((prev) => [...prev, newTask]);
 		setShowCreateModal(false);
 	};
 
-	const updateTask = (id, newText) => {
+	const updateTask = (id, updates) => {
 		setTasks((prev) =>
-			prev.map((t) => (t.id === id ? { ...t, text: newText } : t))
+			prev.map((t) => (t.id === id ? { ...t, ...updates } : t)),
 		);
 	};
 
@@ -36,7 +57,7 @@ const MainPage = () => {
 					setActivePomodoroId(null);
 				}
 				return t.id === id ? { ...t, done: !t.done } : t;
-			})
+			}),
 		);
 	};
 

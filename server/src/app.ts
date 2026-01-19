@@ -28,6 +28,7 @@ export async function buildApp(): Promise<Fastify.FastifyInstance> {
 
   await fastify.register(cors, {
     origin: "http://localhost:5173",
+    credentials: true,
   });
 
   fastify.register(jwt, {
