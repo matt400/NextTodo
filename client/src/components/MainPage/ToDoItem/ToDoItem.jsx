@@ -29,6 +29,7 @@ const TodoItem = ({
 	};
 	const [showModal, setShowModal] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
+	const [showDescription, setShowDescription] = useState(false);
 	const [showCalendarModal, setShowCalendarModal] = useState(false);
 	const [dueDate, setDueDate] = useState(null);
 	const openCalendar = () => {
@@ -101,8 +102,9 @@ const TodoItem = ({
 				</div>
 
 				<p className={`${styles['todo-text']} ${task.done ? styles.done : ''}`}>
-					{task.text}
+					{task.title}
 				</p>
+				<p className={styles['todo-description']}>{task.description}</p>
 
 				<div className={`${styles['todo-actions']} ${styles.desktop}`}>
 					{showPomodoro && (

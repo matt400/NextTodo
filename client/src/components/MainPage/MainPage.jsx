@@ -22,29 +22,37 @@ const MainPage = () => {
   const completedTasks = tasks.filter((t) => t.done);
   const [activePomodoroId, setActivePomodoroId] = useState(null);
 
-  useEffect(() => {
-    getMe().then((u) => {
-      if (!u) {
-        navigate("/login");
-      } else {
-        setUser(u);
-      }
-    });
-  }, []);
+	const addTask = ({ title, description }) => {
+		const nextId =
+			tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
 
-  const addTask = (text) => {
-    const nextId =
-      tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
-    const newTask = { id: nextId, text, done: false };
-    setTasks((prev) => [...prev, newTask]);
-    setShowCreateModal(false);
-  };
+		const newTask = {
+			id: nextId,
+			title,
+			description: description || '',
+			done: false,
+		};
 
-  const updateTask = (id, newText) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, text: newText } : t)),
-    );
-  };
+		setTasks((prev) => [...prev, newTask]);
+		setShowCreateModal(false);
+	};
+
+	const updateTask = (id, updates) => {
+		setTasks((prev) =>
+			prev.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+		);
+	};
+
+	const toggleTask = (id) => {
+		setTasks((prev) =>
+			prev.map((t) => {
+				if (t.id === id && !t.done) {
+					setActivePomodoroId(null);
+				}
+				return t.id === id ? { ...t, done: !t.done } : t;
+			}),
+		);
+	};
 
   const toggleTask = (id) => {
     setTasks((prev) =>
