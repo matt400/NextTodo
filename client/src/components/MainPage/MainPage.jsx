@@ -22,6 +22,16 @@ const MainPage = () => {
   const completedTasks = tasks.filter((t) => t.done);
   const [activePomodoroId, setActivePomodoroId] = useState(null);
 
+	useEffect(() => {
+		getMe().then((u) => {
+			if (!u) {
+				navigate('/login');
+			} else {
+				setUser(u);
+			}
+		});
+	}, []);
+
 	const addTask = ({ title, description }) => {
 		const nextId =
 			tasks.length > 0 ? Math.max(...tasks.map((t) => t.id)) + 1 : 1;
