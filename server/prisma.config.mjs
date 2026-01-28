@@ -2,13 +2,15 @@
 // npm install --save-dev prisma dotenv
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
+import { DATABASE_URL } from "./server.config";
 
 export default defineConfig({
   schema: "./src/prisma/schema.prisma",
   migrations: {
     path: "./src/prisma/migrations",
+    seed: "tsx ./src/prisma/seed.ts",
   },
   datasource: {
-    url: "file:./src/prisma/dev.db",
+    url: DATABASE_URL,
   },
 });

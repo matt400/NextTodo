@@ -22,7 +22,7 @@ export async function loginController(
     password,
   );
   if (!user) {
-    return reply.fail("AUTH_FAILED", reply.statusCode);
+    return reply.fail("AUTH_FAILED", 400);
   }
 
   const token = createToken(reply.server.jwt, { email });

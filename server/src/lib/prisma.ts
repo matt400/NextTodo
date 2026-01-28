@@ -1,10 +1,8 @@
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-import { PrismaClient } from "../generated/prisma/index.js";
+import { PrismaClient } from "@prismagl";
+import { DATABASE_PATH } from "../../server.config";
 
-const adapter = new PrismaBetterSqlite3({
-  url: "file:./src/prisma/dev.db",
-});
-
+const adapter = new PrismaBetterSqlite3({ url: DATABASE_PATH });
 const prisma = new PrismaClient({ adapter });
 
 export { prisma };

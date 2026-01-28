@@ -4,7 +4,15 @@
   "scripts": {
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
-    "install:all": "npm install && cd client && npm install && cd server && npm install",
+    "setup": "node setup.js setup",
+    "install:all": "node setup.js install",
+    "clean": "node setup.js clean:all",
+    "reinstall": "node setup.js reinstall",
+    "db:init": "node setup.js prisma:init",
+    "db:reset": "node setup.js prisma:reset",
+    "db:seed": "node setup.js prisma:seed",
+    "db:migrate": "node setup.js prisma:migrate",
+    "db:generate": "node setup.js prisma:generate",
     "ctest": "cd client && vitest",
     "ctest:ui": "cd client && vitest --ui",
     "stest": "cd server && vitest"
