@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { login } from '../../api/auth';
+import { getMe } from '../../api/auth';
+import { useAuth } from '../../context/AuthContext';
 import Heading from '../Heading/Heading.jsx';
 import Field from '../Field/Field.jsx';
 import MailIcon from '../../assets/icons/MailIcon.jsx';
@@ -20,6 +22,7 @@ const Login = () => {
 	const [errors, setErrors] = useState({});
 	const [submitted, setSubmitted] = useState(false);
 	const navigate = useNavigate();
+	const { setUser } = useAuth();
 
 	const validate = (vals) => {
 		let temp = {};
@@ -45,6 +48,10 @@ const Login = () => {
 
 		try {
 			await login(values.email, values.password);
+
+			const me = await getMe();
+			setUser(me);
+
 			navigate('/mainpage');
 		} catch (err) {
 			setErrors({
@@ -95,7 +102,7 @@ const Login = () => {
 			/>
 
 			<Button inner='Sign in' onClick={handleSubmit} />
-			<Linking to='/mainpage' innerText="MainPage dev" />
+			<Linking to='/mainpage' innerText='MainPage dev' />
 			<Linking to='/register' innerText="Don't have an account? Sign up" />
 		</div>
 	);
