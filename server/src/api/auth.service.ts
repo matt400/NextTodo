@@ -1,13 +1,11 @@
-import repository from "./repository.js";
+import repository from "./auth.repository";
 
-import type { FastifyInstance } from "fastify";
-import type { User } from "@server/generated/prisma/client";
-
-type Prisma = FastifyInstance["prisma"];
-type Bcrypt = FastifyInstance["bcrypt"];
+import type { User, PrismaClient } from "@server/generated/prisma/client";
+import type { RegisterRequestBody } from "@server/interfaces/IAuth";
+import type { Bcrypt } from "@server/typescript/fastify";
 
 export async function loginUser(
-  prisma: Prisma,
+  prisma: PrismaClient,
   bcrypt: Bcrypt,
   email: string,
   password: string,
@@ -22,19 +20,24 @@ export async function loginUser(
 }
 
 export async function registerUser(
-  prisma: Prisma,
+  prisma: PrismaClient,
   bcrypt: Bcrypt,
-  userData: any,
+  userData: RegisterRequestBody,
 ) {
+  const data = { errors: [] as number[], userData: {} };
   const existingEmail = await repository(prisma).findByEmail(userData.email);
-  if (existingEmail) return 2;
+  if (existingEmail) data.errors.push(1);
 
   const existingUsername = await repository(prisma).findByUsername(
     userData.username,
   );
-  if (existingUsername) return 3;
+  if (existingUsername) data.errors.push(2);
+  if (userData.password != userData.confirm_password) data.errors.push(3);
 
-  const password = await bcrypt.hash(userData.password);
+  if ((data.errors as number[]).length > 0) return data;
+
+  const password = await bcrypt.hash(userData.password, 10);
+
   const createUser = await repository(prisma).create({
     username: userData.username,
     email: userData.email,
@@ -43,5 +46,6 @@ export async function registerUser(
     lastLogin: new Date().toISOString(),
   });
 
-  return createUser;
+  data.userData = createUser;
+  return data;
 }

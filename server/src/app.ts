@@ -3,13 +3,14 @@ import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import jwt from "@fastify/jwt";
 
-import prismaPl from "./plugins/prisma.js";
-import i18nPl from "./plugins/i18n.js";
-import i18nPlR from "./plugins/i18n.reply.js";
-import bcrypt from "./plugins/bcrypt.js";
+import prismaPl from "@server/plugins/prisma";
+import i18nPl from "@server/plugins/i18n";
+import i18nPlR from "@server/plugins/i18n.reply";
+import bcrypt from "@server/plugins/bcrypt";
+import auth from "@server/plugins/auth";
 
-import authRoutes from "./api/auth/routes.js";
-import userRoutes from "./api/user/routes.js";
+import authRoutes from "@server/api/auth.routes";
+import userRoutes from "@server/api/user.routes";
 
 import type { FastifyInstance } from "fastify";
 
@@ -27,6 +28,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   fastify.register(i18nPl);
   fastify.register(i18nPlR);
   fastify.register(bcrypt);
+  fastify.register(auth);
 
   await fastify.register(cors, {
     origin: "http://localhost:5173",

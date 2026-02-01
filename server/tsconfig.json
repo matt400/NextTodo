@@ -39,7 +39,7 @@
       "@server/*": ["src/*"],
       "@prismagl": ["src/generated/prisma/client.ts"],
     },
-    "typeRoots": ["./node_modules/@types", "src/typescript"],
+    "typeRoots": ["node_modules/@types", "src/typescript"],
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],

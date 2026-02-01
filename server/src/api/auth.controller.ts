@@ -1,15 +1,11 @@
-import { loginUser, registerUser } from "./service.js";
-import { createToken } from "../../utils/api.js";
+import { loginUser, registerUser } from "./auth.service";
+import { createToken } from "@server/utils/api";
 
 import type { FastifyRequest, FastifyReply } from "fastify";
-
-interface LoginRequest {
-  email: string;
-  password: string;
-}
+import type { ILoginRequest, IRegisterRequest } from "@server/interfaces/IAuth";
 
 export async function loginController(
-  request: FastifyRequest<{ Body: LoginRequest }>,
+  request: FastifyRequest<ILoginRequest>,
   reply: FastifyReply,
 ) {
   const { email, password } = request.body;
@@ -38,25 +34,10 @@ export async function loginController(
     .ok("LOGIN_SUCCESS");
 }
 
-interface RegisterRequest {
-  Body: {
-    username: string;
-    email: string;
-    password: string;
-    confirm_password: string;
-  };
-  Cookies: {
-    access_token?: string;
-  };
-}
-
 export async function registerController(
-  request: FastifyRequest<RegisterRequest>,
+  request: FastifyRequest<IRegisterRequest>,
   reply: FastifyReply,
 ) {
-  const token = request.cookies.access_token;
-  if (token) return reply.fail("ALREADY_REGISTERED");
-
   const { username, email, password, confirm_password } = request.body;
 
   const regUser = await registerUser(
@@ -69,8 +50,13 @@ export async function registerController(
       confirm_password: confirm_password,
     },
   );
+  const errors = regUser.errors;
 
-  if (regUser == 2) return reply.fail("WRONG_EMAIL", 422);
-  else if (regUser == 3) return reply.fail("WRONG_USERNAME", 422);
-  else return reply.ok("REGISTER_SUCCESS");
+  if (errors.length > 0) {
+    if (errors.includes(1)) return reply.fail("WRONG_EMAIL", 422);
+    else if (errors.includes(2)) return reply.fail("WRONG_USERNAME", 422);
+    else if (errors.includes(3)) return reply.fail("PASSWORDS_NOT_MATCH", 422);
+  }
+
+  return reply.ok("REGISTER_SUCCESS");
 }

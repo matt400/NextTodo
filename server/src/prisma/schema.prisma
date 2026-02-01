@@ -13,7 +13,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   username  String   @unique
   email     String   @unique
   password  String
@@ -23,14 +23,15 @@ model User {
 
 model Tasks {
   id         Int      @id @default(autoincrement())
+  userId     String
   taskName   String
   created    DateTime
   isFinished Boolean
-  userId     Int
 }
 
 model Pomo {
   id       Int     @id @default(autoincrement())
+  userId   String
   timeLeft Int
   isActive Boolean
   taskId   Int
