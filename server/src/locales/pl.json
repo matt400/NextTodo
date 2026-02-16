@@ -6,7 +6,9 @@
   "ALREADY_LOGGED": "Jesteś juz zalogowany.",
   "WRONG_USERNAME": "Ta nazwa użytkownika jest już zajęta.",
   "WRONG_EMAIL": "Ten email jest już używany na innym koncie.",
-  "PASSWORDS_NOT_MATCH": "Hasła nie pasują do siebie.",
+  "PASSWORDS_DO_NOT_MATCH": "Hasła nie pasują do siebie.",
   "REGISTER_SUCCESS": "Zostałeś zarejestrowany.",
-  "NO_SUCH_USER": "Nie ma takiego użytkownika."
+  "NO_SUCH_USER": "Nie ma takiego użytkownika.",
+  "INVALID_CURRENT_PASSWORD": "Nieprawidłowe aktualne hasło.",
+  "PASSWORD_CHANGED_SUCCESSFULLY": "Hasło zmieniono pomyślnie."
 }

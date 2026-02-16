@@ -6,7 +6,9 @@
   "ALREADY_LOGGED": "You are logged in already.",
   "WRONG_USERNAME": "This username is already taken.",
   "WRONG_EMAIL": "This email is used already on another account.",
-  "PASSWORDS_NOT_MATCH": "Password does not match",
+  "PASSWORDS_DO_NOT_MATCH": "Password does not match",
   "REGISTER_SUCCESS": "You've been registered.",
-  "NO_SUCH_USER": "There is no such user."
+  "NO_SUCH_USER": "There is no such user.",
+  "INVALID_CURRENT_PASSWORD": "Invalid current password.",
+  "PASSWORD_CHANGED_SUCCESSFULLY": "Password changed successfully"
 }
