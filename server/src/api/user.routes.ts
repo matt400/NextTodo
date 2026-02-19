@@ -22,7 +22,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
     {
       preHandler: [fastify.userAccessOnly],
       schema: changePasswordSchema,
-      bodyLimit: 100,
+      bodyLimit: 200,
     },
     changePasswordController,
   );

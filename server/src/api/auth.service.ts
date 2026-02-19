@@ -1,8 +1,13 @@
 import repository from "./auth.repository";
 
+import {
+  validatePasswordsMatch,
+  validatePasswordStrength,
+} from "@server/utils/password";
+
+import type { Bcrypt } from "@server/typescript/fastify";
 import type { User, PrismaClient } from "@server/generated/prisma/client";
 import type { RegisterRequestBody } from "@server/interfaces/IAuth";
-import type { Bcrypt } from "@server/typescript/fastify";
 
 export async function loginUser(
   prisma: PrismaClient,
@@ -24,17 +29,32 @@ export async function registerUser(
   bcrypt: Bcrypt,
   userData: RegisterRequestBody,
 ) {
-  const data = { errors: [] as number[], userData: {} };
-  const existingEmail = await repository(prisma).findByEmail(userData.email);
-  if (existingEmail) data.errors.push(1);
+  const data = { errors: [] as string[], userData: {} };
 
+  // Check if email exists
+  const existingEmail = await repository(prisma).findByEmail(userData.email);
+  if (existingEmail) data.errors.push("WRONG_EMAIL");
+
+  // Check if username exists
   const existingUsername = await repository(prisma).findByUsername(
     userData.username,
   );
-  if (existingUsername) data.errors.push(2);
-  if (userData.password != userData.confirm_password) data.errors.push(3);
+  if (existingUsername) data.errors.push("WRONG_USERNAME");
 
-  if ((data.errors as number[]).length > 0) return data;
+  // Check if password has proper strength
+  const passwordStrength = validatePasswordStrength(userData.password);
+  if (!passwordStrength.isValid)
+    data.errors.push(passwordStrength.errorKey as string);
+
+  // Check if passwords match
+  const passwordMatch = validatePasswordsMatch(
+    userData.password,
+    userData.confirm_password,
+  );
+  if (!passwordMatch.isValid)
+    data.errors.push(passwordMatch.errorKey as string);
+
+  if (data.errors.length > 0) return data;
 
   const password = await bcrypt.hash(userData.password, 10);
 

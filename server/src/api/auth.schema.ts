@@ -1,3 +1,5 @@
+import { fastifyPasswordProperty } from "@server/utils/password";
+
 export const loginSchema = {
   body: {
     type: "object",
@@ -14,9 +16,9 @@ export const registerSchema = {
     type: "object",
     required: ["username", "email", "password", "confirm_password"],
     properties: {
-      username: { type: "string", minLength: 3 },
+      username: { type: "string", minLength: 3, maxLength: 50 },
       email: { type: "string", format: "email" },
-      password: { type: "string", minLength: 8 },
+      password: fastifyPasswordProperty,
       confirm_password: { type: "string", minLength: 8 },
     },
   },

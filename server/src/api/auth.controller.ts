@@ -10,7 +10,6 @@ export async function loginController(
 ) {
   const { email, password } = request.body;
 
-  // Check if user exists
   const user = await loginUser(
     request.server.prisma,
     request.server.bcrypt,
@@ -53,9 +52,7 @@ export async function registerController(
   const errors = regUser.errors;
 
   if (errors.length > 0) {
-    if (errors.includes(1)) return reply.fail("WRONG_EMAIL", 422);
-    else if (errors.includes(2)) return reply.fail("WRONG_USERNAME", 422);
-    else if (errors.includes(3)) return reply.fail("PASSWORDS_NOT_MATCH", 422);
+    return reply.fail(errors[0] as string, 422);
   }
 
   return reply.ok("REGISTER_SUCCESS");
