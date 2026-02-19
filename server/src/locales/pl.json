@@ -10,5 +10,7 @@
   "REGISTER_SUCCESS": "Zostałeś zarejestrowany.",
   "NO_SUCH_USER": "Nie ma takiego użytkownika.",
   "INVALID_CURRENT_PASSWORD": "Nieprawidłowe aktualne hasło.",
-  "PASSWORD_CHANGED_SUCCESSFULLY": "Hasło zmieniono pomyślnie."
+  "PASSWORD_CHANGED_SUCCESSFULLY": "Hasło zmieniono pomyślnie.",
+  "NEW_TASK_ADDED": "Dodano nowe zadanie.",
+  "TASK_ID_REQUIRED": "`task_id` jest wymagane, kiedy `single` = true"
 }

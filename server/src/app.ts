@@ -11,6 +11,7 @@ import auth from "@server/plugins/auth";
 
 import authRoutes from "@server/api/auth.routes";
 import userRoutes from "@server/api/user.routes";
+import taskRoutes from "@server/api/task.routes";
 
 import type { FastifyInstance } from "fastify";
 
@@ -46,6 +47,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   // API
   fastify.register(authRoutes, { prefix: "/api/auth" });
   fastify.register(userRoutes, { prefix: "/api/user" });
+  fastify.register(taskRoutes, { prefix: "/api/task" });
 
   return fastify;
 }

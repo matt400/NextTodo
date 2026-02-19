@@ -16,8 +16,9 @@ export async function getUserData(
       username: user.username,
       email: user.email,
       isActive: user.isActive,
-      password: isFull ? user.password : null,
     };
+
+    if (isFull) return { ...userData, password: user.password };
     return userData;
   } catch (err: any) {
     throw Error(err);

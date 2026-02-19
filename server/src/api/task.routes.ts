@@ -1,19 +1,24 @@
+import { addTaskController, getTasksController } from "./task.controller";
+import { getTaskSchema, addTaskSchema } from "./task.schema";
+
 import type { FastifyInstance } from "fastify";
 
-export default async function userRoutes(fastify: FastifyInstance) {
+export default async function taskRoutes(fastify: FastifyInstance) {
   fastify.get(
     "/",
     {
       preHandler: [fastify.userAccessOnly],
+      schema: getTaskSchema,
     },
-    async (request, reply) => {},
+    getTasksController,
   );
   fastify.post(
     "/",
     {
       preHandler: [fastify.userAccessOnly],
+      schema: addTaskSchema,
     },
-    async (request, reply) => {},
+    addTaskController,
   );
   fastify.delete(
     "/",
