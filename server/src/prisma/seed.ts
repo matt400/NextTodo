@@ -1,7 +1,8 @@
-import { prisma } from "../lib/prisma.ts";
-import bcrypt from "bcrypt";
+import { prisma } from "@server/lib/prisma";
+import * as bcrypt from "bcrypt";
 
 async function main() {
+  await prisma.$connect();
   const admin = await prisma.user.upsert({
     where: { email: "admin@example.io" },
     update: {},

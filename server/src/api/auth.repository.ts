@@ -3,6 +3,7 @@ import type { PrismaClient } from "@prismagl";
 const authRepository = (prisma: PrismaClient) => ({
   findByEmail: async (email: string) =>
     await prisma.user.findUnique({ where: { email } }),
+
   findByUsername: async (username: string) =>
     await prisma.user.findUnique({ where: { username } }),
 
