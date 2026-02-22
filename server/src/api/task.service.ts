@@ -11,6 +11,7 @@ export async function getOneTask(
   } catch (err) {
     // Todo: Future log
     console.log(err);
+    throw err;
   }
 }
 
@@ -20,6 +21,7 @@ export async function getAllTasks(prisma: PrismaClient, userId: string) {
   } catch (err) {
     // Todo: Future log
     console.log(err);
+    throw err;
   }
 }
 
@@ -31,8 +33,24 @@ export async function addTask(
 ) {
   try {
     return await repository(prisma).addTask(userId, taskName, taskDesc);
-  } catch (e) {
+  } catch (err) {
     // Todo: Future log
-    console.log(e);
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function modifyTaskData(
+  prisma: PrismaClient,
+  taskId: number,
+  userId: string,
+  data: object,
+) {
+  try {
+    return await repository(prisma).modifyTaskData(taskId, userId, data);
+  } catch (err) {
+    // Todo: Future log
+    console.log(err);
+    return err;
   }
 }

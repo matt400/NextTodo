@@ -12,5 +12,7 @@
   "INVALID_CURRENT_PASSWORD": "Invalid current password.",
   "PASSWORD_CHANGED_SUCCESSFULLY": "Password changed successfully",
   "NEW_TASK_ADDED": "New task was added.",
-  "TASK_ID_REQUIRED": "`task_id` is required when `single` = true"
+  "TASK_ID_REQUIRED": "`task_id` is required when `single` = true",
+  "TASK_MODIFIED": "Task was successfully modified.",
+  "TASK_NOT_FOUND": "Task not found."
 }

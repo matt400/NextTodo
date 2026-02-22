@@ -18,3 +18,22 @@ export const getTaskSchema = {
     },
   },
 };
+
+export const modfiyTaskSchema = {
+  body: {
+    type: "object",
+    required: ["task_id", "data"],
+    properties: {
+      task_id: { type: "number" },
+      data: {
+        type: "object",
+        minProperties: 1,
+        properties: {
+          taskName: { type: "string" },
+          taskDesc: { type: "string" },
+          isFinished: { type: "boolean" },
+        },
+      },
+    },
+  },
+};
