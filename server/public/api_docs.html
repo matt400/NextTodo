@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextTodo - API Documentation</title>
+    <style>
+        body { margin: 0; padding: 0; }
+        #opencollection-container { width: 100vw; height: 100vh; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.opencollection.com/docs.css">
+    <script src="https://cdn.opencollection.com/docs.js"></script>
+</head>
+<body>
+    <div id="opencollection-container"></div>
+    <script>
+        const collectionData = "opencollection: 1.0.0\ninfo:\n  name: NextTodo\nitems:\n  - info:\n      name: 'Task: Add new'\n      type: http\n      seq: 7\n    http:\n      method: POST\n      url: http://localhost:3000/api/task\n      body:\n        type: json\n        data: '{ \"task_name\": \"First task\", \"task_desc\": \"This is a long description.\" }'\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: 'User: Change password'\n      type: http\n      seq: 6\n    http:\n      method: POST\n      url: http://localhost:3000/api/user/me/change-password\n      body:\n        type: json\n        data: '{ \"current_password\": \"ADa%234AasdG\", \"new_password\": \"ADa%234AasdG\", \"confirm_password\": \"testtest\"}'\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: 'User: Change data'\n      type: http\n      seq: 5\n    http:\n      method: PATCH\n      url: http://localhost:3000/api/user/me\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: 'Task: Get one or all'\n      type: http\n      seq: 8\n    http:\n      method: GET\n      url: http://localhost:3000/api/task\n      params:\n        - name: single\n          value: 'true'\n          type: query\n          disabled: true\n        - name: task_id\n          value: '1'\n          type: query\n          disabled: true\n      body:\n        type: json\n        data: ''\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: 'User: Login'\n      type: http\n      seq: 1\n    http:\n      method: POST\n      url: http://localhost:3000/api/auth/login\n      body:\n        type: json\n        data: '{ \"email\": \"admin@example.io\", \"password\": \"admin\" }  '\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: 'User: Logout'\n      type: http\n      seq: 3\n    http:\n      method: POST\n      url: http://localhost:3000/api/user/logout\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: 'User: Register'\n      type: http\n      seq: 2\n    http:\n      method: POST\n      url: http://localhost:3000/api/auth/register\n      body:\n        type: json\n        data: |-\n          { \n            \"username\": \"m477\",\n            \"email\": \"m477@example.com\",\n            \"password\": \"123aAgsfgs\",\n            \"confirm_password\": \"123aAgsfgs\"\n          }\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: 'User: Me'\n      type: http\n      seq: 4\n    http:\n      method: GET\n      url: http://localhost:3000/api/user/me\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\nbundled: true\nextensions:\n  bruno:\n    ignore:\n      - node_modules\n      - .git\n    exportedAt: '2026-02-21T21:24:58.203Z'\n    exportedUsing: Bruno/3.1.1\n";
+        new window.OpenCollection({
+            target: document.getElementById('opencollection-container'),
+            opencollection: collectionData,
+            theme: 'light'
+        });
+    </script>
+</body>
+</html>

@@ -1,6 +1,8 @@
+import path from "path";
 import Fastify from "fastify";
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
+import fStatic from "@fastify/static";
 import jwt from "@fastify/jwt";
 
 import prismaPl from "@server/plugins/prisma";
@@ -34,6 +36,15 @@ export async function buildApp(): Promise<FastifyInstance> {
   await fastify.register(cors, {
     origin: "http://localhost:5173",
     credentials: true,
+  });
+
+  fastify.register(fStatic, {
+    root: path.join(__dirname, "../../..", "public"),
+    prefix: "/",
+  });
+
+  fastify.get("/api_docs", function (_, reply) {
+    return reply.sendFile("api_docs.html");
   });
 
   fastify.register(jwt, {
