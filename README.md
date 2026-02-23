@@ -70,7 +70,7 @@ http://localhost:5173
 
 ### API Docs 
 
-You can access API docs by entering URL below:
+You can access the API documentation once the server is running by visiting the URL below:
 
 ```
 http://localhost:3000/api_docs
