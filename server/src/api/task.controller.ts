@@ -1,9 +1,15 @@
 import { getUserData } from "./user.service";
-import { addTask, getAllTasks, getOneTask } from "./task.service";
+import {
+  addTask,
+  getAllTasks,
+  getOneTask,
+  modifyTaskData,
+} from "./task.service";
 
 import type {
   ITaskGetRequest,
   ITaskAddRequest,
+  ITaskModifyRequest,
 } from "@server/interfaces/ITask";
 import type { FastifyRequest, FastifyReply } from "fastify";
 
@@ -38,11 +44,9 @@ export async function addTaskController(
 ) {
   const { task_name, task_desc } = request.body;
 
-  // Get user data
   const userData = await getUserData(request.server.prisma, request.user.email);
   if (!userData) return reply.fail("NO_SUCH_USER");
 
-  // Add new task
   const newTask = await addTask(
     request.server.prisma,
     userData.id,
@@ -53,4 +57,25 @@ export async function addTaskController(
   // Todo: Future: Add log to results from newTask
 
   return reply.ok("NEW_TASK_ADDED");
+}
+
+export async function modifyTaskController(
+  request: FastifyRequest<ITaskModifyRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id, data } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  if (!userData) return reply.fail("NO_SUCH_USER");
+
+  const error =
+    (await modifyTaskData(
+      request.server.prisma,
+      task_id,
+      userData.id,
+      data,
+    )) instanceof Error;
+
+  if (error) return reply.fail("TASK_NOT_FOUND");
+  return reply.ok("TASK_MODIFIED");
 }

@@ -1,5 +1,9 @@
-import { addTaskController, getTasksController } from "./task.controller";
-import { getTaskSchema, addTaskSchema } from "./task.schema";
+import {
+  addTaskController,
+  getTasksController,
+  modifyTaskController,
+} from "./task.controller";
+import { getTaskSchema, addTaskSchema, modfiyTaskSchema } from "./task.schema";
 
 import type { FastifyInstance } from "fastify";
 
@@ -20,14 +24,15 @@ export default async function taskRoutes(fastify: FastifyInstance) {
     },
     addTaskController,
   );
-  fastify.delete(
+  fastify.patch(
     "/",
     {
       preHandler: [fastify.userAccessOnly],
+      schema: modfiyTaskSchema,
     },
-    async (request, reply) => {},
+    modifyTaskController,
   );
-  fastify.patch(
+  fastify.delete(
     "/",
     {
       preHandler: [fastify.userAccessOnly],

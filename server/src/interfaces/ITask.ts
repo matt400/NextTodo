@@ -11,3 +11,10 @@ export interface ITaskAddRequest {
     task_desc: string;
   };
 }
+
+export interface ITaskModifyRequest {
+  Body: {
+    task_id: number;
+    data: object;
+  };
+}

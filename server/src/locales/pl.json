@@ -12,5 +12,7 @@
   "INVALID_CURRENT_PASSWORD": "Nieprawidłowe aktualne hasło.",
   "PASSWORD_CHANGED_SUCCESSFULLY": "Hasło zmieniono pomyślnie.",
   "NEW_TASK_ADDED": "Dodano nowe zadanie.",
-  "TASK_ID_REQUIRED": "`task_id` jest wymagane, kiedy `single` = true"
+  "TASK_ID_REQUIRED": "`task_id` jest wymagane, kiedy `single` = true",
+  "TASK_MODIFIED": "Zadanie zostało pomyślnie zmodyfikowane.",
+  "TASK_NOT_FOUND": "Nie znaleziono zadania."
 }

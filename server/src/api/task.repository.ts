@@ -16,7 +16,23 @@ const tasksRepository = (prisma: PrismaClient) => ({
       },
     }),
 
-  modifyTaskData: async (taskId: number) => {},
+  modifyTaskData: async (taskId: number, userId: string, data: object) => {
+    const task = await prisma.tasks.findUnique({
+      where: { id: taskId, userId: userId },
+    });
+    if (!task) throw new Error("Task not found");
+
+    if (Object.keys(data).length > 1)
+      await prisma.tasks.updateMany({
+        where: { id: taskId, userId: userId },
+        data: data,
+      });
+    else
+      await prisma.tasks.update({
+        where: { id: taskId, userId: userId },
+        data: data,
+      });
+  },
 });
 
 export default tasksRepository;
