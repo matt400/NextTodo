@@ -36,12 +36,21 @@ If Node.js is not installed, download it from:
 
 ---
 
-### Run the project
-
+### Installation
 ```bash
 git clone https://github.com/matt400/NextTodo
 cd NextTodo
-npm install:all
+npm run install:all
+npm run db:init
+```
+
+---
+
+### Run the project
+
+```bash
+cd NextTodo
+npm run dev:server
 npm run dev:client
 ```
 
@@ -59,12 +68,12 @@ http://localhost:5173
 
 ---
 
-### Server
+### API Docs 
 
-To run server, type in terminal:
+You can access API docs by entering URL below:
 
-```bash
-npm run dev:server
+```
+http://localhost:3000/api_docs
 ```
 
 ---
@@ -73,5 +82,3 @@ npm run dev:server
 
 * `node_modules` is intentionally ignored (via `.gitignore`)
 * After cloning the repository, always run `npm install`
-
-
