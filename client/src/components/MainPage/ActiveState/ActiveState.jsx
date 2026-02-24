@@ -1,46 +1,20 @@
-import DeleteAllButton from '../DeleteAllButton/DeleteAllButton'
+import DeleteAllButton from '../DeleteAllButton/DeleteAllButton';
 import TodoItem from '../ToDoItem/ToDoItem';
-import styles from './ActiveState.module.css'
+import styles from './ActiveState.module.css';
 
-const ActiveState = ({
-	tasks,
-	setTasks,
-	onEdit,
-	activePomodoroId,
-	setActivePomodoroId,
-}) => {
-	const handleDeleteAll = () => {
-		setTasks((prev) => prev.filter((t) => t.done));
-	};
-
-	const toggleDone = (id) => {
-		setTasks((prev) =>
-			prev.map((t) => {
-				if (t.id === id && !t.done) {
-					setActivePomodoroId(null);
-				}
-				return t.id === id ? { ...t, done: !t.done } : t;
-			})
-		);
-	};
-
-	const deleteTask = (id) => {
-		setTasks((prev) => prev.filter((t) => t.id !== id));
-	};
-
+const ActiveState = ({ tasks, onEdit, onToggle, activePomodoroId, setActivePomodoroId }) => {
 	return (
-		<div className={`${styles.activeState}`}>
-			<div className={`${styles.activeHeader}`}>
-				<h1 className={`${styles.activeStateCount}`}>Active tasks ({tasks.length})</h1>
-				<DeleteAllButton onClick={handleDeleteAll} />
+		<div className={styles.activeState}>
+			<div className={styles.activeHeader}>
+				<h1 className={styles.activeStateCount}>Active tasks ({tasks.length})</h1>
 			</div>
 
 			{tasks.map((task) => (
 				<TodoItem
 					key={task.id}
 					task={task}
-					onToggle={toggleDone}
-					onDelete={deleteTask}
+					onToggle={onToggle}
+					onDelete={() => {}}
 					onEdit={onEdit}
 					activePomodoroId={activePomodoroId}
 					setActivePomodoroId={setActivePomodoroId}

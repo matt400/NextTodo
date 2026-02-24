@@ -1,0 +1,41 @@
+const API = "http://localhost:3000/api/task";
+
+export async function fetchTasks() {
+  const res = await fetch(API, {
+    method: "GET",
+    credentials: "include"
+  });
+
+  const data = await res.json();
+
+  return data.map(task => ({
+    id: task.id,
+    title: task.taskName,
+    description: task.taskDesc,
+    done: task.isFinished
+  }));
+}
+
+export async function addTask(title, description) {
+  await fetch(API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      task_name: title,
+      task_desc: description
+    })
+  });
+}
+
+export async function updateTask(id, data) {
+  await fetch(API, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      task_id: id,
+      data
+    })
+  });
+}
