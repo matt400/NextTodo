@@ -18,3 +18,9 @@ export interface ITaskModifyRequest {
     data: object;
   };
 }
+
+export interface ITaskRemoveRequest {
+  Body: {
+    task_id: number[];
+  };
+}

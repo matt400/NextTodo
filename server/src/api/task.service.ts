@@ -54,3 +54,21 @@ export async function modifyTaskData(
     return err;
   }
 }
+
+export async function removeTask(
+  prisma: PrismaClient,
+  taskId: number[],
+  userId: string,
+) {
+  try {
+    const result = await repository(prisma).removeTask(taskId, userId);
+    const getCount = JSON.parse(JSON.stringify(result));
+    if ("count" in getCount && getCount.count == 0)
+      throw Error("Nothing was deleted");
+    return result;
+  } catch (err) {
+    // Todo: Future log
+    console.log(err);
+    return err;
+  }
+}

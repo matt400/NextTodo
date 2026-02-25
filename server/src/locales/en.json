@@ -1,7 +1,7 @@
 {
   "LOGIN_SUCCESS": "Logged successfully",
   "AUTH_FAILED": "Invalid login data.",
-  "NO_ACCESS": "No access!",
+  "NO_ACCESS": "No access. Please login first.",
   "LOGGED_OUT": "You've been logged out",
   "ALREADY_LOGGED": "You are logged in already.",
   "WRONG_USERNAME": "This username is already taken.",
@@ -14,5 +14,7 @@
   "NEW_TASK_ADDED": "New task was added.",
   "TASK_ID_REQUIRED": "`task_id` is required when `single` = true",
   "TASK_MODIFIED": "Task was successfully modified.",
-  "TASK_NOT_FOUND": "Task not found."
+  "TASK_NOT_FOUND": "Task not found.",
+  "TASK_REMOVE_ERROR": "There was an error during removing task.",
+  "TASK_REMOVE_SUCCESS": "Task was deleted successfully."
 }

@@ -37,3 +37,17 @@ export const modfiyTaskSchema = {
     },
   },
 };
+
+export const removeTaskSchema = {
+  body: {
+    type: "object",
+    required: ["task_id"],
+    properties: {
+      task_id: {
+        type: "array",
+        items: { type: "number" },
+        minItems: 1,
+      },
+    },
+  },
+};

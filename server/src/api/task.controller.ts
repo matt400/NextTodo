@@ -4,12 +4,14 @@ import {
   getAllTasks,
   getOneTask,
   modifyTaskData,
+  removeTask,
 } from "./task.service";
 
 import type {
   ITaskGetRequest,
   ITaskAddRequest,
   ITaskModifyRequest,
+  ITaskRemoveRequest,
 } from "@server/interfaces/ITask";
 import type { FastifyRequest, FastifyReply } from "fastify";
 
@@ -78,4 +80,21 @@ export async function modifyTaskController(
 
   if (error) return reply.fail("TASK_NOT_FOUND");
   return reply.ok("TASK_MODIFIED");
+}
+
+export async function removeTaskController(
+  request: FastifyRequest<ITaskRemoveRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  if (!userData) return reply.fail("NO_SUCH_USER");
+
+  const error =
+    (await removeTask(request.server.prisma, task_id, userData.id)) instanceof
+    Error;
+
+  if (error) return reply.fail("TASK_REMOVE_ERROR");
+  else return reply.ok("TASK_REMOVE_SUCCESS");
 }
