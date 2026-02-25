@@ -23,15 +23,31 @@ const tasksRepository = (prisma: PrismaClient) => ({
     if (!task) throw new Error("Task not found");
 
     if (Object.keys(data).length > 1)
-      await prisma.tasks.updateMany({
+      return await prisma.tasks.updateMany({
         where: { id: taskId, userId: userId },
         data: data,
       });
     else
-      await prisma.tasks.update({
+      return await prisma.tasks.update({
         where: { id: taskId, userId: userId },
         data: data,
       });
+  },
+
+  removeTask: async (taskId: number[], userId: string) => {
+    if (taskId.length > 1)
+      return await prisma.tasks.deleteMany({
+        where: {
+          userId: userId,
+          id: { in: taskId },
+        },
+      });
+    return await prisma.tasks.delete({
+      where: {
+        userId: userId,
+        id: taskId[0],
+      },
+    });
   },
 });
 

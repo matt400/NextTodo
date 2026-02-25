@@ -2,8 +2,15 @@ import {
   addTaskController,
   getTasksController,
   modifyTaskController,
+  removeTaskController,
 } from "./task.controller";
-import { getTaskSchema, addTaskSchema, modfiyTaskSchema } from "./task.schema";
+
+import {
+  getTaskSchema,
+  addTaskSchema,
+  modfiyTaskSchema,
+  removeTaskSchema,
+} from "./task.schema";
 
 import type { FastifyInstance } from "fastify";
 
@@ -36,7 +43,8 @@ export default async function taskRoutes(fastify: FastifyInstance) {
     "/",
     {
       preHandler: [fastify.userAccessOnly],
+      schema: removeTaskSchema,
     },
-    async (request, reply) => {},
+    removeTaskController,
   );
 }
