@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../../api/auth';
-
+import { Eye, EyeOff } from "lucide-react";
 import Heading from '../Heading/Heading.jsx';
 import Field from '../Field/Field.jsx';
 import MailIcon from '../../assets/icons/MailIcon.jsx';

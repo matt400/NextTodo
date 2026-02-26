@@ -40,6 +40,16 @@
   font-size: 1.1rem;
 }
 
+.eyeIcon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%); 
+  color: var(--color-grey);
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
 .inputError {
   background-color: var(--color-pink);
   border-color: var(--color-red);

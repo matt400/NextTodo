@@ -7,6 +7,7 @@ import Heading from '../Heading/Heading.jsx';
 import Field from '../Field/Field.jsx';
 import MailIcon from '../../assets/icons/MailIcon.jsx';
 import PasswordIcon from '../../assets/icons/PasswordIcon.jsx';
+
 import Button from '../Button/Button';
 import Linking from '../Linking/Linking.jsx';
 
@@ -74,16 +75,14 @@ const Login = () => {
 			<Heading title='Welcome Back' text='Sign in to manage your tasks' />
 
 			{registered && (
-				<p style={{ color: 'green', marginBottom: '1rem' }}>
-					Your account has been created successfully.
-				</p>
+				<p style={{ color: 'green', marginBottom: '1rem' }}>Your account has been created successfully.</p>
 			)}
 
 			<Field
 				innerText='Enter your email'
 				Icon={MailIcon}
 				id='email'
-				type='email'
+				type='text'
 				label='Email'
 				value={values.email}
 				onChange={handleChange}
