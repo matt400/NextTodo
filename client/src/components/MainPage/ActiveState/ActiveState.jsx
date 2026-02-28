@@ -2,7 +2,7 @@ import DeleteAllButton from '../DeleteAllButton/DeleteAllButton';
 import TodoItem from '../ToDoItem/ToDoItem';
 import styles from './ActiveState.module.css';
 
-const ActiveState = ({ tasks, onEdit, onToggle, activePomodoroId, setActivePomodoroId }) => {
+const ActiveState = ({ tasks, onEdit, onToggle, onDelete, activePomodoroId, setActivePomodoroId }) => {
 	return (
 		<div className={styles.activeState}>
 			<div className={styles.activeHeader}>
@@ -14,7 +14,7 @@ const ActiveState = ({ tasks, onEdit, onToggle, activePomodoroId, setActivePomod
 					key={task.id}
 					task={task}
 					onToggle={onToggle}
-					onDelete={() => {}}
+					onDelete={onDelete}
 					onEdit={onEdit}
 					activePomodoroId={activePomodoroId}
 					setActivePomodoroId={setActivePomodoroId}
