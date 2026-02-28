@@ -1,12 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import styles from './Field.module.css';
 
 const Field = ({ innerText, Icon, id, type, label, value, onChange, error }) => {
-	
-  const [showPassword, setShowPassword] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 
 	const inputType = type === 'password' ? (showPassword ? 'text' : 'password') : type;
+
+	useEffect(() => {
+		if (showPassword) {
+			const timer = setTimeout(() => {
+				setShowPassword(false);
+			}, 3000);
+
+			return () => clearTimeout(timer);
+
+		}
+	}, [showPassword]);
 
 	return (
 		<div className={styles.field}>
