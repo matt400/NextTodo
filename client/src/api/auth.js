@@ -55,7 +55,7 @@ export async function logout() {
 }
 
 export async function changePassword(currentPassword, newPassword, confirmPassword) {
-	const res = await fetch('http://localhost:3000/api/user/me/change-password', {
+	const res = await fetch(`${USER_URL}/me/change-password`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
