@@ -10,19 +10,22 @@ import ActiveState from './ActiveState/ActiveState';
 import CompletedState from './CompletedState/CompletedState';
 import AddTaskModal from './AddTaskModal/AddTaskModal';
 
+import styles from './MainPage.module.css';
 import { Plus } from 'lucide-react';
 
-import styles from './MainPage.module.css';
-
 const MainPage = () => {
-	const navigate = useNavigate();
 
+	///////////////////HOOKS///////////////////////
+
+	const navigate = useNavigate();
 	const [user, setUser] = useState(null);
 	const [tasks, setTasks] = useState([]);
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const activeTasks = tasks.filter((t) => !t.done);
 	const completedTasks = tasks.filter((t) => t.done);
 	const [activePomodoroId, setActivePomodoroId] = useState(null);
+
+	///////////////////API///////////////////////
 
 	useEffect(() => {
 		getMe().then((u) => {
@@ -43,6 +46,8 @@ const MainPage = () => {
 			loadTasks();
 		}
 	}, [user]);
+
+	///////////////////TASK LOGIC///////////////////////
 
 	const addTask = async ({ title, description }) => {
 		await apiAddTask(title, description);
@@ -67,6 +72,26 @@ const MainPage = () => {
 		await loadTasks();
 	};
 
+	const handleDelete = async (id) => {
+		try {
+			if (activePomodoroId === id) {
+				setActivePomodoroId(null);
+			}
+
+			await fetch('/api/task/remove', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					task_id: [id],
+				}),
+			});
+
+			setTasks((prev) => prev.filter((task) => task.id !== id));
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
 		<>
 			<Navbar title='My Tasks' showBack={false} showSettings={true} />
@@ -89,6 +114,7 @@ const MainPage = () => {
 							tasks={activeTasks}
 							onEdit={updateTask}
 							onToggle={toggleTask}
+							onDelete={handleDelete}
 							activePomodoroId={activePomodoroId}
 							setActivePomodoroId={setActivePomodoroId}
 						/>
@@ -99,6 +125,7 @@ const MainPage = () => {
 							tasks={completedTasks}
 							setTasks={setTasks}
 							onEdit={updateTask}
+							onDelete={handleDelete}
 							onToggle={toggleTask}
 							activePomodoroId={activePomodoroId}
 							setActivePomodoroId={setActivePomodoroId}

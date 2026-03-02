@@ -101,7 +101,6 @@ const Login = () => {
 			/>
 
 			<Button inner='Sign in' onClick={handleSubmit} />
-			<Linking to='/mainpage' innerText='MainPage dev' />
 			<Linking to='/register' innerText="Don't have an account? Sign up" />
 		</div>
 	);
