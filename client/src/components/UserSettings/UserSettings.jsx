@@ -80,6 +80,12 @@ const UserSettings = () => {
 			setErrors({
 				currentPassword: 'Current password is incorrect',
 			});
+
+			setValues({
+				currentPassword: '',
+				newPassword: '',
+				confirmPassword: '',
+			});
 		}
 	};
 
