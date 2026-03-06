@@ -1,5 +1,9 @@
-import { getDataController, changePasswordController } from "./user.controller";
-import { changePasswordSchema } from "./user.schema";
+import {
+  getDataController,
+  changePasswordController,
+  updateUserDataController,
+} from "./user.controller";
+import { changePasswordSchema, updateDataSchema } from "./user.schema";
 
 import type { FastifyInstance } from "fastify";
 
@@ -13,8 +17,11 @@ export default async function userRoutes(fastify: FastifyInstance) {
   // Future: Update user data
   fastify.patch(
     "/me",
-    { preHandler: [fastify.userAccessOnly] },
-    async (request, reply) => {},
+    {
+      schema: updateDataSchema,
+      preHandler: [fastify.userAccessOnly],
+    },
+    updateUserDataController,
   );
 
   fastify.post(

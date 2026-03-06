@@ -16,5 +16,8 @@
   "TASK_MODIFIED": "Zadanie zostało pomyślnie zmodyfikowane.",
   "TASK_NOT_FOUND": "Nie znaleziono zadania.",
   "TASK_REMOVE_ERROR": "Wystąpił problem z usunięciem zadania.",
-  "TASK_REMOVE_SUCCESS": "Zadanie zostało pomyślnie usunięte."
+  "TASK_REMOVE_SUCCESS": "Zadanie zostało pomyślnie usunięte.",
+  "UNKNOWN_ERROR": "Nieznany błąd serwera",
+  "UPDATE_VALIDATION_ERROR": "Dane muszą się różnić od aktualnych.",
+  "UPDATE_USER_DATA_SUCCESS": "Dane zostały zaktualizowane."
 }

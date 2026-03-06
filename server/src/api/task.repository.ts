@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prismagl";
+import { PrismaClient } from "@prismagl";
 
 const tasksRepository = (prisma: PrismaClient) => ({
   getAllTasks: async (userId: string) =>

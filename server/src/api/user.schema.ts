@@ -11,3 +11,15 @@ export const changePasswordSchema = {
     },
   },
 };
+
+export const updateDataSchema = {
+  body: {
+    type: "object",
+    properties: {
+      username: { type: "string", minLength: 3 },
+      email: { type: "string", minLength: 4 },
+      isActive: { type: "boolean" },
+    },
+    minProperties: 1,
+  },
+};
