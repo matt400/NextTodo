@@ -1,9 +1,10 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from './components/Login/Login';
-import Registration from './components/Registration/Registration';
-import MainPage from './components/MainPage/MainPage';
-import UserSettings from './components/UserSettings/UserSettings';
 import ProtectedRoute from './routes/ProtectedRoute';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
+import Login from './pages/Login';
+import Registration from './pages/Registration';
+import MainContent from './pages/MainContent';
+import NotFoundPage from './pages/NotFoundPage';
 
 const App = () => {
 	return (
@@ -12,21 +13,15 @@ const App = () => {
 			<Route path='/login' element={<Login />} />
 			<Route path='/register' element={<Registration />} />
 			<Route
-				path='/mainpage'
+				path='/maincontent'
 				element={
 					<ProtectedRoute>
-						<MainPage />
+						<MainContent />
+						//{' '}
 					</ProtectedRoute>
 				}
 			/>
-			<Route
-				path='/settings'
-				element={
-					<ProtectedRoute>
-						<UserSettings />
-					</ProtectedRoute>
-				}
-			/>
+			<Route path='*' element={<NotFoundPage />}></Route>
 		</Routes>
 	);
 };
