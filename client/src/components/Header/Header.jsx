@@ -14,7 +14,7 @@ const Header = ({ onBurgerClick }) => {
 
 			<div className={styles.headerRight}>
 				<span className={styles.loggedAs}>
-					Logged as <strong>{user?.email}</strong>
+					Welcome back, <strong>{user?.username}</strong>
 				</span>
 
 				<button className={styles.burger} onClick={onBurgerClick}>

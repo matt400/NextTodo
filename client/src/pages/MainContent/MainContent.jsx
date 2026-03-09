@@ -4,6 +4,7 @@ import Sidebar from '../../components/Sidebar/Sidebar.jsx';
 import styles from './MainContent.module.css';
 import ActiveTasks from '../../components/ActiveTasks/ActiveTasks.jsx';
 import CompletedTasks from '../../components/CompletedTasks/CompletedTasks.jsx';
+import UserSettings from '../../components/UserSettings/UserSettings.jsx';
 
 const MainContent = () => {
 	const [activeTab, setActiveTab] = useState('active');
@@ -16,7 +17,7 @@ const MainContent = () => {
 			case 'completed':
 				return <CompletedTasks />;
 			case 'settings':
-				return <div>Settings</div>;
+				return <UserSettings />;
 			default:
 				return null;
 		}

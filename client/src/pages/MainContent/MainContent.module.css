@@ -34,7 +34,7 @@
 	color: var(--text-secondary);
 	border-left: 1px solid var(--border-color);
 	min-height: 0;
-	overflow: hidden;
+	overflow-y: auto;
 }
 
 @media (min-width: 768px) {
