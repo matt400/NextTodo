@@ -1,5 +1,7 @@
-import { ListTodo, CheckCircle2, X, Settings as SettingsIcon, LogOut } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../api/auth";
 
+import { ListTodo, CheckCircle2, X, Settings as SettingsIcon, LogOut } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 const Sidebar = ({ activeTab, onTabChange, isOpen, onClose }) => {
@@ -8,6 +10,13 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose }) => {
 		{ id: 'completed', label: 'Completed Tasks', icon: CheckCircle2 },
 		{ id: 'settings', label: 'Settings', icon: SettingsIcon },
 	];
+
+	const navigate = useNavigate();
+
+	const handleLogout = async () => {
+		await logout();
+		navigate("/login");
+	};
 
 	return (
 		<>
@@ -38,7 +47,7 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose }) => {
 				</nav>
 
 				<button className={styles.logout}>
-					<LogOut size={18} strokeWidth={2} />
+					<LogOut size={18} strokeWidth={2} onClick={handleLogout}/>
 					Log Out
 				</button>
 			</aside>

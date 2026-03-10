@@ -15,7 +15,7 @@
 }
 
 .box {
-  background: var(--bg-card);
+  background: var(--bg-todo-item);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   padding: 28px;
@@ -25,7 +25,6 @@
   flex-direction: column;
   gap: 18px;
 
-  box-shadow: var(--shadow);
   transition: all var(--transition-duration);
 }
 

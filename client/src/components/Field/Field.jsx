@@ -1,37 +1,50 @@
-import styles from "./Field.module.css";
+import { useEffect, useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 
-const Field = ({
-  innerText,
-  Icon,
-  id,
-  type,
-  label,
-  value,
-  onChange,
-  error
-}) => {
-  return (
-    <div className={styles.field}>
-      <label htmlFor={id} className={styles.label}>
-        {label}
-      </label>
+import styles from './Field.module.css';
 
-      <div className={styles.inputWrapper}>
-        {Icon && <Icon className={styles.icon} />}
+const Field = ({ innerText, Icon, id, type, label, value, onChange, error }) => {
+	const [showPassword, setShowPassword] = useState(false);
 
-        <input
-          id={id}
-          type={type}
-          placeholder={innerText}
-          value={value}
-          onChange={onChange}
-          className={error ? styles.inputError : styles.input}
-        />
-      </div>
+	const inputType = type === 'password' ? (showPassword ? 'text' : 'password') : type;
 
-      {error && <span className={styles.error}>{error}</span>}
-    </div>
-  );
+	useEffect(() => {
+		if (showPassword) {
+			const timer = setTimeout(() => {
+				setShowPassword(false);
+			}, 3000);
+
+			return () => clearTimeout(timer);
+		}
+	}, [showPassword]);
+
+	return (
+		<div className={styles.field}>
+			<label htmlFor={id} className={styles.label}>
+				{label}
+			</label>
+
+			<div className={styles.inputWrapper}>
+				{Icon && <Icon className={styles.icon} />}
+
+				<input
+					id={id}
+					type={inputType}
+					placeholder={innerText}
+					value={value}
+					onChange={onChange}
+					className={error ? styles.inputError : styles.input}
+				/>
+        {type === 'password' && (
+					<span className={styles.eyeIcon} onClick={() => setShowPassword(!showPassword)}>
+						{showPassword ? <Eye /> : <EyeOff />}
+					</span>
+				)}
+			</div>
+
+			{error && <span className={styles.error}>{error}</span>}
+		</div>
+	);
 };
 
 export default Field;

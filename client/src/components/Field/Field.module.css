@@ -63,6 +63,16 @@
   transition: color var(--transition-duration);
 }
 
+.eyeIcon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%); 
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
 .input:focus + .icon,
 .inputWrapper:focus-within .icon {
   color: var(--color-primary);

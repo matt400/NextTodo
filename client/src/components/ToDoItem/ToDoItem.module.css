@@ -2,7 +2,6 @@
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	max-width: 850px;
 
 	background: var(--bg-todo-item);
 	border: 1px solid var(--border-color);
