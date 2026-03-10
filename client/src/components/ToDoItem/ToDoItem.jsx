@@ -1,33 +1,42 @@
 import { useState, useEffect, useRef } from 'react';
 import EditTaskModal from '../EditTaskModal/EditTaskModal';
-import { Pencil, Trash2, CirclePlus, Calendar, AlarmClock, Play, Pause, X, ChevronDown } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
+
+import { Pencil, Trash2, CirclePlus, Calendar, AlarmClock, Play, Pause, X, ChevronDown } from 'lucide-react';
 import styles from './ToDoItem.module.css';
+import 'react-day-picker/dist/style.css';
 
 const TodoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActivePomodoroId }) => {
-	const formatTime = (total) => {
-		const m = Math.floor(total / 60);
-		const s = total % 60;
-		return `${m}:${s.toString().padStart(2, '0')}`;
-	};
+	// MODALS & EXPANSIONS
+
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [showMobileActions, setShowMobileActions] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
+
+	//CALENDAR VARIABLES & FUNCTION
+
 	const [showCalendarModal, setShowCalendarModal] = useState(false);
 	const [dueDate, setDueDate] = useState(null);
-	const [showAlarm, setShowAlarm] = useState(false);
-	const showPomodoro = activePomodoroId === task.id;
-	const [seconds, setSeconds] = useState(0);
-	const [isPaused, setIsPaused] = useState(false);
-	const POMODORO_TIME = 25 * 60;
-	const audioRef = useRef(null);
 	const isToday = dueDate && new Date(dueDate).toDateString() === new Date().toDateString();
-
 	const openCalendar = () => {
 		setShowModal(false);
 		setShowCalendarModal(true);
+	};
+
+	// POMODORO VARIABLES & FUNCTIONS
+
+	const [pomodoroMinutes, setPomodoroMinutes] = useState(Number(localStorage.getItem('pomodoroTime')) || 25);
+	const POMODORO_TIME = pomodoroMinutes * 60;
+	const [newPomodoroTime, setNewPomodoroTime] = useState(25);
+	const showPomodoro = activePomodoroId === task.id;
+	const [showAlarm, setShowAlarm] = useState(false);
+	const [seconds, setSeconds] = useState(0);
+	const [isPaused, setIsPaused] = useState(false);
+	const formatTime = (total) => {
+		const m = Math.floor(total / 60);
+		const s = total % 60;
+		return `${m}:${s.toString().padStart(2, '0')}`;
 	};
 	const togglePomodoro = () => {
 		if (activePomodoroId === task.id) {
@@ -40,6 +49,12 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 			setIsPaused(false);
 		}
 	};
+	const togglePomodoroPause = () => {
+		setIsPaused((prev) => !prev);
+	};
+	const audioRef = useRef(null);
+
+	// useEffects for POMODORO
 
 	useEffect(() => {
 		if (activePomodoroId !== task.id) {
@@ -71,11 +86,18 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 		}, 1000);
 
 		return () => clearInterval(interval);
-	}, [showPomodoro, isPaused]);
+	}, [showPomodoro, isPaused, POMODORO_TIME]);
 
-	const togglePomodoroPause = () => {
-		setIsPaused((prev) => !prev);
-	};
+	useEffect(() => {
+		const handler = () => {
+			const stored = Number(localStorage.getItem('pomodoroTime'));
+			if (stored) setPomodoroMinutes(stored);
+		};
+
+		window.addEventListener('pomodoroUpdate', handler);
+
+		return () => window.removeEventListener('pomodoroUpdate', handler);
+	}, []);
 
 	return (
 		<>

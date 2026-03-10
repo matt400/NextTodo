@@ -91,6 +91,18 @@ const UserSettings = () => {
 		}
 	};
 
+	const [newPomodoroTime, setNewPomodoroTime] = useState(Number(localStorage.getItem('pomodoroTime')) || 25);
+
+	const handleSetPomodoroTime = () => {
+		const value = Number(newPomodoroTime);
+
+		if (value < 1 || value > 60) return;
+
+		localStorage.setItem('pomodoroTime', value);
+
+		window.dispatchEvent(new Event('pomodoroUpdate'));
+	};
+
 	return (
 		<>
 			<div className={styles.mainContent}>
@@ -144,6 +156,36 @@ const UserSettings = () => {
 						<div className={styles.headerRow}>
 							<h2>Theme</h2>
 							<ThemeSwitch />
+						</div>
+					</section>
+					<section className={styles.box}>
+						<div className={styles.headerRow}>
+							<h2>Pomodoro</h2>
+							<div className={styles.pomodoroSettings}>
+								<input
+									type='number'
+									min='1'
+									max='60'
+									value={newPomodoroTime}
+									onChange={(e) => {
+										const value = e.target.value;
+
+										if (value === '') {
+											setNewPomodoroTime('');
+											return;
+										}
+
+										const num = Number(value);
+
+										if (num >= 1 && num <= 60) {
+											setNewPomodoroTime(num);
+										}
+									}}
+								/>
+								<span className={styles.unit}>max 60m</span>
+
+								<button onClick={handleSetPomodoroTime}>Set Time</button>
+							</div>
 						</div>
 					</section>
 				</div>

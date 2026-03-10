@@ -45,8 +45,55 @@
 	justify-content: space-between;
 }
 
-.headerRow h2{
+.headerRow h2 {
 	align-self: self-start;
+}
+
+.pomodoroSettings {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.pomodoroSettings input {
+	width: 70px;
+	height: var(--input-height);
+
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius);
+
+	background: var(--bg-surface);
+	color: var(--text-primary);
+
+	padding: 0 10px;
+}
+.pomodoroSettings input:focus {
+	outline: none;
+}
+
+.pomodoroSettings button {
+	height: var(--input-height);
+	padding: 0 16px;
+
+	border: none;
+	border-radius: var(--border-radius);
+
+	background: var(--color-primary);
+	color: white;
+
+	cursor: pointer;
+
+	transition: background var(--transition-duration);
+}
+
+.pomodoroSettings button:hover {
+	background: var(--color-primary-hover);
+}
+
+.unit {
+	color: var(--text-muted);
+	font-size: 11px;
 }
 
 @media (max-width: 768px) {
