@@ -15,10 +15,6 @@ const Field = ({ innerText, Icon, id, type, label, value, onChange, error }) => 
 			}, 3000);
 
 			return () => clearTimeout(timer);
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/main
 		}
 	}, [showPassword]);
 
@@ -39,7 +35,8 @@ const Field = ({ innerText, Icon, id, type, label, value, onChange, error }) => 
 					onChange={onChange}
 					className={error ? styles.inputError : styles.input}
 				/>
-        {type === 'password' && (
+
+				{type === 'password' && (
 					<span className={styles.eyeIcon} onClick={() => setShowPassword(!showPassword)}>
 						{showPassword ? <Eye /> : <EyeOff />}
 					</span>
