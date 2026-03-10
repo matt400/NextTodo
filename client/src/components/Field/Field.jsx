@@ -15,6 +15,10 @@ const Field = ({ innerText, Icon, id, type, label, value, onChange, error }) => 
 			}, 3000);
 
 			return () => clearTimeout(timer);
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
 		}
 	}, [showPassword]);
 
