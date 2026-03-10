@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import { logout } from "../../api/auth";
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../api/auth';
 
 import { ListTodo, CheckCircle2, X, Settings as SettingsIcon, LogOut } from 'lucide-react';
 import styles from './Sidebar.module.css';
@@ -15,7 +15,7 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose }) => {
 
 	const handleLogout = async () => {
 		await logout();
-		navigate("/login");
+		navigate('/login');
 	};
 
 	return (
@@ -46,8 +46,8 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose }) => {
 					})}
 				</nav>
 
-				<button className={styles.logout}>
-					<LogOut size={18} strokeWidth={2} onClick={handleLogout}/>
+				<button className={styles.logout} onClick={handleLogout}>
+					<LogOut size={18} strokeWidth={2} />
 					Log Out
 				</button>
 			</aside>
