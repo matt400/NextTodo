@@ -39,6 +39,12 @@
   color: var(--text-primary);
 }
 
+.headerRow {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
 @media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;

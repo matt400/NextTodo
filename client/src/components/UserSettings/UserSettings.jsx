@@ -3,10 +3,10 @@ import { changePassword } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext.jsx';
 
 import Button from '../Button';
-import Field from '../Field'
+import Field from '../Field';
+import ThemeSwitch from '../ThemeSwitch';
 
 import { Mail, Lock } from 'lucide-react';
-
 import styles from './UserSettings.module.css';
 
 const UserSettings = () => {
@@ -93,12 +93,13 @@ const UserSettings = () => {
 
 	return (
 		<>
-
 			<div className={styles.mainContent}>
 				<div className={styles.container}>
 					<section className={styles.box}>
 						<h2>Change Email</h2>
-						<p>Current Email: <strong>{user?.email}</strong></p>
+						<p>
+							Current Email: <strong>{user?.email}</strong>
+						</p>
 						<Field innerText='Enter new email' Icon={Mail} id='email' type='email' label='Email' />
 						<Button inner='Change email' />
 					</section>
@@ -138,6 +139,12 @@ const UserSettings = () => {
 							error={errors.confirmPassword}
 						/>
 						<Button inner='Change password' onClick={handleChangePassword} />
+					</section>
+					<section className={styles.box}>
+						<div className={styles.headerRow}>
+							<h2>Theme</h2>
+							<ThemeSwitch />
+						</div>
 					</section>
 				</div>
 			</div>

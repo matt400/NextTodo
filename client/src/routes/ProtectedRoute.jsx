@@ -5,7 +5,7 @@ const ProtectedRoute = ({ children }) => {
 	const { isAuthenticated, loading } = useAuth();
 
 	if (loading) {
-		return null;
+		return <div>Loading...</div>;
 	}
 
 	if (!isAuthenticated) {
