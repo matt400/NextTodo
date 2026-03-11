@@ -18,17 +18,21 @@ async function customDecorators(
   });
 
   // i17n decorator - Error
-  fastify.decorateReply("fail", function (messageKey, statusCode = 400) {
-    const t = this.request.t || ((key) => key);
-    const message = t(messageKey); // with translation
-    return this.status(statusCode).send({
-      success: false,
-      error: {
-        code: messageKey,
-        message: message,
-      },
-    });
-  });
+  fastify.decorateReply(
+    "fail",
+    function (messageKey, statusCode = 400, data = {}) {
+      const t = this.request.t || ((key) => key);
+      const message = t(messageKey); // with translation
+      return this.status(statusCode).send({
+        success: false,
+        error: {
+          code: messageKey,
+          message: message,
+          data: data,
+        },
+      });
+    },
+  );
 }
 
 export default fp(customDecorators);

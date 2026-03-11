@@ -62,12 +62,15 @@ items:
       followRedirects: true
       maxRedirects: 5
   - info:
-      name: '[User] Change data'
+      name: '[Task] Remove'
       type: http
-      seq: 5
+      seq: 10
     http:
-      method: PATCH
-      url: http://localhost:3000/api/user/me
+      method: DELETE
+      url: http://localhost:3000/api/task
+      body:
+        type: json
+        data: '{ "task_id": [1,2,3] }'
       auth: inherit
     settings:
       encodeUrl: true
@@ -132,6 +135,22 @@ items:
       followRedirects: true
       maxRedirects: 5
   - info:
+      name: '[User] Modify data'
+      type: http
+      seq: 5
+    http:
+      method: PATCH
+      url: http://localhost:3000/api/user/me
+      body:
+        type: json
+        data: '{ "username": "admin1234" }'
+      auth: inherit
+    settings:
+      encodeUrl: true
+      timeout: 0
+      followRedirects: true
+      maxRedirects: 5
+  - info:
       name: '[User] Register'
       type: http
       seq: 2
@@ -153,27 +172,11 @@ items:
       timeout: 0
       followRedirects: true
       maxRedirects: 5
-  - info:
-      name: '[Task] Remove'
-      type: http
-      seq: 10
-    http:
-      method: DELETE
-      url: http://localhost:3000/api/task
-      body:
-        type: json
-        data: '{ "task_id": [1,2,3] }'
-      auth: inherit
-    settings:
-      encodeUrl: true
-      timeout: 0
-      followRedirects: true
-      maxRedirects: 5
 bundled: true
 extensions:
   bruno:
     ignore:
       - node_modules
       - .git
-    exportedAt: '2026-02-25T19:01:11.566Z'
+    exportedAt: '2026-03-06T23:06:55.383Z'
     exportedUsing: Bruno

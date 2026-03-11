@@ -1,4 +1,4 @@
-import { getUserData, changePassword } from "./user.service";
+import { getUserData, changePassword, updateData } from "./user.service";
 import {
   validatePasswordStrength,
   validatePasswordsMatch,
@@ -6,7 +6,7 @@ import {
 } from "@server/utils/password";
 
 import type { FastifyRequest, FastifyReply } from "fastify";
-import type { IUser } from "@server/interfaces/IUser";
+import type { IChangePassword, IUpdateData } from "@server/interfaces/IUser";
 
 export async function getDataController(
   request: FastifyRequest,
@@ -22,7 +22,7 @@ export async function getDataController(
 }
 
 export async function changePasswordController(
-  request: FastifyRequest<IUser>,
+  request: FastifyRequest<IChangePassword>,
   reply: FastifyReply,
 ) {
   const { current_password, new_password, confirm_password } = request.body;
@@ -57,6 +57,10 @@ export async function changePasswordController(
   try {
     const userData = await getUserData(request.server.prisma, userEmail, true);
 
+    if (!("password" in userData)) {
+      throw new Error("User has no password object!");
+    }
+
     const isPasswordValid: boolean = await request.server.bcrypt.compare(
       current_password,
       userData.password ?? "",
@@ -82,5 +86,34 @@ export async function changePasswordController(
     return reply.ok("PASSWORD_CHANGED_SUCCESSFULLY");
   } catch {
     return reply.fail("NO_SUCH_USER", 404);
+  }
+}
+
+export async function updateUserDataController(
+  request: FastifyRequest<IUpdateData>,
+  reply: FastifyReply,
+) {
+  const { username, email, isActive } = request.body;
+  const userEmail = request.user.email;
+
+  try {
+    const userData = await getUserData(request.server.prisma, userEmail);
+
+    const errors = [];
+    if (username == userData.username) errors.push("USERNAME");
+    if (email == userData.email) errors.push("EMAIL");
+    if (isActive == userData.isActive) errors.push("ISACTIVE");
+
+    if (errors.length > 0)
+      return reply.fail("UPDATE_VALIDATION_ERROR", 400, errors);
+
+    await updateData(request.server.prisma, userData.id, {
+      username: username,
+      email: email,
+      isActive: isActive,
+    });
+    return reply.ok("UPDATE_USER_DATA_SUCCESS");
+  } catch (err) {
+    return reply.code(500).send(err);
   }
 }

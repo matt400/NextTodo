@@ -23,7 +23,7 @@ declare module "fastify" {
   }
 
   interface FastifyReply {
-    fail(messageKey: string, statusCode?: number);
+    fail(messageKey: string, statusCode?: number, data?: object);
     ok(messageKey: string);
   }
 }

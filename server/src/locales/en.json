@@ -16,5 +16,8 @@
   "TASK_MODIFIED": "Task was successfully modified.",
   "TASK_NOT_FOUND": "Task not found.",
   "TASK_REMOVE_ERROR": "There was an error during removing task.",
-  "TASK_REMOVE_SUCCESS": "Task was deleted successfully."
+  "TASK_REMOVE_SUCCESS": "Task was deleted successfully.",
+  "UNKNOWN_ERROR": "Unknown server error",
+  "UPDATE_VALIDATION_ERROR": "Data must be different than the current one.",
+  "UPDATE_USER_DATA_SUCCESS": "Data was updated."
 }

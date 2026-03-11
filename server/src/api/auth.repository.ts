@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prismagl";
+import { PrismaClient } from "@prismagl";
 
 const authRepository = (prisma: PrismaClient) => ({
   findByEmail: async (email: string) =>

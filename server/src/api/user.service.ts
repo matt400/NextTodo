@@ -1,4 +1,5 @@
 import authRepository from "./auth.repository";
+import userRepository from "./user.repository";
 
 import type { PrismaClient } from "@server/generated/prisma/client";
 
@@ -30,7 +31,13 @@ export async function changePassword(
   userId: string,
   newPassword: string,
 ) {
-  const cp = await authRepository(prisma).updatePassword(userId, newPassword);
-  if (!cp) throw Error("Prisma error");
-  return cp;
+  return await authRepository(prisma).updatePassword(userId, newPassword);
+}
+
+export async function updateData(
+  prisma: PrismaClient,
+  userId: string,
+  data: object,
+) {
+  return await userRepository(prisma).updateData(userId, data);
 }
