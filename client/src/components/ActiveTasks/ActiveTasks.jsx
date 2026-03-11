@@ -6,7 +6,7 @@ import {
 	deleteTask as apiDeleteTask,
 } from '../../api/taskApi';
 
-import TodoItem from '../TodoItem';
+import ToDoItem from '../ToDoItem';
 import DeleteAllButton from '../DeleteAllButton';
 import CreateTaskButton from '../CreateTaskButton';
 import AddTaskModal from '../AddTaskModal';
@@ -74,7 +74,7 @@ const ActiveTasks = () => {
 
 			<div className={styles.tasksList}>
 				{activeTasks.map((task) => (
-					<TodoItem
+					<ToDoItem
 						key={task.id}
 						task={task}
 						onToggle={toggleTask}

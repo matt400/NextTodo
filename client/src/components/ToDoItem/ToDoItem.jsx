@@ -6,7 +6,7 @@ import { Pencil, Trash2, CirclePlus, Calendar, AlarmClock, Play, Pause, X, Chevr
 import styles from './ToDoItem.module.css';
 import 'react-day-picker/dist/style.css';
 
-const TodoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActivePomodoroId }) => {
+const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActivePomodoroId }) => {
 	// MODALS & EXPANSIONS
 
 	const [isExpanded, setIsExpanded] = useState(false);
@@ -326,4 +326,4 @@ const TodoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 	);
 };
 
-export default TodoItem;
+export default ToDoItem;

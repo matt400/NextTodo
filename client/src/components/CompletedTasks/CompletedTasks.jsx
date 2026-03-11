@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchTasks, updateTask as apiUpdateTask, deleteTask as apiDeleteTask } from '../../api/taskApi';
 
-import TodoItem from '../TodoItem';
+import ToDoItem from '../ToDoItem';
 import DeleteAllButton from '../DeleteAllButton';
 
 import styles from './CompletedTasks.module.css';
@@ -55,7 +55,7 @@ const CompletedTasks = () => {
 
 			<div className={styles.tasksList}>
 				{completedTasks.map((task) => (
-					<TodoItem
+					<ToDoItem
 						key={task.id}
 						task={task}
 						onToggle={toggleTask}
