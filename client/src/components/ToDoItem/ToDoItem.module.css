@@ -123,7 +123,7 @@
 	border: none;
 	background: transparent;
 	padding: 6px;
-	border-radius: 50%;
+	border-radius: var(--border-radius);
 	color: var(--color-text-primary);
 	cursor: pointer;
 	border: 1px solid var(--border-color);
@@ -139,13 +139,33 @@
 	background-color: var(--bg-content);
 }
 
-.calendar-btn:hover {
-	background-color: var(--bg-content);
-}
-
 .todo-action-btn svg {
 	color: var(--color-dark-2);
 	font-size: inherit;
+}
+
+.pomodoro-btn {
+	appearance: none;
+	border: none;
+	background: transparent;
+	padding: 4px;
+	border-radius: var(--border-radius);
+	color: var(--color-text-primary);
+	cursor: pointer;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	transition: background 0.15s ease;
+}
+.pomodoro-btn:hover {
+	background-color: var(--color-red);
+	color: var(--color-pink);
+}
+
+.calendar-btn:hover {
+	background-color: var(--bg-content);
 }
 
 .todo-modal {

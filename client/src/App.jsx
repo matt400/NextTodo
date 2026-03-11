@@ -19,7 +19,6 @@ const App = () => {
 					element={
 						<ProtectedRoute>
 							<MainContent />
-							//{' '}
 						</ProtectedRoute>
 					}
 				/>
