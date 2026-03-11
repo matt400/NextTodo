@@ -1,0 +1,19 @@
+.deleteAllButton {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-weight: 400;
+	border: none;
+	border-radius: var(--border-radius);
+	background: var(--sidebar-logout-bg);
+	color: var(--sidebar-logout-text);
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 14px;
+	padding: 0.6rem 1rem;
+}
+
+.deleteAllButton:hover {
+	
+	background: var(--sidebar-logout-hover);
+}

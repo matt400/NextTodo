@@ -1,0 +1,47 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  text-align: center;
+  background: var(--bg-page);
+}
+
+.content {
+  max-width: 500px;
+}
+
+.code {
+  font-size: 120px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 4px;
+  color: var(--color-primary);
+}
+
+.title {
+  font-size: 28px;
+  margin: 16px 0 8px;
+  color: var(--text-primary);
+}
+
+.description {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.button {
+  display: inline-block;
+  padding: 12px 28px;
+  background: var(--color-primary);
+  color: #fff;
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  transition: background var(--transition-duration),
+              transform var(--transition-duration);
+}
+

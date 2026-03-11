@@ -1,0 +1,82 @@
+.dashboard {
+	height: 100dvh;
+	background: var(--bg-main);
+	display: flex;
+	flex-direction: column;
+}
+
+.dashboardBodyWrapper {
+	width: 100%;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+
+.dashboardCard {
+	background: var(--bg-content);
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	overflow: hidden;
+}
+
+.dashboardBody {
+	display: flex;
+	flex: 1;
+	min-height: 0;
+}
+
+.dashboardContent {
+	flex: 1;
+	padding: 28px 32px;
+	font-size: 16px;
+	color: var(--text-secondary);
+	border-left: 1px solid var(--border-color);
+	min-height: 0;
+	overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+	body {
+		display: block;
+		align-items: normal;
+		justify-content: normal;
+	}
+}
+
+@media (max-width: 1199px) {
+	:global(body:has(.dashboard)) {
+		padding: 0;
+		align-items: stretch;
+		overflow: hidden;
+	}
+
+	.dashboardCard {
+		border-radius: 0;
+		border: none;
+		box-shadow: none;
+	}
+
+	.dashboardBody {
+		flex-direction: column;
+	}
+
+	.dashboardContent {
+		padding: 24px;
+	}
+}
+
+@media (min-width: 1199px) {
+	.dashboardBodyWrapper {
+		width: 1200px;
+		margin: 0 auto;
+		padding: 28px 20px;
+	}
+
+	.dashboardCard {
+		border: 1px solid var(--border-color);
+		border-radius: var(--border-radius);
+		box-shadow: var(--shadow);
+	}
+}

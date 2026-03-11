@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+
 import styles from './Field.module.css';
 
 const Field = ({ innerText, Icon, id, type, label, value, onChange, error }) => {
@@ -14,7 +15,6 @@ const Field = ({ innerText, Icon, id, type, label, value, onChange, error }) => 
 			}, 3000);
 
 			return () => clearTimeout(timer);
-
 		}
 	}, [showPassword]);
 
@@ -35,6 +35,7 @@ const Field = ({ innerText, Icon, id, type, label, value, onChange, error }) => 
 					onChange={onChange}
 					className={error ? styles.inputError : styles.input}
 				/>
+
 				{type === 'password' && (
 					<span className={styles.eyeIcon} onClick={() => setShowPassword(!showPassword)}>
 						{showPassword ? <Eye /> : <EyeOff />}
