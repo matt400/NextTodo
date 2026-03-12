@@ -3,19 +3,28 @@ import { fetchTasks, updateTask as apiUpdateTask, deleteTask as apiDeleteTask } 
 
 import ToDoItem from '../ToDoItem';
 import DeleteAllButton from '../DeleteAllButton';
+import Loader from '../Loader';
 
 import styles from './CompletedTasks.module.css';
 
 const CompletedTasks = () => {
 	const [tasks, setTasks] = useState([]);
+	const [loading, setLoading] = useState(true);
 
 	const loadTasks = async () => {
+		setLoading(true);
+
 		const data = await fetchTasks();
 		setTasks(data);
+		setLoading(false);
 	};
 
 	useEffect(() => {
-		loadTasks();
+		(async () => {
+			const data = await fetchTasks();
+			setTasks(data);
+			setLoading(false);
+		})();
 	}, []);
 
 	const completedTasks = tasks.filter((task) => task.done);
@@ -46,8 +55,11 @@ const CompletedTasks = () => {
 
 		await loadTasks();
 	};
+
 	return (
 		<div className={styles.container}>
+			{loading && <Loader />}
+
 			<div className={styles.activeHeader}>
 				<h2 className={styles.activeTasksCount}>Completed tasks ({completedTasks.length})</h2>
 				<DeleteAllButton onClick={deleteAllCompleted} />

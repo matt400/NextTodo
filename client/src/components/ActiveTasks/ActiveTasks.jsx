@@ -7,9 +7,10 @@ import {
 } from '../../api/taskApi';
 
 import ToDoItem from '../ToDoItem';
-import DeleteAllButton from '../DeleteAllButton';
 import CreateTaskButton from '../CreateTaskButton';
 import AddTaskModal from '../AddTaskModal';
+import DeleteAllButton from '../DeleteAllButton';
+import Loader from '../Loader';
 
 import { Plus } from 'lucide-react';
 
@@ -17,17 +18,25 @@ import styles from './ActiveTasks.module.css';
 
 const ActiveTasks = () => {
 	const [tasks, setTasks] = useState([]);
+	const [loading, setLoading] = useState(true);
 	const activeTasks = tasks.filter((task) => !task.done);
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [activePomodoroId, setActivePomodoroId] = useState(null);
 
 	const loadTasks = async () => {
+		setLoading(true);
+
 		const data = await fetchTasks();
 		setTasks(data);
+		setLoading(false);
 	};
 
 	useEffect(() => {
-		loadTasks();
+		(async () => {
+			const data = await fetchTasks();
+			setTasks(data);
+			setLoading(false);
+		})();
 	}, []);
 
 	const addTask = async ({ title, description }) => {
@@ -67,6 +76,8 @@ const ActiveTasks = () => {
 
 	return (
 		<div className={styles.container}>
+			{loading && <Loader />}
+
 			<div className={styles.activeHeader}>
 				<h2 className={styles.activeTasksCount}>Active tasks ({activeTasks.length})</h2>
 				<DeleteAllButton onClick={deleteAllActive} />
