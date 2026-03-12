@@ -5,6 +5,7 @@ import ToDoItem from '../ToDoItem';
 import DeleteAllButton from '../DeleteAllButton';
 import Loader from '../Loader';
 
+import { Check } from 'lucide-react';
 import styles from './CompletedTasks.module.css';
 
 const CompletedTasks = () => {
@@ -60,23 +61,35 @@ const CompletedTasks = () => {
 		<div className={styles.container}>
 			{loading && <Loader />}
 
-			<div className={styles.activeHeader}>
-				<h2 className={styles.activeTasksCount}>Completed tasks ({completedTasks.length})</h2>
-				<DeleteAllButton onClick={deleteAllCompleted} />
-			</div>
+			{completedTasks.length > 0 && (
+				<div className={styles.activeHeader}>
+					<h2 className={styles.activeTasksCount}>Completed tasks ({completedTasks.length})</h2>
+					<DeleteAllButton onClick={deleteAllCompleted} />
+				</div>
+			)}
 
 			<div className={styles.tasksList}>
-				{completedTasks.map((task) => (
-					<ToDoItem
-						key={task.id}
-						task={task}
-						onToggle={toggleTask}
-						onDelete={deleteTask}
-						onEdit={updateTask}
-						activePomodoroId={null}
-						setActivePomodoroId={() => {}}
-					/>
-				))}
+				{completedTasks.length === 0 ? (
+					<div className={styles.emptyState}>
+						<div className={styles.emptyContainer}>
+							<Check size={48} />
+							<h3>Nothing completed yet</h3>
+							<p>Your finished tasks will appear here</p>
+						</div>
+					</div>
+				) : (
+					completedTasks.map((task) => (
+						<ToDoItem
+							key={task.id}
+							task={task}
+							onToggle={toggleTask}
+							onDelete={deleteTask}
+							onEdit={updateTask}
+							activePomodoroId={null}
+							setActivePomodoroId={() => {}}
+						/>
+					))
+				)}
 			</div>
 		</div>
 	);

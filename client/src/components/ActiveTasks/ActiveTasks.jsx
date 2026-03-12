@@ -12,7 +12,7 @@ import AddTaskModal from '../AddTaskModal';
 import DeleteAllButton from '../DeleteAllButton';
 import Loader from '../Loader';
 
-import { Plus } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 
 import styles from './ActiveTasks.module.css';
 
@@ -78,23 +78,36 @@ const ActiveTasks = () => {
 		<div className={styles.container}>
 			{loading && <Loader />}
 
-			<div className={styles.activeHeader}>
-				<h2 className={styles.activeTasksCount}>Active tasks ({activeTasks.length})</h2>
-				<DeleteAllButton onClick={deleteAllActive} />
-			</div>
+			{activeTasks.length > 0 && (
+				<div className={styles.activeHeader}>
+					<h2 className={styles.activeTasksCount}>Active tasks ({activeTasks.length})</h2>
+					<DeleteAllButton onClick={deleteAllActive} />
+				</div>
+			)}
 
 			<div className={styles.tasksList}>
-				{activeTasks.map((task) => (
-					<ToDoItem
-						key={task.id}
-						task={task}
-						onToggle={toggleTask}
-						onDelete={deleteTask}
-						onEdit={updateTask}
-						activePomodoroId={activePomodoroId}
-						setActivePomodoroId={setActivePomodoroId}
-					/>
-				))}
+				{activeTasks.length === 0 ? (
+					<div className={styles.emptyState}>
+						<div className={styles.emptyContainer}>
+							<Search size={48} />
+							<h3>No active tasks</h3>
+							<p>Create your first task to get started</p>
+
+						</div>
+					</div>
+				) : (
+					activeTasks.map((task) => (
+						<ToDoItem
+							key={task.id}
+							task={task}
+							onToggle={toggleTask}
+							onDelete={deleteTask}
+							onEdit={updateTask}
+							activePomodoroId={activePomodoroId}
+							setActivePomodoroId={setActivePomodoroId}
+						/>
+					))
+				)}
 			</div>
 
 			<div className={styles.activeFooter}>
