@@ -128,7 +128,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 								<span className={styles['pomodoro-time']}>{formatTime(seconds)}</span>
 
 								<button
-									className={styles['todo-action-btn']}
+									className={styles['pomodoro-btn']}
 									onClick={(e) => {
 										e.stopPropagation();
 										togglePomodoroPause();
@@ -137,7 +137,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 								</button>
 
 								<button
-									className={styles['todo-action-btn']}
+									className={styles['pomodoro-btn']}
 									onClick={(e) => {
 										e.stopPropagation();
 										togglePomodoro();
