@@ -18,6 +18,7 @@ const UserSettings = () => {
 
 	const [errors, setErrors] = useState({});
 	const [success, setSuccess] = useState('');
+	const [apiError, setApiError] = useState('');
 	const { user } = useAuth();
 
 	const handleChange = (e) => {
@@ -61,6 +62,7 @@ const UserSettings = () => {
 
 	const handleChangePassword = async () => {
 		setSuccess('');
+		setApiError('');
 		const validationErrors = validate(values);
 		setErrors(validationErrors);
 
@@ -70,15 +72,22 @@ const UserSettings = () => {
 			await changePassword(values.currentPassword, values.newPassword, values.confirmPassword);
 
 			setSuccess('Password changed successfully.');
+
+			setTimeout(() => {
+				setSuccess('');
+			}, 5000);
+
 			setValues({
 				currentPassword: '',
 				newPassword: '',
 				confirmPassword: '',
 			});
 		} catch (err) {
-			setErrors({
-				currentPassword: 'Current password is incorrect',
-			});
+			setApiError('Password change failed');
+
+			setTimeout(() => {
+				setApiError('');
+			}, 5000);
 
 			setValues({
 				currentPassword: '',
@@ -149,6 +158,9 @@ const UserSettings = () => {
 						/>
 
 						<Button inner='Change password' onClick={handleChangePassword} />
+
+						{success && <p className={styles.successInfo}>{success}</p>}
+						{apiError && <p className={styles.errorInfo}>{apiError}</p>}
 					</section>
 
 					<section className={styles.box}>

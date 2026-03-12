@@ -49,6 +49,27 @@
 	align-self: self-start;
 }
 
+.successInfo {
+	display: flex;
+	justify-content: center;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.errorInfo {
+	display: flex;
+	justify-content: center;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+p.successInfo {
+	color: var(--color-green);
+}
+p.errorInfo {
+	color: var(--color-red);
+}
+
 .pomodoroSettings {
 	display: flex;
 	gap: 12px;
