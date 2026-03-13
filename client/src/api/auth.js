@@ -48,7 +48,7 @@ export async function getMe() {
 }
 
 export async function logout() {
-	return fetch(`${AUTH_URL}/logout`, {
+	return fetch(`${USER_URL}/logout`, {
 		method: 'POST',
 		credentials: 'include',
 	});
