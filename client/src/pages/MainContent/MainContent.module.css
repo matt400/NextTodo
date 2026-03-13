@@ -1,5 +1,6 @@
 .dashboard {
 	height: 100dvh;
+	width: 100%;
 	background: var(--bg-main);
 	display: flex;
 	flex-direction: column;
@@ -25,6 +26,7 @@
 	display: flex;
 	flex: 1;
 	min-height: 0;
+	min-width: 0;
 }
 
 .dashboardContent {
@@ -34,6 +36,7 @@
 	color: var(--text-secondary);
 	border-left: 1px solid var(--border-color);
 	min-height: 0;
+	min-width: 0;
 	overflow-y: auto;
 }
 
@@ -68,15 +71,28 @@
 }
 
 @media (min-width: 1199px) {
+
+	/* WINDOW MODE */
 	.dashboardBodyWrapper {
 		width: 1200px;
 		margin: 0 auto;
 		padding: 28px 20px;
 	}
-
 	.dashboardCard {
 		border: 1px solid var(--border-color);
 		border-radius: var(--border-radius);
 		box-shadow: var(--shadow);
 	}
+
+	/* FULLSCREEN MODE */
+	.fullscreen .dashboardBodyWrapper {
+		width: 100%;
+		max-width: 100%;
+		padding: 0;
+	}
+
+	.fullscreen .dashboardCard {
+		border-radius: 0;
+	}
 }
+

@@ -129,11 +129,63 @@ p.errorInfo {
 	font-size: 14px;
 }
 
+.viewWrapper {
+	display: flex;
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius);
+	overflow: hidden;
+	width: fit-content;
+	background: var(--bg-surface);
+}
+
+.viewWrapper button {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+
+	padding: 8px 14px;
+
+	background: transparent;
+	border: none;
+
+	cursor: pointer;
+
+	color: var(--text-secondary);
+	font-size: 14px;
+	font-weight: 500;
+
+	transition: all var(--transition-duration);
+}
+
+.viewWrapper button svg {
+	display: flex;
+}
+
+.viewWrapper button.active {
+	background: var(--color-primary);
+	color: white;
+}
+
+.viewWrapper button.active:hover {
+	background: var(--color-primary-hover);
+	color: white;
+}
+
+.desktopOnly {
+	display: none;
+}
+
 @media (max-width: 768px) {
 	.container {
 		grid-template-columns: 1fr;
 	}
 	.headerRow {
 		flex-direction: column;
+	}
+}
+
+@media (min-width: 1199px) {
+	.desktopOnly {
+		display: block;
 	}
 }

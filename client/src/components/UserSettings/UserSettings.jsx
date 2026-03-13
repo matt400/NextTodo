@@ -6,10 +6,10 @@ import Button from '../Button';
 import Field from '../Field';
 import ThemeSwitch from '../ThemeSwitch';
 
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, Maximize, Minimize, Expand, Shrink } from 'lucide-react';
 import styles from './UserSettings.module.css';
 
-const UserSettings = () => {
+const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	const [values, setValues] = useState({
 		currentPassword: '',
 		newPassword: '',
@@ -184,6 +184,24 @@ const UserSettings = () => {
 						{apiPassChangeError && <p className={styles.errorInfo}>{apiPassChangeError}</p>}
 					</section>
 
+					<section className={`${styles.box} ${styles.desktopOnly}`}>
+						<div className={styles.headerRow}>
+							<h2>View</h2>
+
+							<div className={styles.viewWrapper}>
+								<button className={!isFullscreen ? styles.active : ''} onClick={() => setIsFullscreen(false)}>
+									Window
+									<Minimize size={16} />
+								</button>
+
+								<button className={isFullscreen ? styles.active : ''} onClick={() => setIsFullscreen(true)}>
+									Fullscreen
+									<Maximize size={16} />
+								</button>
+							</div>
+						</div>
+					</section>
+
 					<section className={styles.box}>
 						<div className={styles.headerRow}>
 							<h2>Theme</h2>
@@ -194,7 +212,7 @@ const UserSettings = () => {
 					<section className={styles.box}>
 						<div className={styles.headerRow}>
 							<div className={styles.pomodoroSettings}>
-							<h2>Pomodoro</h2>
+								<h2>Pomodoro</h2>
 								<input
 									type='number'
 									min='1'
@@ -202,20 +220,20 @@ const UserSettings = () => {
 									value={newPomodoroTime}
 									onChange={(e) => {
 										const value = e.target.value;
-										
+
 										if (value === '') {
 											setNewPomodoroTime('');
 											return;
 										}
-										
+
 										const num = Number(value);
-										
+
 										if (num >= 1 && num <= 60) {
 											setNewPomodoroTime(num);
 										}
 									}}
 								/>
-									<span className={styles.unit}>min</span>
+								<span className={styles.unit}>min</span>
 
 								<button onClick={handleSetPomodoroTime}>Set Time</button>
 
