@@ -30,16 +30,12 @@
 	display: flex;
 }
 
-.wrapper button:hover {
-	background: var(--hover-soft);
-	color: var(--text-primary);
-}
-
-.active {
+.wrapper button.active {
 	background: var(--color-primary);
 	color: white;
 }
 
-.active:hover {
+.wrapper button.active:hover {
 	background: var(--color-primary-hover);
+	color: white;
 }
