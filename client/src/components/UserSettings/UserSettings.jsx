@@ -6,20 +6,24 @@ import Button from '../Button';
 import Field from '../Field';
 import ThemeSwitch from '../ThemeSwitch';
 
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, Maximize, Minimize, Expand, Shrink } from 'lucide-react';
 import styles from './UserSettings.module.css';
 
-const UserSettings = () => {
+const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	const [values, setValues] = useState({
 		currentPassword: '',
 		newPassword: '',
 		confirmPassword: '',
 	});
 
-	const [errors, setErrors] = useState({});
-	const [success, setSuccess] = useState('');
-	const [apiError, setApiError] = useState('');
 	const { user } = useAuth();
+	const [successPassChange, setSuccessPassChange] = useState('');
+	const [apiPassChangeError, setApiPassChangeError] = useState('');
+
+	const [successPomodoroChange, setSuccessPomodoroChange] = useState('');
+	const [pomodoroErr, setPomodoroErr] = useState('');
+
+	const [errors, setErrors] = useState({});
 
 	const handleChange = (e) => {
 		const { id, value } = e.target;
@@ -61,8 +65,8 @@ const UserSettings = () => {
 	};
 
 	const handleChangePassword = async () => {
-		setSuccess('');
-		setApiError('');
+		setSuccessPassChange('');
+		setApiPassChangeError('');
 		const validationErrors = validate(values);
 		setErrors(validationErrors);
 
@@ -71,10 +75,10 @@ const UserSettings = () => {
 		try {
 			await changePassword(values.currentPassword, values.newPassword, values.confirmPassword);
 
-			setSuccess('Password changed successfully.');
+			setSuccessPassChange('Password changed successfully.');
 
 			setTimeout(() => {
-				setSuccess('');
+				setSuccessPassChange('');
 			}, 5000);
 
 			setValues({
@@ -83,10 +87,10 @@ const UserSettings = () => {
 				confirmPassword: '',
 			});
 		} catch (err) {
-			setApiError('Password change failed');
+			setApiPassChangeError('Password change failed');
 
 			setTimeout(() => {
-				setApiError('');
+				setApiPassChangeError('');
 			}, 5000);
 
 			setValues({
@@ -100,12 +104,29 @@ const UserSettings = () => {
 	const [newPomodoroTime, setNewPomodoroTime] = useState(Number(localStorage.getItem('pomodoroTime')) || 25);
 
 	const handleSetPomodoroTime = () => {
+		setSuccessPomodoroChange('');
+		setPomodoroErr('');
+
 		const value = Number(newPomodoroTime);
 
-		if (value < 1 || value > 60) return;
+		if (value < 1 || value > 60) {
+			setPomodoroErr('Time must be between 1 and 60 minutes');
+
+			setTimeout(() => {
+				setPomodoroErr('');
+			}, 5000);
+
+			return;
+		}
 
 		localStorage.setItem('pomodoroTime', value);
 		window.dispatchEvent(new Event('pomodoroUpdate'));
+
+		setSuccessPomodoroChange('Pomodoro time updated successfully');
+
+		setTimeout(() => {
+			setSuccessPomodoroChange('');
+		}, 5000);
 	};
 
 	return (
@@ -159,8 +180,26 @@ const UserSettings = () => {
 
 						<Button inner='Change password' onClick={handleChangePassword} />
 
-						{success && <p className={styles.successInfo}>{success}</p>}
-						{apiError && <p className={styles.errorInfo}>{apiError}</p>}
+						{successPassChange && <p className={styles.successInfo}>{successPassChange}</p>}
+						{apiPassChangeError && <p className={styles.errorInfo}>{apiPassChangeError}</p>}
+					</section>
+
+					<section className={`${styles.box} ${styles.desktopOnly}`}>
+						<div className={styles.headerRow}>
+							<h2>View</h2>
+
+							<div className={styles.viewWrapper}>
+								<button className={!isFullscreen ? styles.active : ''} onClick={() => setIsFullscreen(false)}>
+									Window
+									<Minimize size={16} />
+								</button>
+
+								<button className={isFullscreen ? styles.active : ''} onClick={() => setIsFullscreen(true)}>
+									Fullscreen
+									<Maximize size={16} />
+								</button>
+							</div>
+						</div>
 					</section>
 
 					<section className={styles.box}>
@@ -172,8 +211,8 @@ const UserSettings = () => {
 
 					<section className={styles.box}>
 						<div className={styles.headerRow}>
-							<h2>Pomodoro</h2>
 							<div className={styles.pomodoroSettings}>
+								<h2>Pomodoro</h2>
 								<input
 									type='number'
 									min='1'
@@ -194,9 +233,14 @@ const UserSettings = () => {
 										}
 									}}
 								/>
-								<span className={styles.unit}>max 60m</span>
+								<span className={styles.unit}>min</span>
 
 								<button onClick={handleSetPomodoroTime}>Set Time</button>
+
+								<div className={styles.pomodoroInfoContainer}>
+									{successPomodoroChange && <p className={styles.successInfo}>{successPomodoroChange}</p>}
+									{pomodoroErr && <p className={styles.errorInfo}>{pomodoroErr}</p>}
+								</div>
 							</div>
 						</div>
 					</section>

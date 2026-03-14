@@ -9,6 +9,7 @@ import UserSettings from '../../components/UserSettings/UserSettings.jsx';
 const MainContent = () => {
 	const [activeTab, setActiveTab] = useState('active');
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(false);
 
 	const renderContent = () => {
 		switch (activeTab) {
@@ -17,7 +18,7 @@ const MainContent = () => {
 			case 'completed':
 				return <CompletedTasks />;
 			case 'settings':
-				return <UserSettings />;
+				return <UserSettings isFullscreen={isFullscreen} setIsFullscreen={setIsFullscreen} />;
 			default:
 				return null;
 		}
@@ -33,7 +34,7 @@ const MainContent = () => {
 	}, []);
 
 	return (
-		<div className={styles.dashboard}>
+		<div className={`${styles.dashboard} ${isFullscreen ? styles.fullscreen : ''}`}>
 			<div className={styles.dashboardBodyWrapper}>
 				<div className={styles.dashboardCard}>
 					<Header onBurgerClick={() => setIsMenuOpen(true)} isMenuOpen={isMenuOpen} />

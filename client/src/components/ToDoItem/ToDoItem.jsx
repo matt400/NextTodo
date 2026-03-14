@@ -28,7 +28,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 
 	const [pomodoroMinutes, setPomodoroMinutes] = useState(Number(localStorage.getItem('pomodoroTime')) || 25);
 	const POMODORO_TIME = pomodoroMinutes * 60;
-	const [newPomodoroTime, setNewPomodoroTime] = useState(25);
+
 	const showPomodoro = activePomodoroId === task.id;
 	const [showAlarm, setShowAlarm] = useState(false);
 	const [seconds, setSeconds] = useState(0);
