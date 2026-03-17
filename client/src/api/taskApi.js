@@ -28,14 +28,14 @@ export async function addTask(title, description) {
 	});
 }
 
-export async function updateTask(id, data) {
+export async function editTask(id, updates) {
 	await fetch(API, {
 		method: 'PATCH',
 		headers: { 'Content-Type': 'application/json' },
 		credentials: 'include',
 		body: JSON.stringify({
 			task_id: id,
-			data,
+			data: updates,
 		}),
 	});
 }

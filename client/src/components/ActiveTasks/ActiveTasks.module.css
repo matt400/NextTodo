@@ -25,11 +25,14 @@
 	gap: 6px;
 }
 
-.activeFooter {
+
+
+.emptyState {
+	position: relative;
+	flex: 1;
 	display: flex;
-	width: 100%;
-	justify-content: center; 
-	padding-top: 10px;
+	justify-content: center;
+	align-items: center;
 }
 
 .emptyContainer {
@@ -42,11 +45,13 @@
 	font-size: 18px;
 }
 
-.emptyState {
-	flex: 1;
+.activeFooter {
+	position: absolute;
+	bottom: 10px;
 	display: flex;
+	width: 100%;
 	justify-content: center;
-	align-items: center;
+	padding-top: 10px;
 }
 
 @media (min-width: 1200px) {
