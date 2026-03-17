@@ -1,4 +1,4 @@
-.todo-item {
+.todoItem {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
@@ -18,12 +18,12 @@
 	cursor: pointer;
 }
 
-.todo-item:hover {
+.todoItem:hover {
 	background: var(--todo-highlight);
 	border-color: var(--border-color);
 }
 
-.todo-main-row {
+.todoMainRow {
 	display: flex;
 	align-items: center;
 	width: 100%;
@@ -31,7 +31,7 @@
 	min-width: 0;
 }
 
-.todo-checkbox {
+.todoCheckbox {
 	width: 24px;
 	height: 24px;
 	min-width: 24px;
@@ -45,12 +45,12 @@
 	transition: background 0.3s;
 }
 
-.todo-checkbox:hover {
+.todoCheckbox:hover {
 	background: var(--color-green);
 	border-color: var(--color-green);
 }
 
-.todo-checkbox.checked {
+.todoCheckbox.checked {
 	background: var(--color-green);
 }
 
@@ -59,7 +59,7 @@
 	color: var(--color-text-primary);
 }
 
-.todo-text {
+.todoText {
 	display: flex;
 	align-items: center;
 	gap: 6px;
@@ -75,12 +75,12 @@
 	color: var(--color-dark-1);
 }
 
-.todo-text.done {
+.todoText.done {
 	text-decoration: line-through;
 	opacity: 0.5;
 }
 
-.todo-description-expanded {
+.todoDescriptionExpanded {
 	font-size: 14px;
 	color: var(--text-secondary);
 	margin-left: 34px;
@@ -89,7 +89,7 @@
 	white-space: pre-line;
 }
 
-.todo-actions-hover {
+.todoActionsHover {
 	display: flex;
 	align-items: center;
 	gap: 8px;
@@ -105,12 +105,12 @@
 	display: none;
 }
 
-.todo-item:hover .todo-actions-hover {
+.todoItem:hover .todoActionsHover {
 	opacity: 1;
 	pointer-events: auto;
 }
 
-.todo-indicators {
+.todoIndicators {
 	display: flex;
 	align-items: center;
 	gap: 6px;
@@ -118,7 +118,7 @@
 	flex-shrink: 0;
 }
 
-.todo-action-btn {
+.todoActionBtn {
 	appearance: none;
 	border: none;
 	background: transparent;
@@ -135,40 +135,21 @@
 	transition: background 0.15s ease;
 }
 
-.todo-action-btn:hover {
+.todoActionBtn:hover {
 	background-color: var(--bg-content);
 }
 
-.todo-action-btn svg {
+.todoActionBtn svg {
 	color: var(--color-dark-2);
 	font-size: inherit;
 }
 
-.pomodoro-btn {
-	appearance: none;
-	border: none;
-	background: transparent;
-	padding: 4px;
-	border-radius: var(--border-radius);
-	color: var(--color-text-primary);
-	cursor: pointer;
 
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-
-	transition: background 0.15s ease;
-}
-.pomodoro-btn:hover {
-	background-color: var(--color-red);
-	color: var(--color-pink);
-}
-
-.calendar-btn:hover {
+.calendarBtn:hover {
 	background-color: var(--bg-content);
 }
 
-.todo-modal {
+.todoModal {
 	position: fixed;
 	bottom: 0;
 	left: 0;
@@ -182,14 +163,14 @@
 	gap: 1rem;
 }
 
-.todo-btn {
+.todoBtn {
 	display: flex;
 	justify-content: end;
 	align-items: center;
 	gap: 1rem;
 }
 
-.expand-arrow {
+.expandArrow {
 	transition: transform 0.2s ease;
 	opacity: 0.7;
 }
@@ -202,7 +183,7 @@
 	transform: rotate(180deg);
 }
 
-.calendar-overlay {
+.calendarOverlay {
 	position: fixed;
 	inset: 0;
 	background: rgba(0, 0, 0, 0.65);
@@ -212,7 +193,7 @@
 	z-index: 2000;
 }
 
-.calendar-modal {
+.calendarModal {
 	background: var(--modal-bg);
 	border: 1px solid var(--modal-border);
 	border-radius: var(--border-radius);
@@ -224,13 +205,13 @@
 	animation: scaleIn 0.2s ease;
 }
 
-.calendar-header {
+.calendarHeader {
 	display: flex;
 	justify-content: flex-end;
 	margin-bottom: 10px;
 }
 
-.calendar-close-btn {
+.calendarCloseBtn {
 	border: none;
 	background: transparent;
 	font-size: 18px;
@@ -243,13 +224,13 @@
 	}
 }
 
-.calendar-footer {
+.calendarFooter {
 	display: flex;
 	gap: 10px;
 	margin-top: 16px;
 }
 
-.calendar-footer-btn {
+.calendarFooterBtn {
 	flex: 1;
 	height: 40px;
 	border-radius: 10px;
@@ -278,7 +259,7 @@
 	}
 }
 
-.todo-date {
+.todoDate {
 	display: flex;
 	align-items: center;
 
@@ -292,12 +273,12 @@
 	border-radius: var(--border-radius);
 }
 
-.todo-date--today {
+.todoDate--today {
 	background-color: var(--color-pink);
 	color: var(--color-red);
 }
 
-.calendar-footer-btn {
+.calendarFooterBtn {
 	border: var(--border);
 	border-radius: var(--border-radius);
 	padding: 8px;
@@ -313,7 +294,7 @@
 	background-color: var(--bg-content);
 }
 
-.delete-btn:hover {
+.deleteBtn:hover {
 	color: var(--color-red);
 	background-color: var(--sidebar-logout-hover);
 }
@@ -327,98 +308,6 @@
 	background-color: var(--color-primary-hover);
 }
 
-.pomodoro-alarm {
-	display: flex;
-	align-items: center;
-	gap: 4px;
-
-	padding: 14px 6px;
-	height: 22px;
-
-	color: var(--color-red);
-	background-color: var(--color-pink);
-
-	border-radius: var(--border-radius);
-}
-
-.pomodoro-time {
-	color: var(--color-red);
-	font-size: 13px;
-}
-
-.alarm-overlay {
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.65);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 200;
-	animation: fadeIn 0.2s ease;
-}
-
-.alarm-modal {
-	width: 380px;
-
-	background: var(--bg-surface);
-	border: 1px solid var(--border-color);
-	border-radius: var(--border-radius);
-
-	box-shadow: var(--shadow);
-	animation: scaleIn 0.2s ease;
-}
-
-.alarm-header {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 12px;
-
-	padding: 16px;
-	border-bottom: 1px solid var(--border-color);
-
-	background: var(--color-bg-content);
-}
-
-.alarm-header h3 {
-	color: var(--text-primary);
-	font-weight: 500;
-	font-size: 18px;
-}
-
-.alarm-header svg {
-	color: var(--color-red);
-}
-
-.alarm-content {
-	padding: 18px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.ok-button {
-	width: 100%;
-
-	background: var(--color-red);
-	color: white;
-
-	border: none;
-	border-radius: var(--border-radius);
-
-	padding: 12px;
-
-	font-weight: 500;
-	font-size: 14px;
-
-	cursor: pointer;
-
-	transition: background var(--transition-duration);
-}
-
-.ok-button:hover {
-	background: var(--color-red-hover);
-}
 
 .mobileOverlay {
 	position: fixed;
@@ -493,6 +382,41 @@
 	cursor: pointer;
 }
 
+
+@media (max-width: 767px) {
+	.calendarOverlay {
+		align-items: flex-end;
+	}
+
+	.calendarModal {
+		width: min(420px, calc(100% - 24px));
+		margin-bottom: 16px;
+		border-radius: 16px;
+
+		animation: slideUp 0.25s ease;
+	}
+
+	.todoActionsHover {
+		display: none;
+	}
+
+	.mobilePlus {
+		display: flex;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1366px) {
+	.todoActionsHover {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.mobilePlus {
+		display: none;
+	}
+}
+
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;
@@ -521,38 +445,5 @@
 	to {
 		transform: translateY(0);
 		opacity: 1;
-	}
-}
-
-@media (max-width: 767px) {
-	.calendar-overlay {
-		align-items: flex-end;
-	}
-
-	.calendar-modal {
-		width: min(420px, calc(100% - 24px));
-		margin-bottom: 16px;
-		border-radius: 16px;
-
-		animation: slideUp 0.25s ease;
-	}
-
-	.todo-actions-hover {
-		display: none;
-	}
-
-	.mobilePlus {
-		display: flex;
-	}
-}
-
-@media (min-width: 768px) and (max-width: 1366px) {
-	.todo-actions-hover {
-		opacity: 1;
-		pointer-events: auto;
-	}
-
-	.mobilePlus {
-		display: none;
 	}
 }
