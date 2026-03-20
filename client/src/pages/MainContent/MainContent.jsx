@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Header from '../../components/Header/';
 import Sidebar from '../../components/Sidebar/Sidebar.jsx';
 import styles from './MainContent.module.css';
-import ActiveTasks from '../../components/ActiveTasks/ActiveTasks.jsx';
+import ActiveTasks from '../../components/ActiveTasks';
 import CompletedTasks from '../../components/CompletedTasks/CompletedTasks.jsx';
 import UserSettings from '../../components/UserSettings/UserSettings.jsx';
 
