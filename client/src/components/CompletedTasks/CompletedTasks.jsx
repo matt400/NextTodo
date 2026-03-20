@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchTasks, updateTask as apiUpdateTask, deleteTask as apiDeleteTask } from '../../api/taskApi';
+import { fetchTasks, editTask as apiEditTask, deleteTask as apiDeleteTask } from '../../api/taskApi';
 
 import ToDoItem from '../ToDoItem';
 import DeleteAllButton from '../DeleteAllButton';
@@ -34,7 +34,7 @@ const CompletedTasks = () => {
 		const task = tasks.find((t) => t.id === id);
 		if (!task) return;
 
-		await apiUpdateTask(id, { isFinished: !task.done });
+		await apiEditTask(id, { isFinished: !task.done });
 		await loadTasks();
 	};
 
@@ -44,7 +44,7 @@ const CompletedTasks = () => {
 	};
 
 	const updateTask = async (id, updates) => {
-		await apiUpdateTask(id, updates);
+		await apiEditTask(id, updates);
 		await loadTasks();
 	};
 

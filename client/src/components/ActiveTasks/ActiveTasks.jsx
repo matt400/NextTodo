@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import {
 	fetchTasks,
 	addTask as apiAddTask,
-	updateTask as apiUpdateTask,
+	editTask as apiEditTask,
 	deleteTask as apiDeleteTask,
 } from '../../api/taskApi';
 
@@ -48,7 +48,7 @@ const ActiveTasks = () => {
 		const task = tasks.find((t) => t.id === id);
 		if (!task) return;
 
-		await apiUpdateTask(id, {
+		await apiEditTask(id, {
 			isFinished: !task.done,
 		});
 
@@ -69,8 +69,12 @@ const ActiveTasks = () => {
 		await loadTasks();
 	};
 
-	const updateTask = async (id, updates) => {
-		await apiUpdateTask(id, updates);
+	const updateTask = async (id, { title, description }) => {
+		await apiEditTask(id, {
+			taskName: title,
+			taskDesc: description,
+		});
+
 		await loadTasks();
 	};
 
@@ -92,7 +96,6 @@ const ActiveTasks = () => {
 							<Search size={48} />
 							<h3>No active tasks</h3>
 							<p>Create your first task to get started</p>
-
 						</div>
 					</div>
 				) : (
