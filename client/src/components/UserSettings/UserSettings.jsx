@@ -5,8 +5,11 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import Button from '../Button';
 import Field from '../Field';
 import ThemeSwitch from '../ThemeSwitch';
+import { addToast } from '../Toasts';
+import { useFeedback } from '../../context/FeedbackContext.jsx';
+import { useFeedbackHandler } from '../../helpers/useFeedbackHandler.js';
 
-import { Mail, Lock, Maximize, Minimize, Expand, Shrink } from 'lucide-react';
+import { Mail, Lock, Maximize, Minimize } from 'lucide-react';
 import styles from './UserSettings.module.css';
 
 const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
@@ -17,13 +20,19 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	});
 
 	const { user } = useAuth();
-	const [successPassChange, setSuccessPassChange] = useState('');
-	const [apiPassChangeError, setApiPassChangeError] = useState('');
 
 	const [successPomodoroChange, setSuccessPomodoroChange] = useState('');
 	const [pomodoroErr, setPomodoroErr] = useState('');
 
 	const [errors, setErrors] = useState({});
+
+	const { feedbackType, setFeedbackType } = useFeedback();
+	const { handleFeedback } = useFeedbackHandler();
+	const [notification, setNotification] = useState('');
+	const [passMessage, setPassMessage] = useState('');
+	const [passError, setPassError] = useState('');
+	const [emailMessage, setEmailMessage] = useState('');
+	const [emailError, setEmailError] = useState('');
 
 	const handleChange = (e) => {
 		const { id, value } = e.target;
@@ -65,8 +74,6 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	};
 
 	const handleChangePassword = async () => {
-		setSuccessPassChange('');
-		setApiPassChangeError('');
 		const validationErrors = validate(values);
 		setErrors(validationErrors);
 
@@ -75,29 +82,31 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 		try {
 			await changePassword(values.currentPassword, values.newPassword, values.confirmPassword);
 
-			setSuccessPassChange('Password changed successfully.');
-
-			setTimeout(() => {
-				setSuccessPassChange('');
-			}, 5000);
+			handleFeedback('success', 'Password changed successfully.', setPassMessage);
 
 			setValues({
 				currentPassword: '',
 				newPassword: '',
 				confirmPassword: '',
 			});
-		} catch (err) {
-			setApiPassChangeError('Password change failed');
-
-			setTimeout(() => {
-				setApiPassChangeError('');
-			}, 5000);
+		} catch {
+			handleFeedback('error', 'Password change failed', setPassError);
 
 			setValues({
 				currentPassword: '',
 				newPassword: '',
 				confirmPassword: '',
 			});
+		}
+	};
+
+	const handleEmailChange = () => {
+		const isSuccess = true;
+
+		if (isSuccess) {
+			handleFeedback('success', 'Email changed successfully.', setEmailMessage);
+		} else {
+			handleFeedback('error', 'Email change failed', setEmailError);
 		}
 	};
 
@@ -110,23 +119,22 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 		const value = Number(newPomodoroTime);
 
 		if (value < 1 || value > 60) {
-			setPomodoroErr('Time must be between 1 and 60 minutes');
-
-			setTimeout(() => {
-				setPomodoroErr('');
-			}, 5000);
-
+			handleFeedback('error', 'Time must be between 1 and 60 minutes', setPomodoroErr);
 			return;
 		}
 
 		localStorage.setItem('pomodoroTime', value);
 		window.dispatchEvent(new Event('pomodoroUpdate'));
 
-		setSuccessPomodoroChange('Pomodoro time updated successfully');
+		handleFeedback('success', 'Pomodoro time updated successfully.', setSuccessPomodoroChange);
+	};
+
+	const showNotification = (msg) => {
+		setNotification(msg);
 
 		setTimeout(() => {
-			setSuccessPomodoroChange('');
-		}, 5000);
+			setNotification('');
+		}, 4000);
 	};
 
 	return (
@@ -139,7 +147,10 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 							Current Email: <strong>{user?.email}</strong>
 						</p>
 						<Field innerText='Enter new email' Icon={Mail} id='email' type='email' label='Email' />
-						<Button inner='Change email' />
+						<Button inner='Change email' onClick={handleEmailChange} />
+
+						{emailMessage && <p className={styles.successInfo}>{emailMessage}</p>}
+						{emailError && <p className={styles.errorInfo}>{emailError}</p>}
 					</section>
 
 					<section className={styles.box}>
@@ -180,8 +191,8 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 
 						<Button inner='Change password' onClick={handleChangePassword} />
 
-						{successPassChange && <p className={styles.successInfo}>{successPassChange}</p>}
-						{apiPassChangeError && <p className={styles.errorInfo}>{apiPassChangeError}</p>}
+						{passMessage && <p className={styles.successInfo}>{passMessage}</p>}
+						{passError && <p className={styles.errorInfo}>{passError}</p>}
 					</section>
 
 					<section className={`${styles.box} ${styles.desktopOnly}`}>
@@ -243,6 +254,34 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 								</div>
 							</div>
 						</div>
+					</section>
+					<section className={styles.box}>
+						<div className={styles.headerRow}>
+							<h2>Notifications display</h2>
+
+							<div className={styles.viewWrapper}>
+								<button
+									className={feedbackType === 'toast' ? styles.active : ''}
+									onClick={() => {
+										setFeedbackType('toast');
+
+										addToast('info', 'Notifications will be shown as toasts');
+									}}>
+									Toast
+								</button>
+
+								<button
+									className={feedbackType === 'inline' ? styles.active : ''}
+									onClick={() => {
+										setFeedbackType('inline');
+
+										showNotification('Notifications will be shown inline');
+									}}>
+									Inline
+								</button>
+							</div>
+						</div>
+						{notification && <p className={styles.successInfo}>{notification}</p>}
 					</section>
 				</div>
 			</div>
