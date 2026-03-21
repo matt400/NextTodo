@@ -27,6 +27,20 @@
 		box-shadow var(--transition-duration);
 }
 
+.successInfo {
+	color: var(--color-green);
+	text-align: center;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.errorInfo {
+	color: var(--color-red);
+	text-align: center;
+	font-size: 14px;
+	font-weight: 500;
+}
+
 @media (min-width: 768px) {
 	.registration {
 		position: static;
