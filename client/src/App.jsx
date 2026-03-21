@@ -6,10 +6,12 @@ import Login from './pages/Login';
 import Registration from './pages/Registration';
 import MainContent from './pages/MainContent';
 import NotFoundPage from './pages/NotFoundPage';
+import Toasts from './components/Toasts';
 
 const App = () => {
 	return (
 		<ThemeProvider>
+			<Toasts />
 			<Routes>
 				<Route path='/' element={<Navigate to='/login' />} />
 				<Route path='/login' element={<Login />} />
