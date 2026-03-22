@@ -14,6 +14,12 @@
 	padding-bottom: 10px;
 }
 
+.activeHeaderRight {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 .tasksList {
 	flex: 1;
 	overflow-y: auto;
@@ -24,8 +30,6 @@
 	flex-direction: column;
 	gap: 6px;
 }
-
-
 
 .emptyState {
 	position: relative;
@@ -46,8 +50,7 @@
 }
 
 .activeFooter {
-	position: absolute;
-	bottom: 10px;
+	position: sticky;
 	display: flex;
 	width: 100%;
 	justify-content: center;

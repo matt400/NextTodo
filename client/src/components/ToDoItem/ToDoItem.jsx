@@ -129,9 +129,9 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 					)}
 				</div>
 
-				{isExpanded && task.description && (
-					<div className={styles['todoDescriptionExpanded']}>{task.description}</div>
-				)}
+				<div className={`${styles['todoDescriptionExpanded']} ${isExpanded ? styles.open : ''}`}>
+					{task.description}
+				</div>
 			</div>
 
 			{showEditModal && <EditTaskModal task={task} onUpdate={onEdit} onClose={() => setShowEditModal(false)} />}

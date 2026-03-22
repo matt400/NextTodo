@@ -85,6 +85,7 @@ const ActiveTasks = () => {
 			{activeTasks.length > 0 && (
 				<div className={styles.activeHeader}>
 					<h2 className={styles.activeTasksCount}>Active tasks ({activeTasks.length})</h2>
+					
 					<DeleteAllButton onClick={deleteAllActive} />
 				</div>
 			)}
