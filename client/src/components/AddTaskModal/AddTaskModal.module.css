@@ -76,8 +76,6 @@
 	margin: 0;
 }
 
-/* INPUT */
-
 .inputGroup label {
 	display: block;
 	color: var(--text-secondary);
@@ -91,6 +89,7 @@
 	border: 1px solid var(--border-color);
 	background: var(--bg-surface);
 	color: var(--text-primary);
+	resize: vertical;
 	outline: none;
 	font-size: 15px;
 	transition: var(--transition-duration);

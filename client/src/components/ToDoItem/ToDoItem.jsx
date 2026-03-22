@@ -145,11 +145,18 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 							</button>
 						</div>
 
-						<DayPicker mode='single' selected={dueDate} onSelect={(date) => setDueDate(date)} />
+						<DayPicker
+							mode='single'
+							selected={dueDate}
+							onSelect={(date) => setDueDate(date)}
+							classNames={{
+								day: styles.day,
+							}}
+						/>
 
 						<div className={styles['calendarFooter']}>
 							<button
-								className={`${styles['calendarFooterBtn']} ${styles.delete}`}
+								className={`${styles['calendarFooterBtn']} ${styles.deleteCalendar}`}
 								onClick={() => {
 									setDueDate(null);
 									setShowCalendarModal(false);

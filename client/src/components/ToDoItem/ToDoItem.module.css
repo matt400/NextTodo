@@ -91,7 +91,6 @@
 	word-break: break-word;
 }
 
-
 .todoDescriptionExpanded {
 	max-height: 0;
 	overflow: hidden;
@@ -108,7 +107,7 @@
 }
 
 .todoDescriptionExpanded.open {
-	max-height: 1000px; 
+	max-height: 1000px;
 	opacity: 1;
 	transform: translateY(0);
 }
@@ -234,6 +233,11 @@
 	margin-bottom: 10px;
 }
 
+.day:hover {
+  background-color: var(--hover-soft);
+  border-radius: 50%;
+}
+
 .calendarCloseBtn {
 	border: none;
 	background: transparent;
@@ -244,6 +248,7 @@
 
 	&:hover {
 		color: var(--text-primary);
+		background-color: var(--color-red-hover);
 	}
 }
 
@@ -257,7 +262,7 @@
 	flex: 1;
 	height: 40px;
 	border-radius: 10px;
-	border: none;
+	border: 1 px solid var(--border);
 	cursor: pointer;
 	font-weight: 500;
 	transition: var(--transition-duration);
@@ -272,13 +277,11 @@
 	}
 }
 
-.delete {
-	background: var(--hover-soft);
-	color: var(--text-secondary);
+.deleteCalendar {
+	color: var(--color-red);
 
 	&:hover {
 		background: var(--color-danger-soft);
-		color: var(--color-red);
 	}
 }
 
@@ -299,13 +302,6 @@
 .todoDate--today {
 	background-color: var(--color-pink);
 	color: var(--color-red);
-}
-
-.calendarFooterBtn {
-	border: var(--border);
-	border-radius: var(--border-radius);
-	padding: 8px;
-	width: 40%;
 }
 
 .delete {

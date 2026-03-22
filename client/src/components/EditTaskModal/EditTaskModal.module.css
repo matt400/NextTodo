@@ -49,14 +49,12 @@
 	color: var(--text-primary);
 }
 
-
 .form {
 	padding: 18px;
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
 }
-
 
 .errorBox {
 	display: flex;
@@ -91,6 +89,7 @@
 	border: 1px solid var(--border-color);
 	background: var(--bg-surface);
 	color: var(--text-primary);
+	resize: vertical;
 	outline: none;
 	font-size: 15px;
 	transition: var(--transition-duration);
@@ -112,7 +111,6 @@
 	color: var(--color-red);
 	font-size: 13px;
 }
-
 
 .footer {
 	display: flex;
@@ -150,7 +148,6 @@
 .add:hover {
 	background: var(--color-primary-hover);
 }
-
 
 @keyframes fadeIn {
 	from {
