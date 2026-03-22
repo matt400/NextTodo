@@ -2,6 +2,7 @@
 	display: flex;
 	flex-direction: column;
 	width: 100%;
+	flex-shrink: 0;
 
 	background: var(--bg-todo-item);
 	border: 1px solid var(--border-color);
@@ -75,11 +76,6 @@
 	color: var(--color-dark-1);
 }
 
-.todoText.done {
-	text-decoration: line-through;
-	opacity: 0.5;
-}
-
 .todoDescriptionExpanded {
 	font-size: 14px;
 	color: var(--text-secondary);
@@ -87,6 +83,33 @@
 	line-height: 1.4;
 
 	white-space: pre-line;
+}
+
+.todoText,
+.todoDescriptionExpanded {
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.todoDescriptionExpanded {
+	max-height: 0;
+	overflow: hidden;
+
+	opacity: 0;
+	transform: translateY(-4px);
+
+	transition:
+		max-height 0.25s ease,
+		opacity 0.2s ease,
+		transform 0.2s ease;
+
+	margin-left: 34px;
+}
+
+.todoDescriptionExpanded.open {
+	max-height: 1000px;
+	opacity: 1;
+	transform: translateY(0);
 }
 
 .todoActionsHover {
@@ -143,7 +166,6 @@
 	color: var(--color-dark-2);
 	font-size: inherit;
 }
-
 
 .calendarBtn:hover {
 	background-color: var(--bg-content);
@@ -211,6 +233,11 @@
 	margin-bottom: 10px;
 }
 
+.day:hover {
+  background-color: var(--hover-soft);
+  border-radius: 50%;
+}
+
 .calendarCloseBtn {
 	border: none;
 	background: transparent;
@@ -221,6 +248,7 @@
 
 	&:hover {
 		color: var(--text-primary);
+		background-color: var(--color-red-hover);
 	}
 }
 
@@ -234,12 +262,11 @@
 	flex: 1;
 	height: 40px;
 	border-radius: 10px;
-	border: none;
+	border: 1 px solid var(--border);
 	cursor: pointer;
 	font-weight: 500;
 	transition: var(--transition-duration);
 }
-
 
 .create {
 	background: var(--color-primary);
@@ -250,13 +277,11 @@
 	}
 }
 
-.delete {
-	background: var(--hover-soft);
-	color: var(--text-secondary);
+.deleteCalendar {
+	color: var(--color-red);
 
 	&:hover {
 		background: var(--color-danger-soft);
-		color: var(--color-red);
 	}
 }
 
@@ -277,13 +302,6 @@
 .todoDate--today {
 	background-color: var(--color-pink);
 	color: var(--color-red);
-}
-
-.calendarFooterBtn {
-	border: var(--border);
-	border-radius: var(--border-radius);
-	padding: 8px;
-	width: 40%;
 }
 
 .delete {
@@ -308,7 +326,6 @@
 .create:hover {
 	background-color: var(--color-primary-hover);
 }
-
 
 .mobileOverlay {
 	position: fixed;
@@ -383,7 +400,6 @@
 	cursor: pointer;
 }
 
-
 @media (max-width: 767px) {
 	.calendarOverlay {
 		align-items: flex-end;
@@ -416,7 +432,6 @@
 		display: none;
 	}
 }
-
 
 @keyframes fadeIn {
 	from {
