@@ -90,12 +90,16 @@
 
 .modal h3 {
 	color: var(--text-primary);
-	text-align: left;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .modal p {
 	color: var(--text-secondary);
-	text-align: left;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .actions {
