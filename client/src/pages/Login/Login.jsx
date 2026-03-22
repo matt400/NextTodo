@@ -69,8 +69,6 @@ const Login = () => {
 			});
 		}
 	};
-	console.log('LOCATION STATE:', location.state);
-	console.log('REGISTERED:', registered);
 	
 	const handleChange = (e) => {
 		const { id, value } = e.target;
@@ -84,8 +82,6 @@ const Login = () => {
 			...prev,
 			[id]: '',
 		}));
-
-		// setFormMessage('');
 	};
 
 	useEffect(() => {
