@@ -6,6 +6,7 @@ import Heading from '../../components/Heading/Heading.jsx';
 import Field from '../../components/Field/Field.jsx';
 import Button from '../../components/Button/Button.jsx';
 import Linking from '../../components/Linking/Linking.jsx';
+import { useFeedbackHandler } from '../../helpers/useFeedbackHandler';
 import { Mail, Lock, User } from 'lucide-react';
 import styles from './Registration.module.css';
 
@@ -21,11 +22,12 @@ const Registration = () => {
 
 	const [errors, setErrors] = useState({});
 	const [submitted, setSubmitted] = useState(false);
+	const { handleFeedback } = useFeedbackHandler();
+	const [formMessage, setFormMessage] = useState('');
+	const [isError, setIsError] = useState(false);
 
 	const validate = (vals) => {
 		let temp = {};
-
-		if (!vals.email) temp.email = 'Email is required';
 
 		if (!vals.email) temp.email = 'Email is required';
 		else if (!/\S+@\S+\.\S+/.test(vals.email)) temp.email = 'Enter a correct email address';
@@ -36,7 +38,7 @@ const Registration = () => {
 		else if (!/[a-z]/.test(vals.password)) temp.password = 'Must contain lowercase letter';
 		else if (!/[A-Z]/.test(vals.password)) temp.password = 'Must contain uppercase letter';
 		else if (!/[0-9]/.test(vals.password)) temp.password = 'Must contain a digit';
-		else if (!/[!@#$%^&*()_\-+=\[\]{};:\'",.<>/?`~\\|]/.test(vals.password))
+		else if (!/[!@#$%^&*()_\-+=[\]{};:'",.<>/?`~|]/.test(vals.password))
 			temp.password = 'Must contain a special character';
 
 		if (!vals.confirmPassword) temp.confirmPassword = 'Confirm your password';
@@ -55,7 +57,7 @@ const Registration = () => {
 	};
 
 	const handleSubmit = async () => {
-		console.log('REGISTER CLICK');
+
 		setSubmitted(true);
 
 		const validationErrors = validate(values);
@@ -71,8 +73,11 @@ const Registration = () => {
 			navigate('/login', {
 				state: { registered: true },
 			});
-		} catch (err) {
-			alert(err.message);
+		} catch {
+			handleFeedback('error', 'Registration failed', (msg) => {
+				setIsError(true);
+				setFormMessage(msg);
+			});
 		}
 	};
 
@@ -80,6 +85,8 @@ const Registration = () => {
 		<div className={styles.authLayout}>
 			<div className={`${styles.registration}`}>
 				<Heading title='Create Account' text='Sign up to get started' />
+
+				{formMessage && <p className={isError ? styles.errorInfo : styles.successInfo}>{formMessage}</p>}
 
 				<Field
 					innerText='Enter your email'

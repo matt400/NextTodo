@@ -10,6 +10,7 @@ import ToDoItem from '../ToDoItem';
 import CreateTaskButton from '../CreateTaskButton';
 import AddTaskModal from '../AddTaskModal';
 import DeleteAllButton from '../DeleteAllButton';
+import DeleteAllModal from './DeleteAllModal'
 import Loader from '../Loader';
 
 import { Plus, Search } from 'lucide-react';
@@ -22,6 +23,7 @@ const ActiveTasks = () => {
 	const activeTasks = tasks.filter((task) => !task.done);
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [activePomodoroId, setActivePomodoroId] = useState(null);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
 
 	const loadTasks = async () => {
 		setLoading(true);
@@ -60,21 +62,18 @@ const ActiveTasks = () => {
 		await loadTasks();
 	};
 
-	const deleteAllActive = async () => {
-		const confirmed = window.confirm('Delete all active tasks?');
-		if (!confirmed) return;
-
-		await Promise.all(activeTasks.map((task) => apiDeleteTask(task.id)));
-
-		await loadTasks();
-	};
-
 	const updateTask = async (id, { title, description }) => {
 		await apiEditTask(id, {
 			taskName: title,
 			taskDesc: description,
 		});
 
+		await loadTasks();
+	};
+
+	const handleConfirmDeleteAll = async () => {
+		await Promise.all(activeTasks.map((task) => apiDeleteTask(task.id)));
+		setShowDeleteModal(false);
 		await loadTasks();
 	};
 
@@ -85,8 +84,7 @@ const ActiveTasks = () => {
 			{activeTasks.length > 0 && (
 				<div className={styles.activeHeader}>
 					<h2 className={styles.activeTasksCount}>Active tasks ({activeTasks.length})</h2>
-					
-					<DeleteAllButton onClick={deleteAllActive} />
+					<DeleteAllButton onClick={() => setShowDeleteModal(true)} />
 				</div>
 			)}
 
@@ -121,6 +119,10 @@ const ActiveTasks = () => {
 			</div>
 
 			{showCreateModal && <AddTaskModal onAdd={addTask} onClose={() => setShowCreateModal(false)} />}
+
+			{showDeleteModal && (
+				<DeleteAllModal onConfirm={handleConfirmDeleteAll} onCancel={() => setShowDeleteModal(false)} />
+			)}
 		</div>
 	);
 };

@@ -175,6 +175,12 @@ p.errorInfo {
 	display: none;
 }
 
+.helperText {
+	font-size: 13px;
+	color: var(--text-muted);
+	text-align: center;
+}
+
 @media (max-width: 768px) {
 	.container {
 		grid-template-columns: 1fr;
