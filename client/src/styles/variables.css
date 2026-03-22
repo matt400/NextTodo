@@ -10,7 +10,7 @@
 	--color-green: #22c55e;
 	--color-pink: #fbcfe8;
 
-	--bg-page: #f3f4f6;
+	--bg-page: linear-gradient(180deg, #f8fafc 0%, #eef2f7 40%, #eaf1ff 100%);
 	--bg-surface: #ffffff;
 	--bg-content: #eef2f7;
 	--bg-todo-item: #ffffff;
@@ -106,8 +106,7 @@
 
 /* MANUAL LIGHT THEME OVERRIDE */
 
-
-:root[data-theme="light"] {
+:root[data-theme='light'] {
 	--color-primary: #2563eb;
 	--color-primary-hover: #1d4ed8;
 	--color-primary-light: rgba(37, 99, 235, 0.25);
@@ -117,7 +116,7 @@
 	--color-green: #22c55e;
 	--color-pink: #fbcfe8;
 
-	--bg-page: #f3f4f6;
+	--bg-page: linear-gradient(180deg, #f8fafc 0%, #eef2f7 40%, #eaf1ff 100%);
 	--bg-surface: #ffffff;
 	--bg-content: #eef2f7;
 	--bg-todo-item: #ffffff;
@@ -160,7 +159,7 @@
 
 /* MANUAL DARK THEME OVERRIDE */
 
-:root[data-theme="dark"] {
+:root[data-theme='dark'] {
 	--color-primary: #2563eb;
 	--color-primary-hover: rgba(37, 99, 235, 0.75);
 
