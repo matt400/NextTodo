@@ -121,7 +121,7 @@ const ActiveTasks = () => {
 			{showCreateModal && <AddTaskModal onAdd={addTask} onClose={() => setShowCreateModal(false)} />}
 
 			{showDeleteModal && (
-				<DeleteAllModal onConfirm={handleConfirmDeleteAll} onCancel={() => setShowDeleteModal(false)} />
+				<DeleteAllModal type='active' onConfirm={handleConfirmDeleteAll} onCancel={() => setShowDeleteModal(false)} />
 			)}
 		</div>
 	);

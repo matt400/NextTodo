@@ -9,7 +9,7 @@ import { addToast } from '../Toasts';
 import { useFeedback } from '../../context/FeedbackContext.jsx';
 import { useFeedbackHandler } from '../../helpers/useFeedbackHandler.js';
 
-import { Mail, Lock, Maximize, Minimize } from 'lucide-react';
+import { Mail, Lock, Maximize, Minimize, Plus, Minus, BellRing, MessageSquare } from 'lucide-react';
 import styles from './UserSettings.module.css';
 
 const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
@@ -20,7 +20,7 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	});
 
 	const { user } = useAuth();
-
+	const [openSection, setOpenSection] = useState(null);
 	const [successPomodoroChange, setSuccessPomodoroChange] = useState('');
 	const [pomodoroErr, setPomodoroErr] = useState('');
 
@@ -28,6 +28,7 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 
 	const { feedbackType, setFeedbackType } = useFeedback();
 	const { handleFeedback } = useFeedbackHandler();
+
 	const [notification, setNotification] = useState('');
 	const [passMessage, setPassMessage] = useState('');
 	const [passError, setPassError] = useState('');
@@ -138,154 +139,185 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	};
 
 	return (
-		<>
-			<div className={styles.mainContent}>
-				<div className={styles.container}>
-					<section className={styles.box}>
-						<h2>Change Email</h2>
-						<p>
-							Current Email: <strong>{user?.email}</strong>
-						</p>
-						<Field innerText='Enter new email' Icon={Mail} id='email' type='email' label='Email' />
+		<div className={styles.settings}>
+			<div className={styles.activeHeader}>
+				<h2>Settings</h2>
+			</div>
+
+			{/* PROFILE */}
+			<section className={styles.section}>
+				<div
+					className={`${styles.sectionHeader} ${openSection === 'profile' ? styles.active : ''}`}
+					onClick={() => setOpenSection(openSection === 'profile' ? null : 'profile')}>
+					<h3>Profile Settings</h3>
+					<Plus size={24} className={`${styles.icon} ${openSection === 'profile' ? styles.rotate : ''}`} />
+				</div>
+				<div className={`${styles.profileGrid} ${openSection === 'profile' ? styles.open : styles.closed}`}>
+					{/* EMAIL */}
+					<div className={styles.card}>
+						<p className={styles.label}>Email</p>
+						<p className={styles.description}>Your current email is {user?.email}</p>
+
+						<Field innerText='New email' Icon={Mail} />
 						<Button inner='Change email' onClick={handleEmailChange} />
 
 						{emailMessage && <p className={styles.successInfo}>{emailMessage}</p>}
 						{emailError && <p className={styles.errorInfo}>{emailError}</p>}
-					</section>
+					</div>
 
-					<section className={styles.box}>
-						<h2>Change Password</h2>
+					{/* PASSWORD */}
+					<div className={styles.card}>
+						<p className={styles.label}>Password</p>
 
 						<Field
-							innerText='Enter current password'
-							Icon={Lock}
 							id='currentPassword'
 							type='password'
-							label='Current Password'
 							value={values.currentPassword}
 							onChange={handleChange}
 							error={errors.currentPassword}
+							innerText='Current password'
+							Icon={Lock}
 						/>
 
 						<Field
-							innerText='Enter new password'
-							Icon={Lock}
 							id='newPassword'
 							type='password'
-							label='New Password'
 							value={values.newPassword}
 							onChange={handleChange}
 							error={errors.newPassword}
+							innerText='New password'
+							Icon={Lock}
 						/>
 
 						<Field
-							innerText='Confirm new password'
-							Icon={Lock}
 							id='confirmPassword'
 							type='password'
-							label='Confirm New Password'
 							value={values.confirmPassword}
 							onChange={handleChange}
 							error={errors.confirmPassword}
+							innerText='Confirm password'
+							Icon={Lock}
 						/>
 
 						<Button inner='Change password' onClick={handleChangePassword} />
 
 						{passMessage && <p className={styles.successInfo}>{passMessage}</p>}
 						{passError && <p className={styles.errorInfo}>{passError}</p>}
-					</section>
-
-					<section className={`${styles.box} ${styles.desktopOnly}`}>
-						<div className={styles.headerRow}>
-							<h2>View</h2>
-
-							<div className={styles.viewWrapper}>
-								<button className={!isFullscreen ? styles.active : ''} onClick={() => setIsFullscreen(false)}>
-									Window
-									<Minimize size={16} />
-								</button>
-
-								<button className={isFullscreen ? styles.active : ''} onClick={() => setIsFullscreen(true)}>
-									Fullscreen
-									<Maximize size={16} />
-								</button>
-							</div>
-						</div>
-					</section>
-
-					<section className={styles.box}>
-						<div className={styles.headerRow}>
-							<h2>Theme</h2>
-							<ThemeSwitch />
-						</div>
-					</section>
-
-					<section className={styles.box}>
-						<div className={styles.headerRow}>
-							<div className={styles.pomodoroSettings}>
-								<h2>Pomodoro</h2>
-								<input
-									type='number'
-									min='1'
-									max='60'
-									value={newPomodoroTime}
-									onChange={(e) => {
-										const value = e.target.value;
-
-										if (value === '') {
-											setNewPomodoroTime('');
-											return;
-										}
-
-										const num = Number(value);
-
-										if (num >= 1 && num <= 60) {
-											setNewPomodoroTime(num);
-										}
-									}}
-								/>
-								<span className={styles.unit}>min</span>
-
-								<button onClick={handleSetPomodoroTime}>Set Time</button>
-
-								<div className={styles.pomodoroInfoContainer}>
-									{successPomodoroChange && <p className={styles.successInfo}>{successPomodoroChange}</p>}
-									{pomodoroErr && <p className={styles.errorInfo}>{pomodoroErr}</p>}
-								</div>
-							</div>
-						</div>
-					</section>
-					<section className={styles.box}>
-						<div className={styles.headerRow}>
-							<h2>Notifications display</h2>
-
-							<div className={styles.viewWrapper}>
-								<button
-									className={feedbackType === 'toast' ? styles.active : ''}
-									onClick={() => {
-										setFeedbackType('toast');
-
-										addToast('info', 'Notifications will be shown as toasts');
-									}}>
-									Toast
-								</button>
-
-								<button
-									className={feedbackType === 'inline' ? styles.active : ''}
-									onClick={() => {
-										setFeedbackType('inline');
-
-										showNotification('Notifications will be shown inline');
-									}}>
-									Inline
-								</button>
-							</div>
-						</div>
-						{notification && <p className={styles.successInfo}>{notification}</p>}
-					</section>
+					</div>
 				</div>
-			</div>
-		</>
+			</section>
+
+			{/* PREFERENCES */}
+			<section className={styles.section}>
+				<div
+					className={`${styles.sectionHeader} ${openSection === 'preferences' ? styles.active : ''}`}
+					onClick={() => setOpenSection(openSection === 'preferences' ? null : 'preferences')}>
+					<h3>Preferences</h3>
+					<Plus className={`${styles.icon} ${openSection === 'preferences' ? styles.rotate : ''}`} />
+				</div>
+
+				<div className={`${styles.group} ${openSection === 'preferences' ? styles.open : styles.closed}`}>
+					<div className={styles.settingRow}>
+						<div>
+							<p className={styles.label}>Theme</p>
+							<p className={styles.description}>Auto / Light / Dark</p>
+						</div>
+						<ThemeSwitch />
+					</div>
+
+					<div className={styles.settingRow}>
+						<div>
+							<p className={styles.label}>View</p>
+							<p className={styles.description}>Window / Fullscreen</p>
+						</div>
+
+						<div className={styles.viewWrapper}>
+							<button className={!isFullscreen ? styles.active : ''} onClick={() => setIsFullscreen(false)}>
+								Window <Minimize size={16} />
+							</button>
+
+							<button className={isFullscreen ? styles.active : ''} onClick={() => setIsFullscreen(true)}>
+								Fullscreen <Maximize size={16} />
+							</button>
+						</div>
+					</div>
+
+					<div className={styles.settingRow}>
+						<div>
+							<p className={styles.label}>Notifications</p>
+							<p className={styles.description}>Toast / Inline</p>
+						</div>
+
+						<div className={styles.viewWrapper}>
+							<button
+								className={feedbackType === 'toast' ? styles.active : ''}
+								onClick={() => {
+									setFeedbackType('toast');
+									addToast('info', 'Toasts notifications enabled');
+								}}>
+								Toast
+								<BellRing size={16} />
+							</button>
+
+							<button
+								className={feedbackType === 'inline' ? styles.active : ''}
+								onClick={() => {
+									setFeedbackType('inline');
+									showNotification('Inline notifications enabled');
+								}}>
+								Inline
+								<MessageSquare size={16} />
+							</button>
+						</div>
+					</div>
+
+					{notification && <p className={styles.successInfo}>{notification}</p>}
+				</div>
+			</section>
+
+			{/* PRODDUCTIVITY */}
+			<section className={styles.section}>
+				<div
+					className={`${styles.sectionHeader} ${openSection === 'productivity' ? styles.active : ''}`}
+					onClick={() => setOpenSection(openSection === 'productivity' ? null : 'productivity')}>
+					<h3>Productivity</h3>
+					<Plus className={`${styles.icon} ${openSection === 'productivity' ? styles.rotate : ''}`} />
+				</div>
+
+				<div className={`${styles.group} ${openSection === 'productivity' ? styles.open : styles.closed}`}>
+					<div className={styles.settingRow}>
+						<div>
+							<p className={styles.label}>Pomodoro</p>
+							<p className={styles.description}>Set focus duration</p>
+						</div>
+
+						<div className={styles.pomodoroSettings}>
+							<input
+								type='number'
+								min='1'
+								max='60'
+								value={newPomodoroTime}
+								onChange={(e) => {
+									const val = e.target.value;
+									if (val === '') return setNewPomodoroTime('');
+									const num = Number(val);
+									if (num >= 1 && num <= 60) setNewPomodoroTime(num);
+								}}
+							/>
+							<span className={styles.description}>min</span>
+							<button onClick={handleSetPomodoroTime}>Set Time</button>
+						</div>
+					</div>
+
+					{(successPomodoroChange || pomodoroErr) && (
+						<div className={styles.centerInfo}>
+							{successPomodoroChange && <p className={styles.successInfo}>{successPomodoroChange}</p>}
+							{pomodoroErr && <p className={styles.errorInfo}>{pomodoroErr}</p>}
+						</div>
+					)}
+				</div>
+			</section>
+		</div>
 	);
 };
 

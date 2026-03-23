@@ -1,11 +1,13 @@
 import styles from './ActiveTasks.module.css';
 
-const DeleteAllModal = ({ onConfirm, onCancel }) => {
+const DeleteAllModal = ({ onConfirm, onCancel, type }) => {
+	const isActive = type === 'active';
+
 	return (
 		<div className={styles.overlay}>
 			<div className={styles.modal}>
-				<h3>Delete all tasks?</h3>
-				<p>Are you sure you want to delete all active tasks?</p>
+				<h3>Delete all {isActive ? 'active' : 'completed'} tasks?</h3>
+				<p>Are you sure you want to delete all {isActive ? 'active' : 'completed'} tasks?</p>
 
 				<div className={styles.actions}>
 					<button className={styles.cancel} onClick={onCancel}>

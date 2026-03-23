@@ -3,6 +3,7 @@ import { fetchTasks, editTask as apiEditTask, deleteTask as apiDeleteTask } from
 
 import ToDoItem from '../ToDoItem';
 import DeleteAllButton from '../DeleteAllButton';
+import DeleteAllModal from '../ActiveTasks/DeleteAllModal';
 import Loader from '../Loader';
 
 import { Check } from 'lucide-react';
@@ -11,6 +12,7 @@ import styles from './CompletedTasks.module.css';
 const CompletedTasks = () => {
 	const [tasks, setTasks] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
 
 	const loadTasks = async () => {
 		setLoading(true);
@@ -48,12 +50,9 @@ const CompletedTasks = () => {
 		await loadTasks();
 	};
 
-	const deleteAllCompleted = async () => {
-		const confirmed = window.confirm('Delete all completed tasks?');
-		if (!confirmed) return;
-
+	const handleConfirmDeleteAll = async () => {
 		await Promise.all(completedTasks.map((task) => apiDeleteTask(task.id)));
-
+		setShowDeleteModal(false);
 		await loadTasks();
 	};
 
@@ -64,7 +63,7 @@ const CompletedTasks = () => {
 			{completedTasks.length > 0 && (
 				<div className={styles.activeHeader}>
 					<h2 className={styles.activeTasksCount}>Completed tasks ({completedTasks.length})</h2>
-					<DeleteAllButton onClick={deleteAllCompleted} />
+					<DeleteAllButton onClick={() => setShowDeleteModal(true)} />
 				</div>
 			)}
 
@@ -91,6 +90,13 @@ const CompletedTasks = () => {
 					))
 				)}
 			</div>
+			{showDeleteModal && (
+				<DeleteAllModal
+					type='completed'
+					onConfirm={handleConfirmDeleteAll}
+					onCancel={() => setShowDeleteModal(false)}
+				/>
+			)}
 		</div>
 	);
 };
