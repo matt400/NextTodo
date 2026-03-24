@@ -105,7 +105,10 @@ export async function removeUserController(
   reply: FastifyReply,
 ) {
   const { email } = request.body;
-  var user = await getUserData(request.server.prisma, email);
+  if (email != request.user.email) return reply.fail("EMAIL_NOT_MATCHING", 400);
+
+  var user = await getUserData(request.server.prisma, request.user.email);
+
   await removeUser(request.server.prisma, user.id);
   return reply.ok("USER_REMOVED");
 }
