@@ -23,8 +23,8 @@ export function handlePrismaError(e: unknown): never {
   }
 
   if (e instanceof Prisma.PrismaClientValidationError) {
-    throw new AppError(400, "Nieprawidłowe dane zapytania");
+    throw new AppError(400, "INVALID_REQUEST");
   }
 
-  throw new AppError(500, "Nieznany błąd serwera");
+  throw new AppError(500, "UKNOWN_ERROR");
 }

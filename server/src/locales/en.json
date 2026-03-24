@@ -19,5 +19,9 @@
   "TASK_REMOVE_SUCCESS": "Task was deleted successfully.",
   "UNKNOWN_ERROR": "Unknown server error",
   "UPDATE_VALIDATION_ERROR": "Data must be different than the current one.",
-  "UPDATE_USER_DATA_SUCCESS": "Data was updated."
+  "UPDATE_USER_DATA_SUCCESS": "Data was updated.",
+  "USER_ALREADY_EXISTS": "This user already exists.",
+  "RECORD_NOT_FOUND": "Record cannot be found.",
+  "INVALID_REQUEST": "Invalid request data.",
+  "USER_REMOVED": "User was removed."
 }

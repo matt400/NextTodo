@@ -19,5 +19,9 @@
   "TASK_REMOVE_SUCCESS": "Zadanie zostało pomyślnie usunięte.",
   "UNKNOWN_ERROR": "Nieznany błąd serwera",
   "UPDATE_VALIDATION_ERROR": "Dane muszą się różnić od aktualnych.",
-  "UPDATE_USER_DATA_SUCCESS": "Dane zostały zaktualizowane."
+  "UPDATE_USER_DATA_SUCCESS": "Dane zostały zaktualizowane.",
+  "USER_ALREADY_EXISTS": "Ten użytkownik już istnieje.",
+  "RECORD_NOT_FOUND": "Rekord nie może być znaleziony.",
+  "INVALID_REQUEST": "Nieprawidłowe dane zapytania.",
+  "USER_REMOVED": "Użytkownik usunięty."
 }

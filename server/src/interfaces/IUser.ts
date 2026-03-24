@@ -13,3 +13,9 @@ export interface IUpdateData {
     isActive: boolean;
   };
 }
+
+export interface IRemoveUser {
+  Body: {
+    email: string;
+  };
+}
