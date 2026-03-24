@@ -1,7 +1,7 @@
 {
   "AUTH_SUCCESS": "Zalogowano pomyślnie",
   "AUTH_FAILED": "Nieprawidłowe dane logowania.",
-  "NO_ACCESS": "Brak dostępu. Proszę się zalogować.",
+  "NO_ACCESS": "Wymagane uwierzytelnienie.",
   "LOGGED_OUT": "Wylogowano",
   "ALREADY_LOGGED": "Jesteś juz zalogowany.",
   "WRONG_USERNAME": "Ta nazwa użytkownika jest już zajęta.",
@@ -19,5 +19,10 @@
   "TASK_REMOVE_SUCCESS": "Zadanie zostało pomyślnie usunięte.",
   "UNKNOWN_ERROR": "Nieznany błąd serwera",
   "UPDATE_VALIDATION_ERROR": "Dane muszą się różnić od aktualnych.",
-  "UPDATE_USER_DATA_SUCCESS": "Dane zostały zaktualizowane."
+  "UPDATE_USER_DATA_SUCCESS": "Dane zostały zaktualizowane.",
+  "USER_ALREADY_EXISTS": "Ten użytkownik już istnieje.",
+  "RECORD_NOT_FOUND": "Rekord nie może być znaleziony.",
+  "INVALID_REQUEST": "Nieprawidłowe dane zapytania.",
+  "USER_REMOVED": "Użytkownik usunięty.",
+  "EMAIL_NOT_MATCHING": "Wprowadzony adres email nie zgadza się z przypisanym do konta."
 }

@@ -143,7 +143,7 @@ items:
       url: http://localhost:3000/api/user/me
       body:
         type: json
-        data: '{ "username": "admin1234" }'
+        data: '{ "isActive": "false" }'
       auth: inherit
     settings:
       encodeUrl: true
@@ -172,11 +172,27 @@ items:
       timeout: 0
       followRedirects: true
       maxRedirects: 5
+  - info:
+      name: '[User] Remove'
+      type: http
+      seq: 12
+    http:
+      method: DELETE
+      url: http://localhost:3000/api/user/me
+      body:
+        type: json
+        data: '{ "email": "admin@example.io" }'
+      auth: inherit
+    settings:
+      encodeUrl: true
+      timeout: 0
+      followRedirects: true
+      maxRedirects: 5
 bundled: true
 extensions:
   bruno:
     ignore:
       - node_modules
       - .git
-    exportedAt: '2026-03-06T23:06:55.383Z'
+    exportedAt: '2026-03-24T17:47:09.458Z'
     exportedUsing: Bruno

@@ -22,7 +22,6 @@ export async function getTasksController(
   const { single, task_id } = request.query ?? {};
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  if (!userData) return reply.fail("NO_SUCH_USER");
 
   var results = [];
   if (single) {
@@ -47,7 +46,6 @@ export async function addTaskController(
   const { task_name, task_desc } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  if (!userData) return reply.fail("NO_SUCH_USER");
 
   const newTask = await addTask(
     request.server.prisma,
@@ -68,7 +66,6 @@ export async function modifyTaskController(
   const { task_id, data } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  if (!userData) return reply.fail("NO_SUCH_USER");
 
   const error =
     (await modifyTaskData(
@@ -89,7 +86,6 @@ export async function removeTaskController(
   const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  if (!userData) return reply.fail("NO_SUCH_USER");
 
   const error =
     (await removeTask(request.server.prisma, task_id, userData.id)) instanceof

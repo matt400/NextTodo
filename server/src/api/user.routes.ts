@@ -2,8 +2,14 @@ import {
   getDataController,
   changePasswordController,
   updateUserDataController,
+  removeUserController,
 } from "./user.controller";
-import { changePasswordSchema, updateDataSchema } from "./user.schema";
+
+import {
+  changePasswordSchema,
+  updateDataSchema,
+  removeUserSchema,
+} from "./user.schema";
 
 import type { FastifyInstance } from "fastify";
 
@@ -14,7 +20,6 @@ export default async function userRoutes(fastify: FastifyInstance) {
     getDataController,
   );
 
-  // Future: Update user data
   fastify.patch(
     "/me",
     {
@@ -22,6 +27,15 @@ export default async function userRoutes(fastify: FastifyInstance) {
       preHandler: [fastify.userAccessOnly],
     },
     updateUserDataController,
+  );
+
+  fastify.delete(
+    "/me",
+    {
+      schema: removeUserSchema,
+      preHandler: [fastify.userAccessOnly],
+    },
+    removeUserController,
   );
 
   fastify.post(

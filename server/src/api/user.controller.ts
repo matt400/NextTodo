@@ -1,4 +1,10 @@
-import { getUserData, changePassword, updateData } from "./user.service";
+import {
+  getUserData,
+  changePassword,
+  updateData,
+  removeUser,
+} from "./user.service";
+
 import {
   validatePasswordStrength,
   validatePasswordsMatch,
@@ -6,7 +12,11 @@ import {
 } from "@server/utils/password";
 
 import type { FastifyRequest, FastifyReply } from "fastify";
-import type { IChangePassword, IUpdateData } from "@server/interfaces/IUser";
+import type {
+  IChangePassword,
+  IRemoveUser,
+  IUpdateData,
+} from "@server/interfaces/IUser";
 
 export async function getDataController(
   request: FastifyRequest,
@@ -25,67 +35,43 @@ export async function changePasswordController(
   request: FastifyRequest<IChangePassword>,
   reply: FastifyReply,
 ) {
-  const { current_password, new_password, confirm_password } = request.body;
-  const userEmail = request.user.email;
+  {
+    const { current_password, new_password, confirm_password } = request.body;
 
-  const matchValidation = validatePasswordsMatch(
-    new_password,
-    confirm_password,
-  );
-  if (!matchValidation.isValid) {
-    return reply.fail(matchValidation.errorKey!, 400);
-  }
+    const matchValidation = validatePasswordsMatch(
+      new_password,
+      confirm_password,
+    );
+    if (!matchValidation.isValid)
+      return reply.fail(matchValidation.errorKey!, 400);
 
-  const strengthValidation = validatePasswordStrength(new_password);
-  if (!strengthValidation.isValid) {
-    return reply.fail(strengthValidation.errorKey!, 400);
-  }
+    const strengthValidation = validatePasswordStrength(new_password);
+    if (!strengthValidation.isValid)
+      return reply.fail(strengthValidation.errorKey!, 400);
 
-  const differentValidation = validatePasswordsDifferent(
-    current_password,
-    new_password,
-  );
+    const differentValidation = validatePasswordsDifferent(
+      current_password,
+      new_password,
+    );
+    if (!differentValidation.isValid)
+      return reply.fail(differentValidation.errorKey!, 400);
 
-  if (!differentValidation.isValid) {
-    return reply.fail(differentValidation.errorKey!, 400);
-  }
+    const userData = await getUserData(
+      request.server.prisma,
+      request.user.email,
+      true,
+    );
 
-  if (new_password !== confirm_password) {
-    return reply.fail("PASSWORDS_DO_NOT_MATCH", 400);
-  }
-
-  try {
-    const userData = await getUserData(request.server.prisma, userEmail, true);
-
-    if (!("password" in userData)) {
-      throw new Error("User has no password object!");
-    }
-
-    const isPasswordValid: boolean = await request.server.bcrypt.compare(
+    const isPasswordValid = await request.server.bcrypt.compare(
       current_password,
       userData.password ?? "",
     );
+    if (!isPasswordValid) return reply.fail("INVALID_CURRENT_PASSWORD", 401);
 
-    if (!isPasswordValid) {
-      return reply.fail("INVALID_CURRENT_PASSWORD", 401);
-    }
+    const hashedPassword = await request.server.bcrypt.hash(new_password, 10);
+    await changePassword(request.server.prisma, userData.id, hashedPassword);
 
-    const hashedPassword: string = await request.server.bcrypt.hash(
-      new_password,
-      10,
-    );
-
-    const cp = await changePassword(
-      request.server.prisma,
-      userData.id,
-      hashedPassword,
-    );
-
-    // Todo: Future: log
-    console.log(cp);
     return reply.ok("PASSWORD_CHANGED_SUCCESSFULLY");
-  } catch {
-    return reply.fail("NO_SUCH_USER", 404);
   }
 }
 
@@ -96,24 +82,33 @@ export async function updateUserDataController(
   const { username, email, isActive } = request.body;
   const userEmail = request.user.email;
 
-  try {
-    const userData = await getUserData(request.server.prisma, userEmail);
+  const userData = await getUserData(request.server.prisma, userEmail);
 
-    const errors = [];
-    if (username == userData.username) errors.push("USERNAME");
-    if (email == userData.email) errors.push("EMAIL");
-    if (isActive == userData.isActive) errors.push("ISACTIVE");
+  const errors = [];
+  if (username == userData.username) errors.push("USERNAME");
+  if (email == userData.email) errors.push("EMAIL");
+  if (isActive == userData.isActive) errors.push("ISACTIVE");
 
-    if (errors.length > 0)
-      return reply.fail("UPDATE_VALIDATION_ERROR", 400, errors);
+  if (errors.length > 0)
+    return reply.fail("UPDATE_VALIDATION_ERROR", 400, errors);
 
-    await updateData(request.server.prisma, userData.id, {
-      username: username,
-      email: email,
-      isActive: isActive,
-    });
-    return reply.ok("UPDATE_USER_DATA_SUCCESS");
-  } catch (err) {
-    return reply.code(500).send(err);
-  }
+  await updateData(request.server.prisma, userData.id, {
+    username: username,
+    email: email,
+    isActive: isActive,
+  });
+  return reply.ok("UPDATE_USER_DATA_SUCCESS");
+}
+
+export async function removeUserController(
+  request: FastifyRequest<IRemoveUser>,
+  reply: FastifyReply,
+) {
+  const { email } = request.body;
+  if (email != request.user.email) return reply.fail("EMAIL_NOT_MATCHING", 400);
+
+  var user = await getUserData(request.server.prisma, request.user.email);
+
+  await removeUser(request.server.prisma, user.id);
+  return reply.ok("USER_REMOVED");
 }

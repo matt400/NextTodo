@@ -12,6 +12,16 @@ const userRepository = (prisma: PrismaClient) => ({
       handlePrismaError(e);
     }
   },
+
+  removeUser: async (id: string) => {
+    try {
+      await prisma.user.delete({
+        where: { id },
+      });
+    } catch (e) {
+      handlePrismaError(e);
+    }
+  },
 });
 
 export default userRepository;

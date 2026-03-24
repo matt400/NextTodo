@@ -1,7 +1,7 @@
 {
   "LOGIN_SUCCESS": "Logged successfully",
   "AUTH_FAILED": "Invalid login data.",
-  "NO_ACCESS": "No access. Please login first.",
+  "NO_ACCESS": "Authentication required.",
   "LOGGED_OUT": "You've been logged out",
   "ALREADY_LOGGED": "You are logged in already.",
   "WRONG_USERNAME": "This username is already taken.",
@@ -19,5 +19,10 @@
   "TASK_REMOVE_SUCCESS": "Task was deleted successfully.",
   "UNKNOWN_ERROR": "Unknown server error",
   "UPDATE_VALIDATION_ERROR": "Data must be different than the current one.",
-  "UPDATE_USER_DATA_SUCCESS": "Data was updated."
+  "UPDATE_USER_DATA_SUCCESS": "Data was updated.",
+  "USER_ALREADY_EXISTS": "This user already exists.",
+  "RECORD_NOT_FOUND": "Record cannot be found.",
+  "INVALID_REQUEST": "Invalid request data.",
+  "USER_REMOVED": "User was removed.",
+  "EMAIL_NOT_MATCHING": "Email is not matching with account one."
 }

@@ -7,7 +7,7 @@ export const changePasswordSchema = {
     properties: {
       current_password: { type: "string", minLength: 1 },
       new_password: fastifyPasswordProperty,
-      confirm_password: { type: "string", minLength: 8 },
+      confirm_password: fastifyPasswordProperty,
     },
   },
 };
@@ -21,5 +21,15 @@ export const updateDataSchema = {
       isActive: { type: "boolean" },
     },
     minProperties: 1,
+  },
+};
+
+export const removeUserSchema = {
+  body: {
+    type: "object",
+    required: ["email"],
+    properties: {
+      email: { type: "string", minLength: 4 },
+    },
   },
 };

@@ -30,8 +30,8 @@ export async function buildApp(): Promise<FastifyInstance> {
       return reply.code(error.statusCode).send({
         success: false,
         error: {
-          code: error.statusCode, // np. "USER_ALREADY_EXISTS"
-          message: t(error.message), // przetłumaczone
+          code: error.statusCode, // "USER_ALREADY_EXISTS"
+          message: t(error.message),
         },
       });
     }

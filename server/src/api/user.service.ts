@@ -1,3 +1,4 @@
+import { AppError, handlePrismaError } from "@server/utils/errors";
 import authRepository from "./auth.repository";
 import userRepository from "./user.repository";
 
@@ -6,11 +7,21 @@ import type { PrismaClient } from "@server/generated/prisma/client";
 export async function getUserData(
   prisma: PrismaClient,
   userEmail: string,
+  isFull: true,
+): Promise<any>;
+export async function getUserData(
+  prisma: PrismaClient,
+  userEmail: string,
+  isFull?: false,
+): Promise<any>;
+export async function getUserData(
+  prisma: PrismaClient,
+  userEmail: string,
   isFull: boolean = false,
 ) {
   try {
     const user = await authRepository(prisma).findByEmail(userEmail);
-    if (!user) throw Error("No such user");
+    if (!user) throw new AppError(404, "USER_NOT_FOUND");
 
     const userData = {
       id: user.id,
@@ -21,8 +32,9 @@ export async function getUserData(
 
     if (isFull) return { ...userData, password: user.password };
     return userData;
-  } catch (err: any) {
-    throw Error(err);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
   }
 }
 
@@ -40,4 +52,8 @@ export async function updateData(
   data: object,
 ) {
   return await userRepository(prisma).updateData(userId, data);
+}
+
+export async function removeUser(prisma: PrismaClient, userId: string) {
+  return await userRepository(prisma).removeUser(userId);
 }
