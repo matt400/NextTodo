@@ -1,7 +1,7 @@
 {
   "LOGIN_SUCCESS": "Logged successfully",
   "AUTH_FAILED": "Invalid login data.",
-  "NO_ACCESS": "No access. Please login first.",
+  "NO_ACCESS": "Authentication required.",
   "LOGGED_OUT": "You've been logged out",
   "ALREADY_LOGGED": "You are logged in already.",
   "WRONG_USERNAME": "This username is already taken.",
