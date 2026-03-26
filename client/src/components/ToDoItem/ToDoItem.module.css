@@ -16,10 +16,13 @@
 	transition:
 		background var(--transition-duration),
 		border var(--transition-duration);
+}
+
+.clickable {
 	cursor: pointer;
 }
 
-.todoItem:hover {
+.clickable:hover {
 	background: var(--todo-highlight);
 	border-color: var(--border-color);
 }
@@ -31,6 +34,15 @@
 	gap: 10px;
 	min-width: 0;
 }
+
+.expanded,
+.expanded:hover {
+	background-color: var(--color-primary-light);
+}
+
+/* .expanded:hover {
+	background-color: transparent;
+} */
 
 .todoCheckbox {
 	width: 24px;
@@ -92,6 +104,7 @@
 }
 
 .todoDescriptionExpanded {
+	position: relative;
 	max-height: 0;
 	overflow: hidden;
 
@@ -110,6 +123,16 @@
 	max-height: 1000px;
 	opacity: 1;
 	transform: translateY(0);
+}
+
+.todoDescriptionExpanded.open::before {
+	content: '';
+	display: block;
+	height: 1px;
+	width: 100%;
+	background: var(--border-color);
+	margin-bottom: 6px;
+	opacity: 0.6;
 }
 
 .todoActionsHover {
@@ -234,8 +257,8 @@
 }
 
 .day:hover {
-  background-color: var(--hover-soft);
-  border-radius: 50%;
+	background-color: var(--hover-soft);
+	border-radius: 50%;
 }
 
 .calendarCloseBtn {

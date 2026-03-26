@@ -50,8 +50,11 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 	return (
 		<>
 			<div
-				className={`${styles['todoItem']} ${isExpanded ? styles.expanded : ''}`}
-				onClick={() => setIsExpanded((prev) => !prev)}>
+				className={`${styles['todoItem']} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''}`}
+				onClick={() => {
+					if (!task.description) return;
+					setIsExpanded((prev) => !prev);
+				}}>
 				<div className={styles['todoMainRow']}>
 					<div
 						className={`${styles['todoCheckbox']} ${task.done ? styles.checked : ''}`}
@@ -151,7 +154,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 					)}
 				</div>
 
-				<div className={`${styles['todoDescriptionExpanded']} ${isExpanded ? styles.open : ''}`}>
+				<div className={`${styles['todoDescriptionExpanded']} ${isExpanded ? styles.open : ''} `}>
 					{task.description}
 				</div>
 			</div>
