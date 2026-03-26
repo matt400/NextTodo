@@ -88,15 +88,21 @@
 	color: var(--color-dark-1);
 }
 
+
 .todoDescriptionExpanded {
 	font-size: 14px;
 	color: var(--text-secondary);
 	margin-left: 34px;
 	line-height: 1.4;
-
+	
 	white-space: pre-line;
 }
 
+.done {
+	text-decoration: line-through;
+	color: var(
+		--text-muted);
+}
 .todoText,
 .todoDescriptionExpanded {
 	overflow-wrap: anywhere;

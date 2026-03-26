@@ -154,7 +154,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 					)}
 				</div>
 
-				<div className={`${styles['todoDescriptionExpanded']} ${isExpanded ? styles.open : ''} `}>
+				<div className={`${styles['todoDescriptionExpanded']} ${isExpanded ? styles.open : ''}  ${task.done ? styles.done : ''}`}>
 					{task.description}
 				</div>
 			</div>
