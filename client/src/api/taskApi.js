@@ -13,6 +13,8 @@ export async function fetchTasks() {
 		title: task.taskName,
 		description: task.taskDesc,
 		done: task.isFinished,
+		scheduled: task.scheduled,
+		created: task.created,
 	}));
 }
 

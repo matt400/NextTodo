@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import EditTaskModal from '../EditTaskModal/EditTaskModal';
 import { DayPicker } from 'react-day-picker';
 import PomodoroTimer from '../PomodoroTimer';
@@ -18,12 +18,34 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 	//CALENDAR VARIABLES & FUNCTION
 
 	const [showCalendarModal, setShowCalendarModal] = useState(false);
+
+	const createdDate = new Date(task.created);
+
+	const scheduledDate = task.scheduled ? new Date(task.scheduled) : null;
+
+	const isDefaultDate = scheduledDate && createdDate && scheduledDate.getTime() === createdDate.getTime();
+
 	const [dueDate, setDueDate] = useState(null);
+
 	const isToday = dueDate && new Date(dueDate).toDateString() === new Date().toDateString();
+
 	const openCalendar = () => {
 		setShowModal(false);
 		setShowCalendarModal(true);
 	};
+
+	useEffect(() => {
+		const createdDate = new Date(task.created);
+		const scheduledDate = task.scheduled ? new Date(task.scheduled) : null;
+
+		const isDefaultDate = scheduledDate && createdDate && scheduledDate.getTime() === createdDate.getTime();
+
+		if (!isDefaultDate) {
+			setDueDate(scheduledDate);
+		} else {
+			setDueDate(null);
+		}
+	}, [task]);
 
 	return (
 		<>
@@ -157,8 +179,13 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 						<div className={styles['calendarFooter']}>
 							<button
 								className={`${styles['calendarFooterBtn']} ${styles.deleteCalendar}`}
-								onClick={() => {
+								onClick={async () => {
 									setDueDate(null);
+
+									await onEdit(task.id, {
+										scheduled: new Date(task.created).toISOString(),
+									});
+
 									setShowCalendarModal(false);
 								}}>
 								Cancel
@@ -166,7 +193,19 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 
 							<button
 								className={`${styles['calendarFooterBtn']} ${styles.create}`}
-								onClick={() => setShowCalendarModal(false)}>
+								onClick={async () => {
+									if (dueDate) {
+										await onEdit(task.id, {
+											scheduled: dueDate.toISOString(),
+										});
+									} else {
+										await onEdit(task.id, {
+											scheduled: null,
+										});
+									}
+
+									setShowCalendarModal(false);
+								}}>
 								Set Date
 							</button>
 						</div>
