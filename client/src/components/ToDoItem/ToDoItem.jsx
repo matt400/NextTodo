@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState} from 'react';
 import EditTaskModal from '../EditTaskModal/EditTaskModal';
 import { DayPicker } from 'react-day-picker';
 import PomodoroTimer from '../PomodoroTimer';
@@ -11,25 +11,36 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 	// MODALS & EXPANSIONS
 
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [showModal, setShowModal] = useState(false);
 	const [showMobileActions, setShowMobileActions] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
 
 	//CALENDAR VARIABLES & FUNCTION
 
 	const [showCalendarModal, setShowCalendarModal] = useState(false);
+
 	const [dueDate, setDueDate] = useState(null);
-	const isToday = dueDate && new Date(dueDate).toDateString() === new Date().toDateString();
-	const openCalendar = () => {
-		setShowModal(false);
-		setShowCalendarModal(true);
-	};
+	const effectiveDueDate = dueDate ?? (task.scheduled ? new Date(task.scheduled) : null);
+
+	const isToday = (() => {
+		if (!effectiveDueDate) return false;
+
+		const today = new Date();
+
+		return (
+			effectiveDueDate.getFullYear() === today.getFullYear() &&
+			effectiveDueDate.getMonth() === today.getMonth() &&
+			effectiveDueDate.getDate() === today.getDate()
+		);
+	})();
 
 	return (
 		<>
 			<div
-				className={`${styles['todoItem']} ${isExpanded ? styles.expanded : ''}`}
-				onClick={() => setIsExpanded((prev) => !prev)}>
+				className={`${styles['todoItem']} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''}`}
+				onClick={() => {
+					if (!task.description) return;
+					setIsExpanded((prev) => !prev);
+				}}>
 				<div className={styles['todoMainRow']}>
 					<div
 						className={`${styles['todoCheckbox']} ${task.done ? styles.checked : ''}`}
@@ -58,9 +69,9 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 							setActivePomodoroId={setActivePomodoroId}
 						/>
 
-						{dueDate && (
+						{effectiveDueDate && (
 							<div className={`${styles['todoDate']} ${isToday ? styles['todoDate--today'] : ''}`}>
-								{new Date(dueDate).toLocaleDateString('pl-PL', {
+								{new Date(effectiveDueDate).toLocaleDateString('pl-PL', {
 									day: 'numeric',
 									month: 'short',
 								})}
@@ -129,7 +140,8 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 					)}
 				</div>
 
-				<div className={`${styles['todoDescriptionExpanded']} ${isExpanded ? styles.open : ''}`}>
+				<div
+					className={`${styles['todoDescriptionExpanded']} ${isExpanded ? styles.open : ''}  ${task.done ? styles.done : ''}`}>
 					{task.description}
 				</div>
 			</div>
@@ -147,7 +159,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 
 						<DayPicker
 							mode='single'
-							selected={dueDate}
+							selected={effectiveDueDate}
 							onSelect={(date) => setDueDate(date)}
 							classNames={{
 								day: styles.day,
@@ -157,8 +169,13 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 						<div className={styles['calendarFooter']}>
 							<button
 								className={`${styles['calendarFooterBtn']} ${styles.deleteCalendar}`}
-								onClick={() => {
+								onClick={async () => {
 									setDueDate(null);
+
+									await onEdit(task.id, {
+										scheduled: null,
+									});
+
 									setShowCalendarModal(false);
 								}}>
 								Cancel
@@ -166,7 +183,13 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 
 							<button
 								className={`${styles['calendarFooterBtn']} ${styles.create}`}
-								onClick={() => setShowCalendarModal(false)}>
+								onClick={async () => {
+									await onEdit(task.id, {
+										scheduled: effectiveDueDate ? effectiveDueDate.toISOString() : null,
+									});
+
+									setShowCalendarModal(false);
+								}}>
 								Set Date
 							</button>
 						</div>

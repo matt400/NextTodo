@@ -10,7 +10,7 @@ import ToDoItem from '../ToDoItem';
 import CreateTaskButton from '../CreateTaskButton';
 import AddTaskModal from '../AddTaskModal';
 import DeleteAllButton from '../DeleteAllButton';
-import DeleteAllModal from './DeleteAllModal'
+import DeleteAllModal from './DeleteAllModal';
 import Loader from '../Loader';
 
 import { Plus, Search } from 'lucide-react';
@@ -62,12 +62,8 @@ const ActiveTasks = () => {
 		await loadTasks();
 	};
 
-	const updateTask = async (id, { title, description }) => {
-		await apiEditTask(id, {
-			taskName: title,
-			taskDesc: description,
-		});
-
+	const updateTask = async (id, data) => {
+		await apiEditTask(id, data);
 		await loadTasks();
 	};
 
