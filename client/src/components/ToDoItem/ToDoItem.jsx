@@ -19,13 +19,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 
 	const [showCalendarModal, setShowCalendarModal] = useState(false);
 
-	const createdDate = new Date(task.created);
-
-	const scheduledDate = task.scheduled ? new Date(task.scheduled) : null;
-
-	const isDefaultDate = scheduledDate && createdDate && scheduledDate.getTime() === createdDate.getTime();
-
-	const [dueDate, setDueDate] = useState(null);
+	const [dueDate, setDueDate] = useState(task.scheduled ? new Date(task.scheduled) : null);
 
 	const isToday = dueDate && new Date(dueDate).toDateString() === new Date().toDateString();
 
@@ -35,17 +29,8 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 	};
 
 	useEffect(() => {
-		const createdDate = new Date(task.created);
-		const scheduledDate = task.scheduled ? new Date(task.scheduled) : null;
-
-		const isDefaultDate = scheduledDate && createdDate && scheduledDate.getTime() === createdDate.getTime();
-
-		if (!isDefaultDate) {
-			setDueDate(scheduledDate);
-		} else {
-			setDueDate(null);
-		}
-	}, [task]);
+		setDueDate(task.scheduled ? new Date(task.scheduled) : null);
+	}, [task.scheduled]);
 
 	return (
 		<>
@@ -154,7 +139,8 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 					)}
 				</div>
 
-				<div className={`${styles['todoDescriptionExpanded']} ${isExpanded ? styles.open : ''}  ${task.done ? styles.done : ''}`}>
+				<div
+					className={`${styles['todoDescriptionExpanded']} ${isExpanded ? styles.open : ''}  ${task.done ? styles.done : ''}`}>
 					{task.description}
 				</div>
 			</div>
@@ -186,7 +172,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 									setDueDate(null);
 
 									await onEdit(task.id, {
-										scheduled: new Date(task.created).toISOString(),
+										scheduled: null,
 									});
 
 									setShowCalendarModal(false);
@@ -197,15 +183,9 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 							<button
 								className={`${styles['calendarFooterBtn']} ${styles.create}`}
 								onClick={async () => {
-									if (dueDate) {
-										await onEdit(task.id, {
-											scheduled: dueDate.toISOString(),
-										});
-									} else {
-										await onEdit(task.id, {
-											scheduled: null,
-										});
-									}
+									await onEdit(task.id, {
+										scheduled: dueDate ? dueDate.toISOString() : null,
+									});
 
 									setShowCalendarModal(false);
 								}}>
