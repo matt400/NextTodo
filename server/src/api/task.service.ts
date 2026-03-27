@@ -72,3 +72,45 @@ export async function removeTask(
     return err;
   }
 }
+
+export enum PomoMethod {
+  Start,
+  Pause,
+  Resume,
+  End,
+}
+
+export async function managePomo(
+  prisma: PrismaClient,
+  taskId: number,
+  userId: string,
+  type: PomoMethod,
+  durationOrElapsed: number = 0,
+) {
+  try {
+    switch (type) {
+      case PomoMethod.Start:
+        return await repository(prisma).startPomo(
+          taskId,
+          userId,
+          durationOrElapsed,
+        );
+      case PomoMethod.Pause:
+        return await repository(prisma).pausePomo(
+          taskId,
+          userId,
+          durationOrElapsed,
+        );
+      case PomoMethod.Resume:
+        return await repository(prisma).resumePomo(taskId, userId);
+      case PomoMethod.End:
+        return await repository(prisma).endPomo(taskId, userId);
+      default:
+        throw new Error("No method picked in PomoMethod");
+    }
+  } catch (err) {
+    // Todo: Future log
+    console.log(err);
+    return err;
+  }
+}

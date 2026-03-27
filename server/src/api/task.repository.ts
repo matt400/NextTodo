@@ -49,6 +49,14 @@ const tasksRepository = (prisma: PrismaClient) => ({
       },
     });
   },
+
+  startPomo: async (taskId: number, userId: string, duration: number) => {},
+
+  pausePomo: async (taskId: number, userId: string, elapsed: number) => {},
+
+  resumePomo: async (taskId: number, userId: string) => {},
+
+  endPomo: async (taskId: number, userId: string) => {},
 });
 
 export default tasksRepository;

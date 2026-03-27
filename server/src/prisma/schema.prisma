@@ -33,9 +33,12 @@ model Tasks {
 }
 
 model Pomo {
-  id       Int     @id @default(autoincrement())
-  userId   String
-  timeLeft Int
-  isActive Boolean
-  taskId   Int
+  id        Int       @id @default(autoincrement())
+  userId    String
+  taskId    Int
+  duration  Int
+  startedAt DateTime  @default(now())
+  pausedAt  DateTime?
+  elapsed   Int       @default(0)
+  endedAt   DateTime?
 }

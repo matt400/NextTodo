@@ -5,6 +5,7 @@ import {
   getOneTask,
   modifyTaskData,
   removeTask,
+  managePomo,
 } from "./task.service";
 
 import type {
@@ -12,7 +13,13 @@ import type {
   ITaskAddRequest,
   ITaskModifyRequest,
   ITaskRemoveRequest,
+  IStartPomoRequest,
+  IPausePomoRequest,
+  IResumePomoRequest,
+  IEndPomoRequest,
 } from "@server/interfaces/ITask";
+
+import { PomoMethod } from "./task.service";
 import type { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getTasksController(
@@ -93,4 +100,69 @@ export async function removeTaskController(
 
   if (error) return reply.fail("TASK_REMOVE_ERROR");
   else return reply.ok("TASK_REMOVE_SUCCESS");
+}
+
+export async function startPomoController(
+  request: FastifyRequest<IStartPomoRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id, duration } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  if (!userData) return reply.fail("NO_SUCH_USER");
+
+  await managePomo(
+    request.server.prisma,
+    task_id,
+    userData.id,
+    PomoMethod.Start,
+    duration,
+  );
+}
+
+export async function pausePomoController(
+  request: FastifyRequest<IPausePomoRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id, elapsed } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  if (!userData) return reply.fail("NO_SUCH_USER");
+
+  await managePomo(
+    request.server.prisma,
+    task_id,
+    userData.id,
+    PomoMethod.Pause,
+    elapsed,
+  );
+}
+
+export async function resumePomoController(
+  request: FastifyRequest<IResumePomoRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  if (!userData) return reply.fail("NO_SUCH_USER");
+
+  await managePomo(
+    request.server.prisma,
+    task_id,
+    userData.id,
+    PomoMethod.Resume,
+  );
+}
+
+export async function endPomoController(
+  request: FastifyRequest<IEndPomoRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  if (!userData) return reply.fail("NO_SUCH_USER");
+
+  await managePomo(request.server.prisma, task_id, userData.id, PomoMethod.End);
 }
