@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import EditTaskModal from '../EditTaskModal/EditTaskModal';
 import { DayPicker } from 'react-day-picker';
 import PomodoroTimer from '../PomodoroTimer';
@@ -11,7 +11,6 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 	// MODALS & EXPANSIONS
 
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [showModal, setShowModal] = useState(false);
 	const [showMobileActions, setShowMobileActions] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
 
@@ -19,18 +18,20 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 
 	const [showCalendarModal, setShowCalendarModal] = useState(false);
 
-	const [dueDate, setDueDate] = useState(task.scheduled ? new Date(task.scheduled) : null);
+	const [dueDate, setDueDate] = useState(null);
+	const effectiveDueDate = dueDate ?? (task.scheduled ? new Date(task.scheduled) : null);
 
-	const isToday = dueDate && new Date(dueDate).toDateString() === new Date().toDateString();
+	const isToday = (() => {
+		if (!effectiveDueDate) return false;
 
-	const openCalendar = () => {
-		setShowModal(false);
-		setShowCalendarModal(true);
-	};
+		const today = new Date();
 
-	useEffect(() => {
-		setDueDate(task.scheduled ? new Date(task.scheduled) : null);
-	}, [task.scheduled]);
+		return (
+			effectiveDueDate.getFullYear() === today.getFullYear() &&
+			effectiveDueDate.getMonth() === today.getMonth() &&
+			effectiveDueDate.getDate() === today.getDate()
+		);
+	})();
 
 	return (
 		<>
@@ -68,9 +69,9 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 							setActivePomodoroId={setActivePomodoroId}
 						/>
 
-						{dueDate && (
+						{effectiveDueDate && (
 							<div className={`${styles['todoDate']} ${isToday ? styles['todoDate--today'] : ''}`}>
-								{new Date(dueDate).toLocaleDateString('pl-PL', {
+								{new Date(effectiveDueDate).toLocaleDateString('pl-PL', {
 									day: 'numeric',
 									month: 'short',
 								})}
@@ -158,7 +159,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 
 						<DayPicker
 							mode='single'
-							selected={dueDate}
+							selected={effectiveDueDate}
 							onSelect={(date) => setDueDate(date)}
 							classNames={{
 								day: styles.day,
@@ -184,7 +185,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 								className={`${styles['calendarFooterBtn']} ${styles.create}`}
 								onClick={async () => {
 									await onEdit(task.id, {
-										scheduled: dueDate ? dueDate.toISOString() : null,
+										scheduled: effectiveDueDate ? effectiveDueDate.toISOString() : null,
 									});
 
 									setShowCalendarModal(false);
