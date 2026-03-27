@@ -22,14 +22,14 @@ model User {
 }
 
 model Tasks {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   userId     String
   taskName   String
   taskDesc   String
-  created    DateTime @default(now())
-  scheduled  DateTime @default(now())
-  modified   DateTime @updatedAt
-  isFinished Boolean  @default(false)
+  created    DateTime  @default(now())
+  scheduled  DateTime?
+  modified   DateTime  @updatedAt
+  isFinished Boolean   @default(false)
 }
 
 model Pomo {
