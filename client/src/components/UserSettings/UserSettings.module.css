@@ -14,7 +14,6 @@
 	h2 {
 		font-size: 16px;
 	}
-
 }
 
 .section {
@@ -96,6 +95,21 @@
 		color: var(--sidebar-item-active-text);
 	}
 }
+
+.sectionHeaderStart {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-secondary);
+}
+
+.sectionHeaderStart.active {
+  color: var(--sidebar-item-active-text);
+}
+
+/* .sectionHeader:active {
+	color: #fff;
+} */
 
 .profileGrid {
 	display: grid;

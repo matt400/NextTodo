@@ -9,7 +9,19 @@ import { addToast } from '../Toasts';
 import { useFeedback } from '../../context/FeedbackContext.jsx';
 import { useFeedbackHandler } from '../../helpers/useFeedbackHandler.js';
 
-import { Mail, Lock, Maximize, Minimize, Plus, Minus, BellRing, MessageSquare } from 'lucide-react';
+import {
+	Mail,
+	Lock,
+	Maximize,
+	Minimize,
+	Plus,
+	Minus,
+	BellRing,
+	MessageSquare,
+	User,
+	SlidersHorizontal,
+	Zap,
+} from 'lucide-react';
 import styles from './UserSettings.module.css';
 
 const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
@@ -149,7 +161,10 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 				<div
 					className={`${styles.sectionHeader} ${openSection === 'profile' ? styles.active : ''}`}
 					onClick={() => setOpenSection(openSection === 'profile' ? null : 'profile')}>
-					<h3>Profile Settings</h3>
+					<div className={`${styles.sectionHeaderStart} ${openSection === 'profile' ? styles.active : ''}`}>
+						<User size={24} />
+						<h3>Profile Settings</h3>
+					</div>
 					<Plus size={24} className={`${styles.icon} ${openSection === 'profile' ? styles.rotate : ''}`} />
 				</div>
 				<div className={`${styles.profileGrid} ${openSection === 'profile' ? styles.open : styles.closed}`}>
@@ -212,7 +227,11 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 				<div
 					className={`${styles.sectionHeader} ${openSection === 'preferences' ? styles.active : ''}`}
 					onClick={() => setOpenSection(openSection === 'preferences' ? null : 'preferences')}>
-					<h3>Preferences</h3>
+					<div className={`${styles.sectionHeaderStart} ${openSection === 'preferences' ? styles.active : ''}`}>
+						<SlidersHorizontal size={24} />
+						<h3>Preferences</h3>
+					</div>
+
 					<Plus className={`${styles.icon} ${openSection === 'preferences' ? styles.rotate : ''}`} />
 				</div>
 
@@ -280,7 +299,11 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 				<div
 					className={`${styles.sectionHeader} ${openSection === 'productivity' ? styles.active : ''}`}
 					onClick={() => setOpenSection(openSection === 'productivity' ? null : 'productivity')}>
-					<h3>Productivity</h3>
+					<div className={`${styles.sectionHeaderStart} ${openSection === 'productivity' ? styles.active : ''}`}>
+						<Zap size={24} />
+						<h3>Productivity</h3>
+					</div>
+
 					<Plus className={`${styles.icon} ${openSection === 'productivity' ? styles.rotate : ''}`} />
 				</div>
 
