@@ -395,6 +395,10 @@ p.errorInfo {
 	color: var(--text-primary);
 }
 
+input:focus {
+	outline: none;
+}
+
 .actions {
 	display: flex;
 	justify-content: flex-end;
@@ -402,23 +406,28 @@ p.errorInfo {
 }
 
 .cancel {
-	background: transparent;
-	border: 1px solid var(--border-color);
-	padding: 6px 12px;
+	flex: 1;
+	padding: 10px;
+	border-radius: 8px;
+	color: var(--text-primary);
+	border: none;
 	cursor: pointer;
+}
+.cancel:hover {
+	background-color: var(--hover-soft);
 }
 
 .confirm {
-	background: var(--color-red);
-	color: white;
+	flex: 1;
+	padding: 10px;
+	border-radius: 8px;
 	border: none;
-	padding: 6px 12px;
+	background-color: var(--color-red);
+	color: #fff;
 	cursor: pointer;
-
-	&:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
+}
+.confirm:hover {
+	background: var(--color-red-hover);
 }
 
 .deleteFooter {
@@ -472,7 +481,7 @@ p.errorInfo {
 
 	.deleteFooter {
 		flex-direction: column;
-		align-items: stretch; 
+		align-items: stretch;
 		gap: 10px;
 	}
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { changePassword } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext.jsx';
-
+import { removeUser } from '../../api/auth.js';
 import Button from '../Button';
 import Field from '../Field';
 import ThemeSwitch from '../ThemeSwitch';
@@ -48,6 +48,8 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	const [emailError, setEmailError] = useState('');
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [deleteInput, setDeleteInput] = useState('');
+	const [deleteMessage, setDeleteMessage] = useState('');
+	const [deleteError, setDeleteError] = useState('');
 
 	const handleChange = (e) => {
 		const { id, value } = e.target;
@@ -152,6 +154,26 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 		}, 4000);
 	};
 
+	const handleDeleteAccount = async () => {
+		try {
+			await removeUser(user.email);
+
+			if (feedbackType === 'toast') {
+				addToast('success', 'Account deleted successfully');
+			} else {
+				handleFeedback('success', 'Account deleted successfully', setDeleteMessage);
+			}
+
+			window.location.href = '/';
+		} catch (err) {
+			if (feedbackType === 'toast') {
+				addToast('error', err.message || 'Failed to delete account');
+			} else {
+				handleFeedback('error', err.message || 'Failed to delete account', setDeleteError);
+			}
+		}
+	};
+
 	return (
 		<div className={styles.settings}>
 			<div className={styles.activeHeader}>
@@ -222,9 +244,10 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 						{passError && <p className={styles.errorInfo}>{passError}</p>}
 					</div>
 					<div className={styles.dangerZone}>
-						
-						<p className={styles.dangerHeader}><AlertTriangle size = {24} /> Danger Zone</p>
-						<p className= {styles.dangerTitle}>Permanently delete your account</p>
+						<p className={styles.dangerHeader}>
+							<AlertTriangle size={24} /> Danger Zone
+						</p>
+						<p className={styles.dangerTitle}>Permanently delete your account</p>
 						<div className={styles.deleteFooter}>
 							<p className={styles.dangerDescription}>This action cannot be undone</p>
 							<Button inner='Delete account' onClick={() => setShowDeleteModal(true)} />
@@ -351,12 +374,14 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 					)}
 				</div>
 			</section>
+
 			{showDeleteModal && (
 				<div className={styles.overlay}>
 					<div className={styles.modal}>
 						<h3>Delete account</h3>
 						<p>
-							Type your username <strong>{user?.username}</strong> to confirm account deletion.
+							Type your username ''<strong>{user?.username}</strong>'' to confirm account deletion. This is permanent
+							and irreversible.
 						</p>
 
 						<input
@@ -380,35 +405,8 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 					</div>
 				</div>
 			)}
-			{showDeleteModal && (
-				<div className={styles.overlay}>
-					<div className={styles.modal}>
-						<h3>Delete account</h3>
-						<p>
-							Type your username <strong>{user?.username}</strong> to confirm account deletion.
-						</p>
-
-						<input
-							className={styles.modalInput}
-							placeholder='Enter your username'
-							value={deleteInput}
-							onChange={(e) => setDeleteInput(e.target.value)}
-						/>
-
-						<div className={styles.actions}>
-							<button className={styles.cancel} onClick={() => setShowDeleteModal(false)}>
-								Cancel
-							</button>
-							<button
-								className={styles.confirm}
-								disabled={deleteInput !== user?.username}
-								onClick={handleDeleteAccount}>
-								Delete
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
+			{deleteMessage && <p className={styles.successInfo}>{deleteMessage}</p>}
+			{deleteError && <p className={styles.errorInfo}>{deleteError}</p>}
 		</div>
 	);
 };
