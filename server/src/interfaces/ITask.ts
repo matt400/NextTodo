@@ -25,8 +25,15 @@ export interface ITaskRemoveRequest {
   };
 }
 
+export interface IGetPomoRequest {
+  Body: {
+    task_id: number;
+  };
+}
+
 export interface IStartPomoRequest {
   Body: {
+    pomo_id: string;
     task_id: number;
     duration: number;
   };
@@ -34,15 +41,11 @@ export interface IStartPomoRequest {
 
 export interface IPausePomoRequest {
   Body: {
+    pomo_id: string;
     task_id: number;
     elapsed: number;
   };
 }
 
-export interface IResumePomoRequest {
-  Body: {
-    task_id: number;
-  };
-}
-
-export type IEndPomoRequest = IResumePomoRequest;
+export type IResumePomoRequest = IGetPomoRequest;
+export type IEndPomoRequest = IGetPomoRequest;

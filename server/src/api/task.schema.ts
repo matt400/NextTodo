@@ -52,6 +52,16 @@ export const removeTaskSchema = {
   },
 };
 
+export const getPomoSchema = {
+  body: {
+    type: "object",
+    required: ["task_id"],
+    properties: {
+      task_id: { type: "number" },
+    },
+  },
+};
+
 export const startPomoSchema = {
   body: {
     type: "object",

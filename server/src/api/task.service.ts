@@ -1,4 +1,6 @@
+import { AppError, handlePrismaError } from "@server/utils/errors";
 import repository from "./task.repository";
+
 import type { PrismaClient } from "@server/generated/prisma/client";
 
 export async function getOneTask(
@@ -9,9 +11,8 @@ export async function getOneTask(
   try {
     return await repository(prisma).getOneTask(userId, taskId);
   } catch (err) {
-    // Todo: Future log
-    console.log(err);
-    throw err;
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
   }
 }
 
@@ -19,9 +20,8 @@ export async function getAllTasks(prisma: PrismaClient, userId: string) {
   try {
     return await repository(prisma).getAllTasks(userId);
   } catch (err) {
-    // Todo: Future log
-    console.log(err);
-    throw err;
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
   }
 }
 
@@ -34,9 +34,8 @@ export async function addTask(
   try {
     return await repository(prisma).addTask(userId, taskName, taskDesc);
   } catch (err) {
-    // Todo: Future log
-    console.log(err);
-    throw err;
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
   }
 }
 
@@ -49,9 +48,8 @@ export async function modifyTaskData(
   try {
     return await repository(prisma).modifyTaskData(taskId, userId, data);
   } catch (err) {
-    // Todo: Future log
-    console.log(err);
-    return err;
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
   }
 }
 
@@ -64,16 +62,16 @@ export async function removeTask(
     const result = await repository(prisma).removeTask(taskId, userId);
     const getCount = JSON.parse(JSON.stringify(result));
     if ("count" in getCount && getCount.count == 0)
-      throw Error("Nothing was deleted");
+      throw new AppError(404, "TASK_REMOVE_ERROR");
     return result;
   } catch (err) {
-    // Todo: Future log
-    console.log(err);
-    return err;
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
   }
 }
 
 export enum PomoMethod {
+  Get,
   Start,
   Pause,
   Resume,
@@ -85,10 +83,13 @@ export async function managePomo(
   taskId: number,
   userId: string,
   type: PomoMethod,
+  pomoId: string = "",
   durationOrElapsed: number = 0,
 ) {
   try {
     switch (type) {
+      case PomoMethod.Get:
+        return await repository(prisma).getPomo(taskId, userId);
       case PomoMethod.Start:
         return await repository(prisma).startPomo(
           taskId,
@@ -97,6 +98,7 @@ export async function managePomo(
         );
       case PomoMethod.Pause:
         return await repository(prisma).pausePomo(
+          pomoId,
           taskId,
           userId,
           durationOrElapsed,
@@ -105,12 +107,9 @@ export async function managePomo(
         return await repository(prisma).resumePomo(taskId, userId);
       case PomoMethod.End:
         return await repository(prisma).endPomo(taskId, userId);
-      default:
-        throw new Error("No method picked in PomoMethod");
     }
   } catch (err) {
-    // Todo: Future log
-    console.log(err);
-    return err;
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
   }
 }

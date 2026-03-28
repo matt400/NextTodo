@@ -13,6 +13,7 @@ import type {
   ITaskAddRequest,
   ITaskModifyRequest,
   ITaskRemoveRequest,
+  IGetPomoRequest,
   IStartPomoRequest,
   IPausePomoRequest,
   IResumePomoRequest,
@@ -53,15 +54,7 @@ export async function addTaskController(
   const { task_name, task_desc } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-
-  const newTask = await addTask(
-    request.server.prisma,
-    userData.id,
-    task_name,
-    task_desc,
-  );
-
-  // Todo: Future: Add log to results from newTask
+  await addTask(request.server.prisma, userData.id, task_name, task_desc);
 
   return reply.ok("NEW_TASK_ADDED");
 }
@@ -71,18 +64,10 @@ export async function modifyTaskController(
   reply: FastifyReply,
 ) {
   const { task_id, data } = request.body;
-
   const userData = await getUserData(request.server.prisma, request.user.email);
 
-  const error =
-    (await modifyTaskData(
-      request.server.prisma,
-      task_id,
-      userData.id,
-      data,
-    )) instanceof Error;
+  await modifyTaskData(request.server.prisma, task_id, userData.id, data);
 
-  if (error) return reply.fail("TASK_NOT_FOUND");
   return reply.ok("TASK_MODIFIED");
 }
 
@@ -93,13 +78,27 @@ export async function removeTaskController(
   const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
+  await removeTask(request.server.prisma, task_id, userData.id);
 
-  const error =
-    (await removeTask(request.server.prisma, task_id, userData.id)) instanceof
-    Error;
+  return reply.ok("TASK_REMOVE_SUCCESS");
+}
 
-  if (error) return reply.fail("TASK_REMOVE_ERROR");
-  else return reply.ok("TASK_REMOVE_SUCCESS");
+export async function getPomoController(
+  request: FastifyRequest<IGetPomoRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+
+  const data = await managePomo(
+    request.server.prisma,
+    task_id,
+    userData.id,
+    PomoMethod.Get,
+  );
+
+  return reply.code(200).send(data);
 }
 
 export async function startPomoController(
@@ -109,31 +108,32 @@ export async function startPomoController(
   const { task_id, duration } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  if (!userData) return reply.fail("NO_SUCH_USER");
-
   await managePomo(
     request.server.prisma,
     task_id,
     userData.id,
     PomoMethod.Start,
+    undefined,
     duration,
   );
+
+  return reply.ok("POMO_STARTED");
 }
 
 export async function pausePomoController(
   request: FastifyRequest<IPausePomoRequest>,
   reply: FastifyReply,
 ) {
-  const { task_id, elapsed } = request.body;
+  const { pomo_id, task_id, elapsed } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  if (!userData) return reply.fail("NO_SUCH_USER");
 
   await managePomo(
     request.server.prisma,
     task_id,
     userData.id,
     PomoMethod.Pause,
+    pomo_id,
     elapsed,
   );
 }
@@ -145,8 +145,6 @@ export async function resumePomoController(
   const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  if (!userData) return reply.fail("NO_SUCH_USER");
-
   await managePomo(
     request.server.prisma,
     task_id,
@@ -162,7 +160,5 @@ export async function endPomoController(
   const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  if (!userData) return reply.fail("NO_SUCH_USER");
-
   await managePomo(request.server.prisma, task_id, userData.id, PomoMethod.End);
 }

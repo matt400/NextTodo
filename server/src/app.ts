@@ -1,11 +1,11 @@
 import path from "path";
 import Fastify from "fastify";
-import i18next from "i18next";
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import fStatic from "@fastify/static";
 import jwt from "@fastify/jwt";
 
+import { errorHandler } from "@server/plugins/errorHandler";
 import prismaPl from "@server/plugins/prisma";
 import i18nPl from "@server/plugins/i18n";
 import i18nPlR from "@server/plugins/i18n.reply";
@@ -16,34 +16,13 @@ import authRoutes from "@server/api/auth.routes";
 import userRoutes from "@server/api/user.routes";
 import taskRoutes from "@server/api/task.routes";
 
-import { AppError } from "@server/utils/errors";
-
 import type { FastifyInstance } from "fastify";
 
 export async function buildApp(): Promise<FastifyInstance> {
   const fastify = Fastify({ logger: true });
 
-  fastify.setErrorHandler((error, request, reply) => {
-    const t = request.t || i18next.t.bind(i18next);
-
-    if (error instanceof AppError) {
-      return reply.code(error.statusCode).send({
-        success: false,
-        error: {
-          code: error.statusCode, // "USER_ALREADY_EXISTS"
-          message: t(error.message),
-        },
-      });
-    }
-
-    return reply.code(500).send({
-      success: false,
-      error: {
-        code: "UNKNOWN_ERROR",
-        message: t("UNKNOWN_ERROR"),
-      },
-    });
-  });
+  // Errors
+  fastify.setErrorHandler(errorHandler);
 
   // Plugins
   await fastify.register(prismaPl);
