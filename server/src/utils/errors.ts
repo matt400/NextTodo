@@ -14,7 +14,7 @@ export function handlePrismaError(e: unknown): never {
   if (e instanceof Prisma.PrismaClientKnownRequestError) {
     switch (e.code) {
       case "P2002":
-        throw new AppError(409, "USER_ALREADY_EXISTS");
+        throw new AppError(409, "RECORD_ALREADY_EXISTS");
       case "P2025":
         throw new AppError(404, "RECORD_NOT_FOUND");
       default:
