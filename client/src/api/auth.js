@@ -76,3 +76,22 @@ export async function changePassword(currentPassword, newPassword, confirmPasswo
 
 	return data;
 }
+
+export async function removeUser(email) {
+	const res = await fetch(`${USER_URL}/me`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		credentials: 'include',
+		body: JSON.stringify({ email }), 
+	});
+
+	const data = await res.json();
+
+	if (!res.ok) {
+		throw new Error(data?.message || 'Failed to delete account');
+	}
+
+	return data;
+}

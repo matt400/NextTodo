@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { changePassword } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext.jsx';
-
+import { removeUser } from '../../api/auth.js';
 import Button from '../Button';
 import Field from '../Field';
 import ThemeSwitch from '../ThemeSwitch';
@@ -9,7 +9,19 @@ import { addToast } from '../Toasts';
 import { useFeedback } from '../../context/FeedbackContext.jsx';
 import { useFeedbackHandler } from '../../helpers/useFeedbackHandler.js';
 
-import { Mail, Lock, Maximize, Minimize, Plus, Minus, BellRing, MessageSquare } from 'lucide-react';
+import {
+	Mail,
+	Lock,
+	Maximize,
+	Minimize,
+	Plus,
+	BellRing,
+	MessageSquare,
+	User,
+	SlidersHorizontal,
+	Zap,
+	AlertTriangle,
+} from 'lucide-react';
 import styles from './UserSettings.module.css';
 
 const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
@@ -34,6 +46,10 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	const [passError, setPassError] = useState('');
 	const [emailMessage, setEmailMessage] = useState('');
 	const [emailError, setEmailError] = useState('');
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [deleteInput, setDeleteInput] = useState('');
+	const [deleteMessage, setDeleteMessage] = useState('');
+	const [deleteError, setDeleteError] = useState('');
 
 	const handleChange = (e) => {
 		const { id, value } = e.target;
@@ -138,6 +154,26 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 		}, 4000);
 	};
 
+	const handleDeleteAccount = async () => {
+		try {
+			await removeUser(user.email);
+
+			if (feedbackType === 'toast') {
+				addToast('success', 'Account deleted successfully');
+			} else {
+				handleFeedback('success', 'Account deleted successfully', setDeleteMessage);
+			}
+
+			window.location.href = '/';
+		} catch (err) {
+			if (feedbackType === 'toast') {
+				addToast('error', err.message || 'Failed to delete account');
+			} else {
+				handleFeedback('error', err.message || 'Failed to delete account', setDeleteError);
+			}
+		}
+	};
+
 	return (
 		<div className={styles.settings}>
 			<div className={styles.activeHeader}>
@@ -149,13 +185,16 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 				<div
 					className={`${styles.sectionHeader} ${openSection === 'profile' ? styles.active : ''}`}
 					onClick={() => setOpenSection(openSection === 'profile' ? null : 'profile')}>
-					<h3>Profile Settings</h3>
+					<div className={`${styles.sectionHeaderStart} ${openSection === 'profile' ? styles.active : ''}`}>
+						<User size={24} />
+						<h3>Profile Settings</h3>
+					</div>
 					<Plus size={24} className={`${styles.icon} ${openSection === 'profile' ? styles.rotate : ''}`} />
 				</div>
 				<div className={`${styles.profileGrid} ${openSection === 'profile' ? styles.open : styles.closed}`}>
 					{/* EMAIL */}
 					<div className={styles.card}>
-						<p className={styles.label}>Email</p>
+						<p className={styles.label}>Change Email</p>
 						<p className={styles.description}>Your current email is {user?.email}</p>
 
 						<Field innerText='New email' Icon={Mail} />
@@ -167,8 +206,8 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 
 					{/* PASSWORD */}
 					<div className={styles.card}>
-						<p className={styles.label}>Password</p>
-
+						<p className={styles.label}>Change Password</p>
+						<p className={styles.description}>Your current password</p>
 						<Field
 							id='currentPassword'
 							type='password'
@@ -204,6 +243,16 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 						{passMessage && <p className={styles.successInfo}>{passMessage}</p>}
 						{passError && <p className={styles.errorInfo}>{passError}</p>}
 					</div>
+					<div className={styles.dangerZone}>
+						<p className={styles.dangerHeader}>
+							<AlertTriangle size={24} /> Danger Zone
+						</p>
+						<p className={styles.dangerTitle}>Permanently delete your account</p>
+						<div className={styles.deleteFooter}>
+							<p className={styles.dangerDescription}>This action cannot be undone</p>
+							<Button inner='Delete account' onClick={() => setShowDeleteModal(true)} />
+						</div>
+					</div>
 				</div>
 			</section>
 
@@ -212,7 +261,11 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 				<div
 					className={`${styles.sectionHeader} ${openSection === 'preferences' ? styles.active : ''}`}
 					onClick={() => setOpenSection(openSection === 'preferences' ? null : 'preferences')}>
-					<h3>Preferences</h3>
+					<div className={`${styles.sectionHeaderStart} ${openSection === 'preferences' ? styles.active : ''}`}>
+						<SlidersHorizontal size={24} />
+						<h3>Preferences</h3>
+					</div>
+
 					<Plus className={`${styles.icon} ${openSection === 'preferences' ? styles.rotate : ''}`} />
 				</div>
 
@@ -280,7 +333,11 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 				<div
 					className={`${styles.sectionHeader} ${openSection === 'productivity' ? styles.active : ''}`}
 					onClick={() => setOpenSection(openSection === 'productivity' ? null : 'productivity')}>
-					<h3>Productivity</h3>
+					<div className={`${styles.sectionHeaderStart} ${openSection === 'productivity' ? styles.active : ''}`}>
+						<Zap size={24} />
+						<h3>Productivity</h3>
+					</div>
+
 					<Plus className={`${styles.icon} ${openSection === 'productivity' ? styles.rotate : ''}`} />
 				</div>
 
@@ -317,6 +374,39 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 					)}
 				</div>
 			</section>
+
+			{showDeleteModal && (
+				<div className={styles.overlay}>
+					<div className={styles.modal}>
+						<h3>Delete account</h3>
+						<p>
+							Type your username ''<strong>{user?.username}</strong>'' to confirm account deletion. This is permanent
+							and irreversible.
+						</p>
+
+						<input
+							className={styles.modalInput}
+							placeholder='Enter your username'
+							value={deleteInput}
+							onChange={(e) => setDeleteInput(e.target.value)}
+						/>
+
+						<div className={styles.actions}>
+							<button className={styles.cancel} onClick={() => setShowDeleteModal(false)}>
+								Cancel
+							</button>
+							<button
+								className={styles.confirm}
+								disabled={deleteInput !== user?.username}
+								onClick={handleDeleteAccount}>
+								Delete
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+			{deleteMessage && <p className={styles.successInfo}>{deleteMessage}</p>}
+			{deleteError && <p className={styles.errorInfo}>{deleteError}</p>}
 		</div>
 	);
 };

@@ -6,6 +6,7 @@ const DeleteAllModal = ({ onConfirm, onCancel, type }) => {
 	return (
 		<div className={styles.overlay}>
 			<div className={styles.modal}>
+				
 				<h3>Delete all {isActive ? 'active' : 'completed'} tasks?</h3>
 				<p>Are you sure you want to delete all {isActive ? 'active' : 'completed'} tasks?</p>
 
