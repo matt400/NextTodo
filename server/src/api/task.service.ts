@@ -46,6 +46,8 @@ export async function modifyTaskData(
   data: object,
 ) {
   try {
+    const uniqueTask = await repository(prisma).findUniqueTask(taskId, userId);
+    if (!uniqueTask) throw new AppError(404, "TASK_NOT_FOUND");
     return await repository(prisma).modifyTaskData(taskId, userId, data);
   } catch (err) {
     if (err instanceof AppError) throw err;
@@ -70,44 +72,86 @@ export async function removeTask(
   }
 }
 
-export enum PomoMethod {
-  Get,
-  Start,
-  Pause,
-  Resume,
-  End,
-}
-
-export async function managePomo(
+export async function getPomo(
   prisma: PrismaClient,
   taskId: number,
   userId: string,
-  type: PomoMethod,
-  pomoId: string = "",
-  durationOrElapsed: number = 0,
 ) {
   try {
-    switch (type) {
-      case PomoMethod.Get:
-        return await repository(prisma).getPomo(taskId, userId);
-      case PomoMethod.Start:
-        return await repository(prisma).startPomo(
-          taskId,
-          userId,
-          durationOrElapsed,
-        );
-      case PomoMethod.Pause:
-        return await repository(prisma).pausePomo(
-          pomoId,
-          taskId,
-          userId,
-          durationOrElapsed,
-        );
-      case PomoMethod.Resume:
-        return await repository(prisma).resumePomo(taskId, userId);
-      case PomoMethod.End:
-        return await repository(prisma).endPomo(taskId, userId);
-    }
+    return await repository(prisma).getPomo(taskId, userId);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
+  }
+}
+
+export async function startPomo(
+  prisma: PrismaClient,
+  taskId: number,
+  userId: string,
+  duration: number,
+) {
+  try {
+    const activePomo = await repository(prisma).getActivePomo(taskId, userId);
+    if (activePomo)
+      return await repository(prisma).modifyPomoData(activePomo?.id, {
+        startedAt: new Date(),
+        pausedAt: null,
+        endedAt: null,
+        elapsed: 0,
+      });
+    return await repository(prisma).createPomo(taskId, userId, duration);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
+  }
+}
+
+export async function pauseOrResumePomo(
+  prisma: PrismaClient,
+  taskId: number,
+  userId: string,
+  isResume: boolean = false,
+) {
+  try {
+    const currentDate = new Date();
+    const activePomo = await repository(prisma).getActivePomo(taskId, userId);
+    if (!activePomo) throw new AppError(404, "POMO_NOT_FOUND");
+
+    if (!isResume && activePomo.pausedAt !== null)
+      throw new AppError(400, "POMO_ALREADY_PAUSED");
+    if (isResume && activePomo.pausedAt === null)
+      throw new AppError(400, "POMO_ALREADY_WORKING");
+
+    const elapsed =
+      activePomo.elapsed +
+      (currentDate.getTime() - activePomo.startedAt.getTime());
+
+    return await repository(prisma).modifyPomoData(activePomo.id, {
+      pausedAt: !isResume ? new Date() : null,
+      elapsed,
+    });
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
+  }
+}
+
+export async function endPomo(
+  prisma: PrismaClient,
+  taskId: number,
+  userId: string,
+  elapsed: number,
+) {
+  try {
+    const activePomo = await repository(prisma).getActivePomo(taskId, userId);
+    if (!activePomo) throw new AppError(404, "POMO_NOT_FOUND");
+
+    return await repository(prisma).modifyPomoData(activePomo.id, {
+      pausedAt: null,
+      elapsed: elapsed,
+      endedAt: new Date(),
+    });
   } catch (err) {
     if (err instanceof AppError) throw err;
     handlePrismaError(err);

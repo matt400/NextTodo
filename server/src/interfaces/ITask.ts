@@ -33,19 +33,17 @@ export interface IGetPomoRequest {
 
 export interface IStartPomoRequest {
   Body: {
-    pomo_id: string;
     task_id: number;
     duration: number;
   };
 }
 
-export interface IPausePomoRequest {
+export type IEndPomoRequest = {
   Body: {
-    pomo_id: string;
     task_id: number;
     elapsed: number;
   };
-}
+};
 
+export type IPausePomoRequest = IGetPomoRequest;
 export type IResumePomoRequest = IGetPomoRequest;
-export type IEndPomoRequest = IGetPomoRequest;

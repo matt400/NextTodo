@@ -73,33 +73,6 @@ export const startPomoSchema = {
   },
 };
 
-export const pausePomoSchema = {
-  body: {
-    type: "object",
-    required: ["task_id", "elapsed"],
-    properties: {
-      task_id: { type: "number" },
-      elapsed: { type: "number" },
-    },
-  },
-};
-
-export const resumePomoSchema = {
-  body: {
-    type: "object",
-    required: ["task_id"],
-    properties: {
-      task_id: { type: "number" },
-    },
-  },
-};
-
-export const endPomoSchema = {
-  body: {
-    type: "object",
-    required: ["task_id"],
-    properties: {
-      task_id: { type: "number" },
-    },
-  },
-};
+export const pausePomoSchema = getPomoSchema;
+export const resumePomoSchema = getPomoSchema;
+export const endPomoSchema = getPomoSchema;

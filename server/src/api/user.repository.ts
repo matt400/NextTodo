@@ -1,26 +1,17 @@
-import { Prisma, PrismaClient } from "@prismagl";
-import { handlePrismaError } from "@server/utils/errors";
+import { PrismaClient } from "@prismagl";
 
 const userRepository = (prisma: PrismaClient) => ({
   updateData: async (id: string, data: object) => {
-    try {
-      await prisma.user.update({
-        where: { id },
-        data: data,
-      });
-    } catch (e) {
-      handlePrismaError(e);
-    }
+    await prisma.user.update({
+      where: { id },
+      data: data,
+    });
   },
 
   removeUser: async (id: string) => {
-    try {
-      await prisma.user.delete({
-        where: { id },
-      });
-    } catch (e) {
-      handlePrismaError(e);
-    }
+    await prisma.user.delete({
+      where: { id },
+    });
   },
 });
 

@@ -26,5 +26,11 @@
   "USER_REMOVED": "User was removed.",
   "EMAIL_NOT_MATCHING": "Email is not matching with account one.",
   "POMO_IS_STARTED": "Pomodoro from this task is already started.",
-  "POMO_STARTED": "Pomodoro started."
+  "POMO_STARTED": "Pomodoro started.",
+  "POMO_PAUSED": "Pomodoro paused.",
+  "POMO_RESUMED": "Pomodoro resumed.",
+  "POMO_ENDED": "Pomodoro ended.",
+  "POMO_NOT_FOUND": "Pomodoro record not found.",
+  "POMO_ALREADY_PAUSED": "This pomodoro is already paused.",
+  "POMO_ALREADY_WORKING": "This pomodoro is already working."
 }

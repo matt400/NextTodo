@@ -5,7 +5,10 @@ import {
   getOneTask,
   modifyTaskData,
   removeTask,
-  managePomo,
+  getPomo,
+  startPomo,
+  pauseOrResumePomo,
+  endPomo,
 } from "./task.service";
 
 import type {
@@ -20,7 +23,6 @@ import type {
   IEndPomoRequest,
 } from "@server/interfaces/ITask";
 
-import { PomoMethod } from "./task.service";
 import type { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getTasksController(
@@ -90,13 +92,7 @@ export async function getPomoController(
   const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-
-  const data = await managePomo(
-    request.server.prisma,
-    task_id,
-    userData.id,
-    PomoMethod.Get,
-  );
+  const data = await getPomo(request.server.prisma, task_id, userData.id);
 
   return reply.code(200).send(data);
 }
@@ -108,14 +104,7 @@ export async function startPomoController(
   const { task_id, duration } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  await managePomo(
-    request.server.prisma,
-    task_id,
-    userData.id,
-    PomoMethod.Start,
-    undefined,
-    duration,
-  );
+  await startPomo(request.server.prisma, task_id, userData.id, duration);
 
   return reply.ok("POMO_STARTED");
 }
@@ -124,18 +113,12 @@ export async function pausePomoController(
   request: FastifyRequest<IPausePomoRequest>,
   reply: FastifyReply,
 ) {
-  const { pomo_id, task_id, elapsed } = request.body;
+  const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
+  await pauseOrResumePomo(request.server.prisma, task_id, userData.id);
 
-  await managePomo(
-    request.server.prisma,
-    task_id,
-    userData.id,
-    PomoMethod.Pause,
-    pomo_id,
-    elapsed,
-  );
+  return reply.ok("POMO_PAUSED", userData);
 }
 
 export async function resumePomoController(
@@ -145,20 +128,19 @@ export async function resumePomoController(
   const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  await managePomo(
-    request.server.prisma,
-    task_id,
-    userData.id,
-    PomoMethod.Resume,
-  );
+  await pauseOrResumePomo(request.server.prisma, task_id, userData.id, true);
+
+  return reply.ok("POMO_RESUMED", userData);
 }
 
 export async function endPomoController(
   request: FastifyRequest<IEndPomoRequest>,
   reply: FastifyReply,
 ) {
-  const { task_id } = request.body;
+  const { task_id, elapsed } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  await managePomo(request.server.prisma, task_id, userData.id, PomoMethod.End);
+  await endPomo(request.server.prisma, task_id, userData.id, elapsed);
+
+  return reply.ok("POMO_ENDED");
 }
