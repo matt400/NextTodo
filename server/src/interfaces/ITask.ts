@@ -24,3 +24,26 @@ export interface ITaskRemoveRequest {
     task_id: number[];
   };
 }
+
+export interface IGetPomoRequest {
+  Body: {
+    task_id: number;
+  };
+}
+
+export interface IStartPomoRequest {
+  Body: {
+    task_id: number;
+    duration: number;
+  };
+}
+
+export type IEndPomoRequest = {
+  Body: {
+    task_id: number;
+    elapsed: number;
+  };
+};
+
+export type IPausePomoRequest = IGetPomoRequest;
+export type IResumePomoRequest = IGetPomoRequest;

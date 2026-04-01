@@ -51,3 +51,28 @@ export const removeTaskSchema = {
     },
   },
 };
+
+export const getPomoSchema = {
+  body: {
+    type: "object",
+    required: ["task_id"],
+    properties: {
+      task_id: { type: "number" },
+    },
+  },
+};
+
+export const startPomoSchema = {
+  body: {
+    type: "object",
+    required: ["task_id", "duration"],
+    properties: {
+      task_id: { type: "number" },
+      duration: { type: "number" },
+    },
+  },
+};
+
+export const pausePomoSchema = getPomoSchema;
+export const resumePomoSchema = getPomoSchema;
+export const endPomoSchema = getPomoSchema;

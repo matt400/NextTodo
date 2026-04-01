@@ -20,9 +20,14 @@
   "UNKNOWN_ERROR": "Nieznany błąd serwera",
   "UPDATE_VALIDATION_ERROR": "Dane muszą się różnić od aktualnych.",
   "UPDATE_USER_DATA_SUCCESS": "Dane zostały zaktualizowane.",
-  "USER_ALREADY_EXISTS": "Ten użytkownik już istnieje.",
+  "RECORD_ALREADY_EXISTS": "Ten rekord już istnieje.",
   "RECORD_NOT_FOUND": "Rekord nie może być znaleziony.",
   "INVALID_REQUEST": "Nieprawidłowe dane zapytania.",
   "USER_REMOVED": "Użytkownik usunięty.",
-  "EMAIL_NOT_MATCHING": "Wprowadzony adres email nie zgadza się z przypisanym do konta."
+  "EMAIL_NOT_MATCHING": "Wprowadzony adres email nie zgadza się z przypisanym do konta.",
+  "POMO_STARTED": "Pomodoro wystartowane.",
+  "POMO_PAUSED": "Pomodoro zatrzymane.",
+  "POMO_RESUMED": "Pomodoro wznowione.",
+  "POMO_ENDED": "Pomodoro zakończone.",
+  "POMO_NOT_FOUND": "Nie znaleziono rekordu pomodoro."
 }

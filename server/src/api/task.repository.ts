@@ -16,12 +16,12 @@ const tasksRepository = (prisma: PrismaClient) => ({
       },
     }),
 
-  modifyTaskData: async (taskId: number, userId: string, data: object) => {
-    const task = await prisma.tasks.findUnique({
-      where: { id: taskId, userId: userId },
-    });
-    if (!task) throw new Error("Task not found");
+  findUniqueTask: async (taskId: number, uId: string) =>
+    await prisma.tasks.findUnique({
+      where: { id: taskId, userId: uId },
+    }),
 
+  modifyTaskData: async (taskId: number, userId: string, data: object) => {
     if (Object.keys(data).length > 1)
       return await prisma.tasks.updateMany({
         where: { id: taskId, userId: userId },
@@ -38,15 +38,54 @@ const tasksRepository = (prisma: PrismaClient) => ({
     if (taskId.length > 1)
       return await prisma.tasks.deleteMany({
         where: {
-          userId: userId,
           id: { in: taskId },
+          userId: userId,
         },
       });
     return await prisma.tasks.delete({
       where: {
-        userId: userId,
         id: taskId[0],
+        userId: userId,
       },
+    });
+  },
+
+  getPomo: async (taskId: number, userId: string) =>
+    await prisma.pomo.findMany({
+      where: { taskId: taskId, userId: userId },
+    }),
+
+  getActivePomo: async (taskId: number, userId: string) =>
+    await prisma.pomo.findFirst({
+      where: {
+        taskId: taskId,
+        userId: userId,
+        endedAt: null,
+      },
+    }),
+
+  createPomo: async (taskId: number, userId: string, duration: number) => {
+    return await prisma.pomo.create({
+      data: {
+        userId: userId,
+        taskId: taskId,
+        duration: duration,
+      },
+    });
+  },
+
+  modifyPomoData: async (pomoId: string, data: object) => {
+    return await prisma.pomo.update({
+      where: {
+        id: pomoId,
+      },
+      data: data,
+    });
+  },
+
+  removePomosFromTask: async (taskId: number) => {
+    return await prisma.pomo.deleteMany({
+      where: { taskId: taskId },
     });
   },
 });

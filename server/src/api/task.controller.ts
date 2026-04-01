@@ -5,6 +5,10 @@ import {
   getOneTask,
   modifyTaskData,
   removeTask,
+  getPomo,
+  startPomo,
+  pauseOrResumePomo,
+  endPomo,
 } from "./task.service";
 
 import type {
@@ -12,7 +16,13 @@ import type {
   ITaskAddRequest,
   ITaskModifyRequest,
   ITaskRemoveRequest,
+  IGetPomoRequest,
+  IStartPomoRequest,
+  IPausePomoRequest,
+  IResumePomoRequest,
+  IEndPomoRequest,
 } from "@server/interfaces/ITask";
+
 import type { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getTasksController(
@@ -46,15 +56,7 @@ export async function addTaskController(
   const { task_name, task_desc } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-
-  const newTask = await addTask(
-    request.server.prisma,
-    userData.id,
-    task_name,
-    task_desc,
-  );
-
-  // Todo: Future: Add log to results from newTask
+  await addTask(request.server.prisma, userData.id, task_name, task_desc);
 
   return reply.ok("NEW_TASK_ADDED");
 }
@@ -64,18 +66,10 @@ export async function modifyTaskController(
   reply: FastifyReply,
 ) {
   const { task_id, data } = request.body;
-
   const userData = await getUserData(request.server.prisma, request.user.email);
 
-  const error =
-    (await modifyTaskData(
-      request.server.prisma,
-      task_id,
-      userData.id,
-      data,
-    )) instanceof Error;
+  await modifyTaskData(request.server.prisma, task_id, userData.id, data);
 
-  if (error) return reply.fail("TASK_NOT_FOUND");
   return reply.ok("TASK_MODIFIED");
 }
 
@@ -86,11 +80,67 @@ export async function removeTaskController(
   const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
+  await removeTask(request.server.prisma, task_id, userData.id);
 
-  const error =
-    (await removeTask(request.server.prisma, task_id, userData.id)) instanceof
-    Error;
+  return reply.ok("TASK_REMOVE_SUCCESS");
+}
 
-  if (error) return reply.fail("TASK_REMOVE_ERROR");
-  else return reply.ok("TASK_REMOVE_SUCCESS");
+export async function getPomoController(
+  request: FastifyRequest<IGetPomoRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  const data = await getPomo(request.server.prisma, task_id, userData.id);
+
+  return reply.code(200).send(data);
+}
+
+export async function startPomoController(
+  request: FastifyRequest<IStartPomoRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id, duration } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  await startPomo(request.server.prisma, task_id, userData.id, duration);
+
+  return reply.ok("POMO_STARTED");
+}
+
+export async function pausePomoController(
+  request: FastifyRequest<IPausePomoRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  await pauseOrResumePomo(request.server.prisma, task_id, userData.id);
+
+  return reply.ok("POMO_PAUSED", userData);
+}
+
+export async function resumePomoController(
+  request: FastifyRequest<IResumePomoRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  await pauseOrResumePomo(request.server.prisma, task_id, userData.id, true);
+
+  return reply.ok("POMO_RESUMED", userData);
+}
+
+export async function endPomoController(
+  request: FastifyRequest<IEndPomoRequest>,
+  reply: FastifyReply,
+) {
+  const { task_id, elapsed } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  await endPomo(request.server.prisma, task_id, userData.id, elapsed);
+
+  return reply.ok("POMO_ENDED");
 }

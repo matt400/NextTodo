@@ -35,44 +35,42 @@ export async function changePasswordController(
   request: FastifyRequest<IChangePassword>,
   reply: FastifyReply,
 ) {
-  {
-    const { current_password, new_password, confirm_password } = request.body;
+  const { current_password, new_password, confirm_password } = request.body;
 
-    const matchValidation = validatePasswordsMatch(
-      new_password,
-      confirm_password,
-    );
-    if (!matchValidation.isValid)
-      return reply.fail(matchValidation.errorKey!, 400);
+  const matchValidation = validatePasswordsMatch(
+    new_password,
+    confirm_password,
+  );
+  if (!matchValidation.isValid)
+    return reply.fail(matchValidation.errorKey!, 400);
 
-    const strengthValidation = validatePasswordStrength(new_password);
-    if (!strengthValidation.isValid)
-      return reply.fail(strengthValidation.errorKey!, 400);
+  const strengthValidation = validatePasswordStrength(new_password);
+  if (!strengthValidation.isValid)
+    return reply.fail(strengthValidation.errorKey!, 400);
 
-    const differentValidation = validatePasswordsDifferent(
-      current_password,
-      new_password,
-    );
-    if (!differentValidation.isValid)
-      return reply.fail(differentValidation.errorKey!, 400);
+  const differentValidation = validatePasswordsDifferent(
+    current_password,
+    new_password,
+  );
+  if (!differentValidation.isValid)
+    return reply.fail(differentValidation.errorKey!, 400);
 
-    const userData = await getUserData(
-      request.server.prisma,
-      request.user.email,
-      true,
-    );
+  const userData = await getUserData(
+    request.server.prisma,
+    request.user.email,
+    true,
+  );
 
-    const isPasswordValid = await request.server.bcrypt.compare(
-      current_password,
-      userData.password ?? "",
-    );
-    if (!isPasswordValid) return reply.fail("INVALID_CURRENT_PASSWORD", 401);
+  const isPasswordValid = await request.server.bcrypt.compare(
+    current_password,
+    userData.password ?? "",
+  );
+  if (!isPasswordValid) return reply.fail("INVALID_CURRENT_PASSWORD", 401);
 
-    const hashedPassword = await request.server.bcrypt.hash(new_password, 10);
-    await changePassword(request.server.prisma, userData.id, hashedPassword);
+  const hashedPassword = await request.server.bcrypt.hash(new_password, 10);
+  await changePassword(request.server.prisma, userData.id, hashedPassword);
 
-    return reply.ok("PASSWORD_CHANGED_SUCCESSFULLY");
-  }
+  return reply.ok("PASSWORD_CHANGED_SUCCESSFULLY");
 }
 
 export async function updateUserDataController(

@@ -43,7 +43,12 @@ export async function changePassword(
   userId: string,
   newPassword: string,
 ) {
-  return await authRepository(prisma).updatePassword(userId, newPassword);
+  try {
+    return await authRepository(prisma).updatePassword(userId, newPassword);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
+  }
 }
 
 export async function updateData(
@@ -51,9 +56,19 @@ export async function updateData(
   userId: string,
   data: object,
 ) {
-  return await userRepository(prisma).updateData(userId, data);
+  try {
+    return await userRepository(prisma).updateData(userId, data);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
+  }
 }
 
 export async function removeUser(prisma: PrismaClient, userId: string) {
-  return await userRepository(prisma).removeUser(userId);
+  try {
+    return await userRepository(prisma).removeUser(userId);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
+  }
 }
