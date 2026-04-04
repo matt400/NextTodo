@@ -1,147 +1,180 @@
-import { useState, useEffect, useRef } from "react";
-import { Play, Pause, X, AlarmClock } from "lucide-react";
-import styles from "./PomodoroTimer.module.css";
+import { useState, useEffect, useRef } from 'react';
+import { Play, Pause, X, AlarmClock } from 'lucide-react';
+import styles from './PomodoroTimer.module.css';
+import { pausePomodoro, resumePomodoro, endPomodoro, getPomodoro } from '../../api/taskApi';
 
-const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId }) => {
+const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePomoData, setActivePomoData }) => {
+	const [pomodoroMinutes, setPomodoroMinutes] = useState(Number(localStorage.getItem('pomodoroTime')) || 25);
 
-  const [pomodoroMinutes, setPomodoroMinutes] = useState(
-    Number(localStorage.getItem("pomodoroTime")) || 25
-  );
+	const showPomodoro = activePomodoroId === taskId;
+	const [seconds, setSeconds] = useState(0);
+	const [isPaused, setIsPaused] = useState(false);
+	const [showAlarm, setShowAlarm] = useState(false);
+	const audioRef = useRef(null);
+	const initializedRef = useRef(false);
 
-  const POMODORO_TIME = pomodoroMinutes * 60;
+	const formatTime = (total) => {
+		const safe = isNaN(total) || total < 0 ? 0 : Math.floor(total);
+		const m = Math.floor(safe / 60);
+		const s = safe % 60;
+		return `${m}:${s.toString().padStart(2, '0')}`;
+	};
 
-  const showPomodoro = activePomodoroId === taskId;
+	const handleEnd = async () => {
+		await endPomodoro(taskId);
+		setActivePomodoroId(null);
+		setActivePomoData(null);
+	};
 
-  const [seconds, setSeconds] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [showAlarm, setShowAlarm] = useState(false);
+	const togglePause = async () => {
+		const nextPaused = !isPaused;
+		setIsPaused(nextPaused);
 
-  const audioRef = useRef(null);
+		if (nextPaused) {
+			await pausePomodoro(taskId);
+		} else {
+			await resumePomodoro(taskId);
+		}
 
-  const formatTime = (total) => {
-    const m = Math.floor(total / 60);
-    const s = total % 60;
-    return `${m}:${s.toString().padStart(2, "0")}`;
-  };
+		const data = await getPomodoro(taskId);
+		if (data) setActivePomoData(data);
+	};
 
-  const togglePomodoro = () => {
-    if (activePomodoroId === taskId) {
-      setActivePomodoroId(null);
-      setSeconds(0);
-      setIsPaused(false);
-    } else {
-      setActivePomodoroId(taskId);
-      setSeconds(0);
-      setIsPaused(false);
-    }
-  };
+	useEffect(() => {
+		if (!activePomoData || showAlarm) return;
 
-  const togglePause = () => {
-    setIsPaused((prev) => !prev);
-  };
+		const duration = Number(activePomoData.duration) || pomodoroMinutes * 60;
+		if (seconds >= duration) {
+			setShowAlarm(true);
+			if (audioRef.current) {
+				audioRef.current.currentTime = 0;
+				audioRef.current.play();
+			}
+		}
+	}, [seconds, activePomoData, showAlarm, pomodoroMinutes]);
 
-  useEffect(() => {
-    if (activePomodoroId !== taskId) {
-      setSeconds(0);
-      setIsPaused(false);
-    }
-  }, [activePomodoroId, taskId]);
+	useEffect(() => {
+		if (!activePomoData || activePomodoroId !== taskId) {
+			initializedRef.current = false;
+			return;
+		}
 
-  useEffect(() => {
-    if (!showPomodoro || isPaused) return;
+		const computeSeconds = () => {
+			const now = Date.now();
+			const elapsedSec = Math.floor(Number(activePomoData.elapsed) / 1000) || 0;
 
-    const interval = setInterval(() => {
-      setSeconds((prev) => {
-        if (prev >= POMODORO_TIME) {
-          clearInterval(interval);
+			if (activePomoData.pausedAt) {
+				return elapsedSec;
+			} else {
+				const startedAt = new Date(activePomoData.startedAt).getTime();
+				const sinceStart = isNaN(startedAt) ? 0 : Math.floor((now - startedAt) / 1000);
+				return elapsedSec + sinceStart;
+			}
+		};
 
-          setShowAlarm(true);
+		if (!initializedRef.current) {
+			initializedRef.current = true;
+			setIsPaused(!!activePomoData.pausedAt);
+			setSeconds(computeSeconds());
+		}
 
-          if (audioRef.current) {
-            audioRef.current.currentTime = 0;
-            audioRef.current.play();
-          }
+		const interval = setInterval(() => {
+			const now = Date.now();
+			const elapsedSec = Math.floor(Number(activePomoData.elapsed) / 1000) || 0;
 
-          return prev;
-        }
+			let total;
+			if (activePomoData.pausedAt) {
+				total = elapsedSec;
+				setIsPaused(true);
+			} else {
+				const startedAt = new Date(activePomoData.startedAt).getTime();
+				const sinceStart = isNaN(startedAt) ? 0 : Math.floor((now - startedAt) / 1000);
+				total = elapsedSec + sinceStart;
+				setIsPaused(false);
+			}
 
-        return prev + 1;
-      });
-    }, 1000);
+			setSeconds(total);
+		}, 1000);
 
-    return () => clearInterval(interval);
-  }, [showPomodoro, isPaused, POMODORO_TIME]);
+		return () => clearInterval(interval);
+	}, [activePomoData, activePomodoroId, taskId]);
 
-  useEffect(() => {
-    const handler = () => {
-      const stored = Number(localStorage.getItem("pomodoroTime"));
-      if (stored) setPomodoroMinutes(stored);
-    };
+	useEffect(() => {
+		if (activePomodoroId !== taskId) {
+			setSeconds(0);
+			setIsPaused(false);
+		}
+	}, [activePomodoroId, taskId]);
 
-    window.addEventListener("pomodoroUpdate", handler);
+	useEffect(() => {
+		const handler = () => {
+			const stored = Number(localStorage.getItem('pomodoroTime'));
+			if (stored) setPomodoroMinutes(stored);
+		};
 
-    return () => window.removeEventListener("pomodoroUpdate", handler);
-  }, []);
+		window.addEventListener('pomodoroUpdate', handler);
+		return () => window.removeEventListener('pomodoroUpdate', handler);
+	}, []);
 
-  return (
-    <>
-      {showPomodoro && (
-        <div className={styles.pomodoro}>
-          <span className={styles.time}>{formatTime(seconds)}</span>
+	return (
+		<>
+			{showPomodoro && (
+				<div className={styles.pomodoro}>
+					<span className={styles.time}>{formatTime(seconds)}</span>
 
-          <button
-            className={styles.btn}
-            onClick={(e) => {
-              e.stopPropagation();
-              togglePause();
-            }}
-          >
-            {isPaused ? <Play size={16} /> : <Pause size={16} />}
-          </button>
+					<button
+						className={styles.btn}
+						onClick={(e) => {
+							e.stopPropagation();
+							togglePause();
+						}}>
+						{isPaused ? <Play size={16} /> : <Pause size={16} />}
+					</button>
 
-          <button
-            className={styles.btn}
-            onClick={(e) => {
-              e.stopPropagation();
-              togglePomodoro();
-            }}
-          >
-            <X size={16} />
-          </button>
-        </div>
-      )}
+					<button
+						className={styles.btn}
+						onClick={(e) => {
+							e.stopPropagation();
+							handleEnd();
+						}}>
+						<X size={16} />
+					</button>
+				</div>
+			)}
 
-      {showAlarm && (
-        <div className={styles["alarmOverlay"]}>
-          <div className={styles["alarmModal"]}>
-            <div className={styles["alarmHeader"]}>
-              <h3>Take a break</h3>
-              <AlarmClock />
-            </div>
+			{showAlarm && (
+				<div className={styles['alarmOverlay']}>
+					<div className={styles['alarmModal']}>
+						<div className={styles['alarmHeader']}>
+							<h3>Take a break</h3>
+							<AlarmClock />
+						</div>
 
-            <button
-              className={styles["okButton"]}
-              onClick={() => {
-                setShowAlarm(false);
-                setActivePomodoroId(null);
-                setSeconds(0);
-                setIsPaused(false);
+						<button
+							className={styles['okButton']}
+							onClick={async () => {
+								await endPomodoro(taskId);
 
-                if (audioRef.current) {
-                  audioRef.current.pause();
-                  audioRef.current.currentTime = 0;
-                }
-              }}
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      )}
+								setShowAlarm(false);
+								setActivePomodoroId(null);
+								setActivePomoData(null);
+								setSeconds(0);
+								setIsPaused(false);
 
-      <audio ref={audioRef} src="/alarm-clock-beep.wav" loop />
-    </>
-  );
+								if (audioRef.current) {
+									audioRef.current.pause();
+									audioRef.current.currentTime = 0;
+								}
+							}}>
+							OK
+						</button>
+					</div>
+				</div>
+			)}
+
+			<audio ref={audioRef} src='/alarm-clock-beep.wav' loop />
+		</>
+	);
 };
 
 export default PomodoroTimer;

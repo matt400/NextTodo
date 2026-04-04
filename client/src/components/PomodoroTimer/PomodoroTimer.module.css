@@ -52,6 +52,7 @@
 
 .alarmModal {
 	width: 380px;
+	padding: 24px;
 
 	background: var(--bg-surface);
 	border: 1px solid var(--border-color);

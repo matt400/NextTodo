@@ -123,12 +123,19 @@ export async function pauseOrResumePomo(
     if (isResume && activePomo.pausedAt === null)
       throw new AppError(400, "POMO_ALREADY_WORKING");
 
+    if (isResume) {
+      return await repository(prisma).modifyPomoData(activePomo.id, {
+        pausedAt: null,
+        startedAt: currentDate,
+      });
+    }
+
     const elapsed =
       activePomo.elapsed +
       (currentDate.getTime() - activePomo.startedAt.getTime());
 
     return await repository(prisma).modifyPomoData(activePomo.id, {
-      pausedAt: !isResume ? new Date() : null,
+      pausedAt: currentDate,
       elapsed,
     });
   } catch (err) {
