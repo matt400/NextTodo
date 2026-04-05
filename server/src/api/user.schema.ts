@@ -1,4 +1,5 @@
 import { fastifyPasswordProperty } from "@server/utils/password";
+import { fastifyEmailProperty } from "@server/utils/email";
 
 export const changePasswordSchema = {
   body: {
@@ -17,7 +18,7 @@ export const updateDataSchema = {
     type: "object",
     properties: {
       username: { type: "string", minLength: 3 },
-      email: { type: "string", minLength: 4 },
+      email: fastifyEmailProperty,
       isActive: { type: "boolean" },
     },
     minProperties: 1,
@@ -29,7 +30,7 @@ export const removeUserSchema = {
     type: "object",
     required: ["email"],
     properties: {
-      email: { type: "string", minLength: 4 },
+      email: fastifyEmailProperty,
     },
   },
 };

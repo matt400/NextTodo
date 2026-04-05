@@ -5,6 +5,8 @@ import {
   validatePasswordStrength,
 } from "@server/utils/password";
 
+import { validateEmail } from "@server/utils/email";
+
 import type { Bcrypt } from "@server/typescript/fastify";
 import type { User, PrismaClient } from "@server/generated/prisma/client";
 import type { RegisterRequestBody } from "@server/interfaces/IAuth";
@@ -31,22 +33,16 @@ export async function registerUser(
 ) {
   const data = { errors: [] as string[], userData: {} };
 
-  // Check if email exists
-  const existingEmail = await repository(prisma).findByEmail(userData.email);
-  if (existingEmail) data.errors.push("WRONG_EMAIL");
+  // Validate email format
+  const valEmail = validateEmail(userData.email);
+  if (!valEmail.isValid) data.errors.push(valEmail.errorKey as string);
 
-  // Check if username exists
-  const existingUsername = await repository(prisma).findByUsername(
-    userData.username,
-  );
-  if (existingUsername) data.errors.push("WRONG_USERNAME");
-
-  // Check if password has proper strength
+  // Validate password strength
   const passwordStrength = validatePasswordStrength(userData.password);
   if (!passwordStrength.isValid)
     data.errors.push(passwordStrength.errorKey as string);
 
-  // Check if passwords match
+  // Validate passwords match
   const passwordMatch = validatePasswordsMatch(
     userData.password,
     userData.confirm_password,
@@ -54,10 +50,23 @@ export async function registerUser(
   if (!passwordMatch.isValid)
     data.errors.push(passwordMatch.errorKey as string);
 
+  // Early return before DB calls if basic validation fails
   if (data.errors.length > 0) return data;
 
-  const password = await bcrypt.hash(userData.password, 10);
+  // Check if email already exists
+  const existingEmail = await repository(prisma).findByEmail(userData.email);
+  if (existingEmail) data.errors.push("WRONG_EMAIL");
 
+  // Check if username already exists
+  const existingUsername = await repository(prisma).findByUsername(
+    userData.username,
+  );
+  if (existingUsername) data.errors.push("WRONG_USERNAME");
+
+  if (data.errors.length > 0) return data;
+
+  // Create user
+  const password = await bcrypt.hash(userData.password, 10);
   const createUser = await repository(prisma).create({
     username: userData.username,
     email: userData.email,
@@ -65,7 +74,6 @@ export async function registerUser(
     isActive: true,
     lastLogin: new Date().toISOString(),
   });
-
   data.userData = createUser;
   return data;
 }
