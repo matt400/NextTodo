@@ -1,5 +1,5 @@
-import { prisma } from "../lib/prisma.ts";
-import bcrypt from "bcrypt";
+import { prisma } from "@server/lib/prisma";
+import * as bcrypt from "bcrypt";
 
 import { todoData } from "./mockTasks.ts";
 

@@ -1,0 +1,114 @@
+.container {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 9999;
+
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-items: flex-end;
+}
+
+.toast {
+	--progress-color: white;
+
+	min-width: 260px;
+	max-width: 320px;
+
+	background: var(--bg-surface);
+	color: var(--text-primary);
+
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius);
+
+	box-shadow: var(--shadow);
+	overflow: hidden;
+
+	animation: slideIn 0.3s ease forwards;
+	transform: translateX(120%);
+}
+
+.success {
+	--progress-color: #22c55e;
+}
+
+.error {
+	--progress-color: #ef4444;
+}
+
+.info {
+	--progress-color: #2563eb;
+}
+
+.content {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 14px;
+}
+
+.message {
+	font-size: 14px;
+	margin: 0;
+}
+
+.closeBtn {
+	background: transparent;
+	border: none;
+	color: var(--text-primary);
+	cursor: pointer;
+	opacity: 0.6;
+}
+
+.closeBtn:hover {
+	opacity: 1;
+}
+
+.progressWrapper {
+	height: 5px;
+	background: rgba(255, 255, 255, 0.06);
+}
+
+.progress {
+	height: 100%;
+	width: 100%;
+
+	background: var(--progress-color);
+
+	animation-name: progressAnim;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.icon {
+	flex-shrink: 0;
+	color: var(--progress-color);
+	opacity: 0.9;
+}
+
+@keyframes slideIn {
+	from {
+		transform: translateX(120%);
+		opacity: 0;
+	}
+	to {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
+
+@keyframes progressAnim {
+	from {
+		width: 100%;
+	}
+	to {
+		width: 0%;
+	}
+}

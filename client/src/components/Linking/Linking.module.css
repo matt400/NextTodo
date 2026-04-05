@@ -1,4 +1,5 @@
 .Linking {
 	text-decoration: none;
 	color: var(--color-primary);
+	justify-content: center;
 }

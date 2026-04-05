@@ -1,5 +1,5 @@
 import fp from "fastify-plugin";
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "../lib/prisma";
 
 import type { FastifyInstance, FastifyServerOptions } from "fastify";
 

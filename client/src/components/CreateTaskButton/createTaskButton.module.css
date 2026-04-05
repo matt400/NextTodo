@@ -1,0 +1,23 @@
+.createTaskButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 48px;
+	padding: 12px 26px;
+	color: #fff;
+	background-color: var(--color-primary);
+	border-radius: var(--border-radius);
+	gap: 0.5rem;
+	width: 100%;
+}
+
+.createTaskButton:hover {
+	background-color: var(--color-primary-hover);
+}
+
+@media (min-width: 768px) {
+	.createTaskButton {
+		width: 33%;
+		max-width: 320px;
+	}
+}

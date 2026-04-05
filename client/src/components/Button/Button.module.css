@@ -1,18 +1,17 @@
 .button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 384px;
-    height: 48px;
-    padding: 12px 0;
-    color: var(--color-white-solid);
-    background-color: var(--color-primary);
-    border-radius: var(--border-radius);
-    gap: .5rem;
-
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 48px;
+	padding: 12px 0;
+	width: 100%;
+	color: #fff;
+	background-color: var(--color-primary);
+	border-radius: var(--border-radius);
+	gap: 0.5rem;
 }
 
 .button:hover {
-    background-color: var(--color-primary-hover);
+	background-color: var(--color-primary-hover);
 }
 

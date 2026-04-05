@@ -1,0 +1,58 @@
+import {
+  getDataController,
+  changePasswordController,
+  updateUserDataController,
+  removeUserController,
+} from "./user.controller";
+
+import {
+  changePasswordSchema,
+  updateDataSchema,
+  removeUserSchema,
+} from "./user.schema";
+
+import type { FastifyInstance } from "fastify";
+
+export default async function userRoutes(fastify: FastifyInstance) {
+  fastify.get(
+    "/me",
+    { preHandler: [fastify.userAccessOnly] },
+    getDataController,
+  );
+
+  fastify.patch(
+    "/me",
+    {
+      schema: updateDataSchema,
+      preHandler: [fastify.userAccessOnly],
+    },
+    updateUserDataController,
+  );
+
+  fastify.delete(
+    "/me",
+    {
+      schema: removeUserSchema,
+      preHandler: [fastify.userAccessOnly],
+    },
+    removeUserController,
+  );
+
+  fastify.post(
+    "/me/change-password",
+    {
+      preHandler: [fastify.userAccessOnly],
+      schema: changePasswordSchema,
+      bodyLimit: 200,
+    },
+    changePasswordController,
+  );
+
+  fastify.post(
+    "/logout",
+    { preHandler: [fastify.userAccessOnly] },
+    async (req, reply) => {
+      return reply.clearCookie("access_token").ok("LOGGED_OUT");
+    },
+  );
+}

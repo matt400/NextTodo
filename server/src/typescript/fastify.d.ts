@@ -1,12 +1,21 @@
+import "fastify";
+import "@fastify/jwt";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
 
-import type BcryptDecorator from "../interfaces/bcryptDecorator.ts";
+import type * as bcrypt from "bcrypt";
+import type { FastifyInstance } from "fastify";
+
+export type AuthenticateFunction = (
+  request: FastifyRequest,
+  reply: FastifyReply,
+) => Promise<void>;
 
 declare module "fastify" {
   interface FastifyInstance {
     prisma: PrismaClient;
-    bcrypt: BcryptDecorator;
+    bcrypt: typeof bcrypt;
+    userAccessOnly: AuthenticateFunction;
+    guestAccessOnly: AuthenticateFunction;
   }
 
   interface FastifyRequest {
@@ -14,9 +23,16 @@ declare module "fastify" {
   }
 
   interface FastifyReply {
-    fail(messageKey: string, statusCode?: number);
-    ok(messageKey: string);
+    fail(messageKey: string, statusCode?: number, data?: object);
+    ok(messageKey: string, data?: object);
   }
 }
 
-export {};
+declare module "@fastify/jwt" {
+  interface FastifyJWT {
+    payload: { id: number; email: string };
+    user: { id: number; email: string };
+  }
+}
+
+export type Bcrypt = typeof bcrypt;

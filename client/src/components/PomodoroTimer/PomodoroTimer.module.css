@@ -1,0 +1,129 @@
+.pomodoro {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+
+	padding: 14px 6px;
+	height: 22px;
+
+	color: var(--color-red);
+	background-color: var(--color-pink);
+
+	border-radius: var(--border-radius);
+}
+
+.time {
+	color: var(--color-red);
+	font-size: 13px;
+}
+
+.btn {
+	appearance: none;
+	border: none;
+	background: transparent;
+	padding: 4px;
+	border-radius: var(--border-radius);
+	color: var(--color-text-primary);
+	cursor: pointer;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	transition: background 0.15s ease;
+}
+
+.btn:hover {
+	background-color: var(--color-red);
+	color: var(--color-pink);
+}
+
+
+.alarmOverlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.65);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 200;
+	animation: fadeIn 0.2s ease;
+}
+
+.alarmModal {
+	width: 380px;
+	padding: 24px;
+
+	background: var(--bg-surface);
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius);
+
+	box-shadow: var(--shadow);
+	animation: scaleIn 0.2s ease;
+}
+
+.alarmHeader {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+
+	padding: 16px;
+	border-bottom: 1px solid var(--border-color);
+
+	background: var(--color-bg-content);
+}
+
+.alarmHeader h3 {
+	color: var(--text-primary);
+	font-weight: 500;
+	font-size: 18px;
+}
+
+.alarmHeader svg {
+	color: var(--color-red);
+}
+
+.okButton {
+	width: 100%;
+
+	background: var(--color-red);
+	color: white;
+
+	border: none;
+	border-radius: var(--border-radius);
+
+	padding: 12px;
+
+	font-weight: 500;
+	font-size: 14px;
+
+	cursor: pointer;
+
+	transition: background var(--transition-duration);
+}
+
+.okButton:hover {
+	background: var(--color-red-hover);
+}
+
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes scaleIn {
+	from {
+		transform: scale(0.95);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
