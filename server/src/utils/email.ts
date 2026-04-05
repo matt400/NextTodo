@@ -1,4 +1,5 @@
-const emailPattern = /^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
 /**
  * Property for Fastify
@@ -7,7 +8,7 @@ export const fastifyEmailProperty = {
   type: "string",
   minLength: 5,
   maxLength: 254,
-  pattern: emailPattern.toString(),
+  pattern: emailPattern,
 };
 
 /**
@@ -23,7 +24,7 @@ export function validateEmail(email: string): {
   if (email.length > 254) {
     return { isValid: false, errorKey: "EMAIL_TOO_LONG" };
   }
-  if (!emailPattern.test(email)) {
+  if (!emailRegex.test(email)) {
     return { isValid: false, errorKey: "EMAIL_INVALID_FORMAT" };
   }
   return { isValid: true };
