@@ -31,5 +31,8 @@
   "POMO_ENDED": "Pomodoro ended.",
   "POMO_NOT_FOUND": "Pomodoro record not found.",
   "POMO_ALREADY_PAUSED": "This pomodoro is already paused.",
-  "POMO_ALREADY_WORKING": "This pomodoro is already working."
+  "POMO_ALREADY_WORKING": "This pomodoro is already working.",
+  "EMAIL_TOO_SHORT": "Email is too short.",
+  "EMAIL_TOO_LONG": "Email is too long.",
+  "EMAIL_INVALID_FORMAT": "Email has invalid format."
 }

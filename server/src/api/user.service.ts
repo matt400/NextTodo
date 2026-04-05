@@ -1,4 +1,6 @@
 import { AppError, handlePrismaError } from "@server/utils/errors";
+import { validateEmail } from "@server/utils/email";
+
 import authRepository from "./auth.repository";
 import userRepository from "./user.repository";
 
@@ -19,6 +21,9 @@ export async function getUserData(
   userEmail: string,
   isFull: boolean = false,
 ) {
+  const valEmail = validateEmail(userEmail);
+  if (!valEmail.isValid) throw new AppError(400, valEmail.errorKey as string);
+
   try {
     const user = await authRepository(prisma).findByEmail(userEmail);
     if (!user) throw new AppError(404, "USER_NOT_FOUND");
