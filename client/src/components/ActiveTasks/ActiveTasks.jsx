@@ -17,12 +17,11 @@ import { Plus, Search } from 'lucide-react';
 
 import styles from './ActiveTasks.module.css';
 
-const ActiveTasks = () => {
+const ActiveTasks = ({ activePomodoroId, setActivePomodoroId, activePomoData, setActivePomoData }) => {
 	const [tasks, setTasks] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const activeTasks = tasks.filter((task) => !task.done);
 	const [showCreateModal, setShowCreateModal] = useState(false);
-	const [activePomodoroId, setActivePomodoroId] = useState(null);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 
 	const loadTasks = async () => {
@@ -103,6 +102,8 @@ const ActiveTasks = () => {
 							onEdit={updateTask}
 							activePomodoroId={activePomodoroId}
 							setActivePomodoroId={setActivePomodoroId}
+							activePomoData={activePomoData}
+							setActivePomoData={setActivePomoData}
 						/>
 					))
 				)}

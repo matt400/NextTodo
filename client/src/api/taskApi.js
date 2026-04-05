@@ -52,3 +52,74 @@ export async function deleteTask(id) {
 		}),
 	});
 }
+
+export async function getPomodoro(taskId) {
+	if (!taskId) return null;
+	const res = await fetch(`${API}/getPomo`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		credentials: 'include',
+		body: JSON.stringify({ task_id: taskId }),
+	});
+	if (!res.ok) return null;
+	try {
+		const data = await res.json();
+		if (!Array.isArray(data)) return null;
+		return data.find((p) => p.endedAt === null) ?? null;
+	} catch {
+		return null;
+	}
+}
+
+export async function startPomodoro(taskId) {
+	const rawMinutes = parseInt(localStorage.getItem('pomodoroTime'), 10);
+	const minutes = Number.isFinite(rawMinutes) && rawMinutes > 0 ? rawMinutes : 25;
+	const duration = minutes * 60;
+	const id = parseInt(taskId, 10);
+
+	const res = await fetch(`${API}/startPomo`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		credentials: 'include',
+		body: JSON.stringify({ task_id: id, duration }),
+	});
+
+	if (!res.ok) return null;
+
+	localStorage.setItem('activePomodoroTaskId', String(id));
+	return res.json();
+}
+
+export async function pausePomodoro(taskId) {
+	const res = await fetch(`${API}/pausePomo`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		credentials: 'include',
+		body: JSON.stringify({ task_id: taskId }),
+	});
+	if (!res.ok) return null;
+	return res.json();
+}
+
+export async function resumePomodoro(taskId) {
+	const res = await fetch(`${API}/resumePomo`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		credentials: 'include',
+		body: JSON.stringify({ task_id: taskId }),
+	});
+	if (!res.ok) return null;
+	return res.json();
+}
+
+export async function endPomodoro(taskId) {
+	const res = await fetch(`${API}/endPomo`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		credentials: 'include',
+		body: JSON.stringify({ task_id: taskId }),
+	});
+	localStorage.removeItem('activePomodoroTaskId');
+	if (!res.ok) return null;
+	return res.json();
+}

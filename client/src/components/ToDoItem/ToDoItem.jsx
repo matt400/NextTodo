@@ -1,13 +1,23 @@
-import { useState} from 'react';
+import { useState } from 'react';
 import EditTaskModal from '../EditTaskModal/EditTaskModal';
 import { DayPicker } from 'react-day-picker';
 import PomodoroTimer from '../PomodoroTimer';
+import { startPomodoro, getPomodoro } from '../../api/taskApi';
 
 import { Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown } from 'lucide-react';
 import styles from './ToDoItem.module.css';
 import 'react-day-picker/dist/style.css';
 
-const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActivePomodoroId }) => {
+const ToDoItem = ({
+	task,
+	onToggle,
+	onDelete,
+	onEdit,
+	activePomodoroId,
+	setActivePomodoroId,
+	activePomoData,
+	setActivePomoData,
+}) => {
 	// MODALS & EXPANSIONS
 
 	const [isExpanded, setIsExpanded] = useState(false);
@@ -32,6 +42,18 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 			effectiveDueDate.getDate() === today.getDate()
 		);
 	})();
+
+	const handleStartPomodoro = async (e) => {
+		e.stopPropagation();
+
+		await startPomodoro(task.id);
+		const data = await getPomodoro(task.id);
+
+		if (data) {
+			setActivePomodoroId(task.id);
+			setActivePomoData(data);
+		}
+	};
 
 	return (
 		<>
@@ -67,6 +89,8 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 							taskId={task.id}
 							activePomodoroId={activePomodoroId}
 							setActivePomodoroId={setActivePomodoroId}
+							activePomoData={activePomoData}
+							setActivePomoData={setActivePomoData}
 						/>
 
 						{effectiveDueDate && (
@@ -85,10 +109,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 								{activePomodoroId === null && (
 									<button
 										className={`${styles['todoActionBtn']} ${styles['pomodoroBtn']}`}
-										onClick={(e) => {
-											e.stopPropagation();
-											setActivePomodoroId(task.id);
-										}}>
+										onClick={handleStartPomodoro}>
 										<AlarmClock size={18} />
 									</button>
 								)}
@@ -203,10 +224,7 @@ const ToDoItem = ({ task, onToggle, onDelete, onEdit, activePomodoroId, setActiv
 						{activePomodoroId === null && (
 							<button
 								className={`${styles['todoActionBtn']} ${styles['pomodoroBtn']}`}
-								onClick={(e) => {
-									e.stopPropagation();
-									setActivePomodoroId(task.id);
-								}}>
+								onClick={handleStartPomodoro}>
 								<AlarmClock size={18} /> Pomodoro
 							</button>
 						)}
