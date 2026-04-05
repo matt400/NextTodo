@@ -7,7 +7,7 @@ export const fastifyEmailProperty = {
   type: "string",
   minLength: 5,
   maxLength: 254,
-  pattern: emailPattern,
+  pattern: emailPattern.toString(),
 };
 
 /**
