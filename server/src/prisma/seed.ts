@@ -1,9 +1,10 @@
 import { prisma } from "@server/lib/prisma";
 import * as bcrypt from "bcrypt";
 
+import { todoData } from "./mockTasks.ts";
+
 async function main() {
-  await prisma.$connect();
-  const admin = await prisma.user.upsert({
+  const user = await prisma.user.upsert({
     where: { email: "admin@example.io" },
     update: {},
     create: {
@@ -13,7 +14,15 @@ async function main() {
       isActive: true,
     },
   });
-  console.log({ admin });
+  await prisma.tasks.createMany({
+    data: todoData.map((item) => ({
+      taskName: item.task,
+      taskDesc: item.description,
+      created: new Date(),
+      isFinished: false,
+      userId: user.id,
+    })),
+  });
 }
 main()
   .then(async () => {
