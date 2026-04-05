@@ -31,16 +31,21 @@ const ToDoItem = ({
 	const [dueDate, setDueDate] = useState(null);
 	const effectiveDueDate = dueDate ?? (task.scheduled ? new Date(task.scheduled) : null);
 
+	const todayStart = new Date();
+	todayStart.setHours(0, 0, 0, 0);
+
 	const isToday = (() => {
 		if (!effectiveDueDate) return false;
+		const due = new Date(effectiveDueDate);
+		due.setHours(0, 0, 0, 0);
+		return due.getTime() === todayStart.getTime();
+	})();
 
-		const today = new Date();
-
-		return (
-			effectiveDueDate.getFullYear() === today.getFullYear() &&
-			effectiveDueDate.getMonth() === today.getMonth() &&
-			effectiveDueDate.getDate() === today.getDate()
-		);
+	const isPast = (() => {
+		if (!effectiveDueDate) return false;
+		const due = new Date(effectiveDueDate);
+		due.setHours(0, 0, 0, 0);
+		return due < todayStart;
 	})();
 
 	const handleStartPomodoro = async (e) => {
@@ -94,8 +99,8 @@ const ToDoItem = ({
 						/>
 
 						{effectiveDueDate && (
-							<div className={`${styles['todoDate']} ${isToday ? styles['todoDate--today'] : ''}`}>
-								{new Date(effectiveDueDate).toLocaleDateString('pl-PL', {
+							<div className={`${styles['todoDate']} ${isToday ? styles['todoDate--today'] : ''} ${isPast ? styles['todoDate--past'] : ''}`}>
+								{new Date(effectiveDueDate).toLocaleDateString('en-US', {
 									day: 'numeric',
 									month: 'short',
 								})}
@@ -182,8 +187,12 @@ const ToDoItem = ({
 							mode='single'
 							selected={effectiveDueDate}
 							onSelect={(date) => setDueDate(date)}
+							disabled={{ before: todayStart }}
 							classNames={{
 								day: styles.day,
+							}}
+							modifiersClassNames={{
+								disabled: styles.dayDisabled,
 							}}
 						/>
 
@@ -204,6 +213,7 @@ const ToDoItem = ({
 
 							<button
 								className={`${styles['calendarFooterBtn']} ${styles.create}`}
+								disabled={isPast}
 								onClick={async () => {
 									await onEdit(task.id, {
 										scheduled: effectiveDueDate ? effectiveDueDate.toISOString() : null,
