@@ -16,6 +16,13 @@
 	transition:
 		background var(--transition-duration),
 		border var(--transition-duration);
+
+	-webkit-tap-highlight-color: transparent;
+	outline: none;
+}
+
+.todoItem:active {
+	background: var(--bg-todo-item);
 }
 
 .clickable {
@@ -35,14 +42,6 @@
 	min-width: 0;
 }
 
-.expanded,
-.expanded:hover {
-	background-color: var(--color-primary-light);
-}
-
-/* .expanded:hover {
-	background-color: transparent;
-} */
 
 .todoCheckbox {
 	width: 24px;
@@ -178,7 +177,6 @@
 	border-radius: var(--border-radius);
 	color: var(--color-text-primary);
 	cursor: pointer;
-	/* border: 1px solid var(--border-color); */
 
 	display: inline-flex;
 	align-items: center;
@@ -299,7 +297,7 @@
 
 .create {
 	background: var(--color-primary);
-	color: white;
+	color: #ffffff;
 
 	&:hover {
 		background: var(--color-primary-hover);
@@ -333,6 +331,17 @@
 	color: var(--color-red);
 }
 
+.todoDate--past {
+	background-color: var(--color-red-hover);
+	color: var(--color-white-solid);
+}
+
+.dayDisabled {
+	opacity: 0.3;
+	pointer-events: none;
+	cursor: not-allowed;
+}
+
 .delete {
 	color: var(--color-white-solid);
 	background-color: var(--color-red-hover);
@@ -345,11 +354,6 @@
 .deleteBtn:hover {
 	color: var(--color-red);
 	background-color: var(--sidebar-logout-hover);
-}
-
-.create {
-	color: var(--color-white-solid);
-	background-color: var(--color-primary);
 }
 
 .create:hover {

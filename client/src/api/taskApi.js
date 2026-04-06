@@ -31,13 +31,20 @@ export async function addTask(title, description) {
 }
 
 export async function editTask(id, updates) {
+	const mapped = {
+		...(updates.title !== undefined && { taskName: updates.title }),
+		...(updates.description !== undefined && { taskDesc: updates.description }),
+		...(updates.scheduled !== undefined && { scheduled: updates.scheduled }),
+		...(updates.isFinished !== undefined && { isFinished: updates.isFinished }),
+	};
+
 	await fetch(API, {
 		method: 'PATCH',
 		headers: { 'Content-Type': 'application/json' },
 		credentials: 'include',
 		body: JSON.stringify({
 			task_id: id,
-			data: updates,
+			data: mapped,
 		}),
 	});
 }
