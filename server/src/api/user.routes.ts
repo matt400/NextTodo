@@ -3,12 +3,14 @@ import {
   changePasswordController,
   updateUserDataController,
   removeUserController,
+  userSettingsController,
 } from "./user.controller";
 
 import {
   changePasswordSchema,
   updateDataSchema,
   removeUserSchema,
+  userSettingsSchema,
 } from "./user.schema";
 
 import type { FastifyInstance } from "fastify";
@@ -46,6 +48,15 @@ export default async function userRoutes(fastify: FastifyInstance) {
       bodyLimit: 200,
     },
     changePasswordController,
+  );
+
+  fastify.patch(
+    "/me/settings",
+    {
+      preHandler: [fastify.userAccessOnly],
+      schema: userSettingsSchema,
+    },
+    userSettingsController,
   );
 
   fastify.post(

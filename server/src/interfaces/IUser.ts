@@ -19,3 +19,15 @@ export interface IRemoveUser {
     email: string;
   };
 }
+
+export interface IUserSettings {
+  Body: {
+    userSettings: {
+      theme: string;
+      language: string;
+      view: string;
+      notificationType: string;
+      pomodoroTime: number;
+    };
+  };
+}

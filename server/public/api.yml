@@ -7,6 +7,22 @@ config:
       variables: []
 items:
   - info:
+      name: '[Pomo] End event'
+      type: http
+      seq: 17
+    http:
+      method: POST
+      url: http://localhost:3000/api/task/endPomo
+      body:
+        type: json
+        data: '{ "task_id": 1, "elapsed": 500 }'
+      auth: inherit
+    settings:
+      encodeUrl: true
+      timeout: 0
+      followRedirects: true
+      maxRedirects: 5
+  - info:
       name: '[Pomo] Get event'
       type: http
       seq: 13
@@ -29,6 +45,22 @@ items:
     http:
       method: POST
       url: http://localhost:3000/api/task/pausePomo
+      body:
+        type: json
+        data: '{ "task_id": 1 }'
+      auth: inherit
+    settings:
+      encodeUrl: true
+      timeout: 0
+      followRedirects: true
+      maxRedirects: 5
+  - info:
+      name: '[Pomo] Resume event'
+      type: http
+      seq: 16
+    http:
+      method: POST
+      url: http://localhost:3000/api/task/resumePomo
       body:
         type: json
         data: '{ "task_id": 1 }'
@@ -237,31 +269,21 @@ items:
       followRedirects: true
       maxRedirects: 5
   - info:
-      name: '[Pomo] End event'
+      name: '[User] Settings'
       type: http
       seq: 17
     http:
-      method: POST
-      url: http://localhost:3000/api/task/endPomo
+      method: PATCH
+      url: http://localhost:3000/api/user/me/settings
       body:
         type: json
-        data: '{ "task_id": 1, "elapsed": 500 }'
-      auth: inherit
-    settings:
-      encodeUrl: true
-      timeout: 0
-      followRedirects: true
-      maxRedirects: 5
-  - info:
-      name: '[Pomo] Resume event'
-      type: http
-      seq: 16
-    http:
-      method: POST
-      url: http://localhost:3000/api/task/resumePomo
-      body:
-        type: json
-        data: '{ "task_id": 1 }'
+        data: |-
+          {
+            "userSettings": {
+              "pomodoroTime": "16",
+              "theme": "light"
+            }
+          }
       auth: inherit
     settings:
       encodeUrl: true
@@ -274,5 +296,5 @@ extensions:
     ignore:
       - node_modules
       - .git
-    exportedAt: '2026-03-29T17:33:19.891Z'
+    exportedAt: '2026-04-07T18:20:46.387Z'
     exportedUsing: Bruno

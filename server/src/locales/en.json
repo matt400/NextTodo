@@ -34,5 +34,7 @@
   "POMO_ALREADY_WORKING": "This pomodoro is already working.",
   "EMAIL_TOO_SHORT": "Email is too short.",
   "EMAIL_TOO_LONG": "Email is too long.",
-  "EMAIL_INVALID_FORMAT": "Email has invalid format."
+  "EMAIL_INVALID_FORMAT": "Email has invalid format.",
+  "USER_DATA_UPDATED": "User data was updated.",
+  "USER_DATA_UPDATE_FAILED": "User data update failed."
 }

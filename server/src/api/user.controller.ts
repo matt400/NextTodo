@@ -16,6 +16,7 @@ import type {
   IChangePassword,
   IRemoveUser,
   IUpdateData,
+  IUserSettings,
 } from "@server/interfaces/IUser";
 
 export async function getDataController(
@@ -109,4 +110,46 @@ export async function removeUserController(
 
   await removeUser(request.server.prisma, user.id);
   return reply.ok("USER_REMOVED");
+}
+
+export async function userSettingsController(
+  request: FastifyRequest<IUserSettings>,
+  reply: FastifyReply,
+) {
+  const { userSettings } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  const prevSettings = userData.settings;
+  const skipped: string[] = [];
+
+  const dataToUpdate = {
+    theme: prevSettings.theme,
+    language: prevSettings.language,
+    view: prevSettings.view,
+    notificationType: prevSettings.notificationType,
+    pomodoroTime: prevSettings.pomodoroTime,
+  };
+
+  Object.keys(userSettings).forEach((key) => {
+    console.log(key);
+
+    const dtuKey = key as keyof typeof dataToUpdate;
+    const usKey = key as keyof typeof userSettings;
+
+    if (dataToUpdate[dtuKey] == userSettings[usKey]) {
+      skipped.push(dtuKey + " (cannot be the same)");
+      return;
+    }
+
+    dataToUpdate[dtuKey] = userSettings[usKey];
+  });
+
+  if (skipped.length === Object.keys(userSettings).length)
+    return reply.fail("USER_DATA_UPDATE_FAILED", 400, skipped);
+
+  await updateData(request.server.prisma, userData.id, {
+    settings: dataToUpdate,
+  });
+
+  return reply.ok("USER_DATA_UPDATED", skipped);
 }

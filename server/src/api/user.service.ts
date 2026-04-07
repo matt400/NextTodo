@@ -33,6 +33,7 @@ export async function getUserData(
       username: user.username,
       email: user.email,
       isActive: user.isActive,
+      settings: user.settings,
     };
 
     if (isFull) return { ...userData, password: user.password };
