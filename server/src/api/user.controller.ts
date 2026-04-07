@@ -117,38 +117,32 @@ export async function userSettingsController(
   reply: FastifyReply,
 ) {
   const { userSettings } = request.body;
-
   const userData = await getUserData(request.server.prisma, request.user.email);
   const prevSettings = userData.settings;
   const skipped: string[] = [];
+  const changes: Partial<typeof prevSettings> = {};
 
-  const dataToUpdate = {
-    theme: prevSettings.theme,
-    language: prevSettings.language,
-    view: prevSettings.view,
-    notificationType: prevSettings.notificationType,
-    pomodoroTime: prevSettings.pomodoroTime,
-  };
-
-  Object.keys(userSettings).forEach((key) => {
-    console.log(key);
-
-    const dtuKey = key as keyof typeof dataToUpdate;
-    const usKey = key as keyof typeof userSettings;
-
-    if (dataToUpdate[dtuKey] == userSettings[usKey]) {
-      skipped.push(dtuKey + " (cannot be the same)");
-      return;
+  for (const key of Object.keys(
+    userSettings,
+  ) as (keyof typeof userSettings)[]) {
+    if (!(key in prevSettings)) {
+      skipped.push(`${key} (unknown field)`);
+      continue;
     }
 
-    dataToUpdate[dtuKey] = userSettings[usKey];
-  });
+    if (prevSettings[key] === userSettings[key]) {
+      skipped.push(`${key} (cannot be the same)`);
+      continue;
+    }
 
-  if (skipped.length === Object.keys(userSettings).length)
+    changes[key] = userSettings[key] as never;
+  }
+
+  if (Object.keys(changes).length === 0)
     return reply.fail("USER_DATA_UPDATE_FAILED", 400, skipped);
 
   await updateData(request.server.prisma, userData.id, {
-    settings: dataToUpdate,
+    settings: { ...prevSettings, ...changes },
   });
 
   return reply.ok("USER_DATA_UPDATED", skipped);
