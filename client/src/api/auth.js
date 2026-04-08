@@ -77,6 +77,25 @@ export async function changePassword(currentPassword, newPassword, confirmPasswo
 	return data;
 }
 
+export async function updateUserData(data) {
+	const res = await fetch(`${USER_URL}/me`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		credentials: 'include',
+		body: JSON.stringify(data),
+	});
+
+	const json = await res.json();
+
+	if (!res.ok) {
+		throw new Error(json?.message || 'Update failed');
+	}
+
+	return json;
+}
+
 export async function removeUser(email) {
 	const res = await fetch(`${USER_URL}/me`, {
 		method: 'DELETE',

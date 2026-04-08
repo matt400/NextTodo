@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { changePassword } from '../../api/auth';
+import { changePassword, updateUserData, removeUser } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { removeUser } from '../../api/auth.js';
 import Button from '../Button';
 import Field from '../Field';
 import ThemeSwitch from '../ThemeSwitch';
@@ -31,7 +30,8 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 		confirmPassword: '',
 	});
 
-	const { user } = useAuth();
+	const { user, setUser } = useAuth();
+	const [newEmail, setNewEmail] = useState('');
 	const [openSection, setOpenSection] = useState(null);
 	const [successPomodoroChange, setSuccessPomodoroChange] = useState('');
 	const [pomodoroErr, setPomodoroErr] = useState('');
@@ -117,12 +117,13 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 		}
 	};
 
-	const handleEmailChange = () => {
-		const isSuccess = true;
-
-		if (isSuccess) {
+	const handleEmailChange = async () => {
+		try {
+			await updateUserData({ email: newEmail });
+			setUser((prev) => ({ ...prev, email: newEmail }));
+			setNewEmail('');
 			handleFeedback('success', 'Email changed successfully.', setEmailMessage);
-		} else {
+		} catch {
 			handleFeedback('error', 'Email change failed', setEmailError);
 		}
 	};
@@ -197,7 +198,7 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 						<p className={styles.label}>Change Email</p>
 						<p className={styles.description}>Your current email is {user?.email}</p>
 
-						<Field innerText='New email' Icon={Mail} />
+						<Field innerText='New email' Icon={Mail} value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
 						<Button inner='Change email' onClick={handleEmailChange} />
 
 						{emailMessage && <p className={styles.successInfo}>{emailMessage}</p>}
