@@ -19,6 +19,7 @@ model User {
   password  String
   isActive  Boolean  @default(true)
   lastLogin DateTime @default(now())
+  settings  Json     @default(dbgenerated("'{}'"))
 }
 
 model Tasks {

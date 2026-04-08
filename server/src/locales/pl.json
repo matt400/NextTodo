@@ -32,5 +32,7 @@
   "POMO_NOT_FOUND": "Nie znaleziono rekordu pomodoro.",
   "EMAIL_TOO_SHORT": "Email jest zbyt krótki.",
   "EMAIL_TOO_LONG": "Email jest za długi.",
-  "EMAIL_INVALID_FORMAT": "Email ma nieprawidłowy format."
+  "EMAIL_INVALID_FORMAT": "Email ma nieprawidłowy format.",
+  "USER_DATA_UPDATED": "Dane użytkownika zostały zaktualizowane.",
+  "USER_DATA_UPDATE_FAILED": "Nie zaktualizowano danych użytkownika."
 }

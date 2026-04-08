@@ -12,6 +12,14 @@ async function main() {
       email: "admin@example.io",
       password: await bcrypt.hash("admin", 10),
       isActive: true,
+      settings: {
+        userSettings: {
+          theme: "system",
+          language: "pl",
+          view: "window",
+          pomodoroTime: 25,
+        },
+      },
     },
   });
   await prisma.tasks.createMany({

@@ -34,3 +34,24 @@ export const removeUserSchema = {
     },
   },
 };
+
+export const userSettingsSchema = {
+  body: {
+    type: "object",
+    required: ["userSettings"],
+    properties: {
+      userSettings: {
+        type: "object",
+        properties: {
+          theme: { type: "string", enum: ["light", "dark", "system"] },
+          language: { type: "string", enum: ["pl", "en"] },
+          view: { type: "string", enum: ["window", "full"] },
+          notificationType: { type: "string", enum: ["toast", "inline"] },
+          pomodoroTime: { type: "number", minimum: 0, maximum: 60 },
+        },
+        minProperties: 1,
+        additionalProperties: false,
+      },
+    },
+  },
+};
