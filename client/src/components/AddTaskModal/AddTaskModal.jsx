@@ -30,11 +30,6 @@ const AddTaskModal = ({ onAdd, onClose }) => {
 			return;
 		}
 
-		if (title.toLowerCase().includes('forbidden')) {
-			setServerError('Task creation failed: Task title contains forbidden content.');
-			return;
-		}
-
 		onAdd({
 			title,
 			description,

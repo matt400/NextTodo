@@ -1,4 +1,4 @@
-import styles from './createTaskButton.module.css';
+import styles from './CreateTaskButton.module.css';
 
 const CreateTaskButton = ({ children, onClick }) => {
 	return (
