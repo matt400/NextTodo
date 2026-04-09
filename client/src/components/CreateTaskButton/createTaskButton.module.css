@@ -9,10 +9,20 @@
 	border-radius: var(--border-radius);
 	gap: 0.5rem;
 	width: 100%;
+	border: none;
+	cursor: pointer;
+	transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .createTaskButton:hover {
 	background-color: var(--color-primary-hover);
+	box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+	transform: translateY(-1px);
+}
+
+.createTaskButton:active {
+	transform: translateY(0);
+	box-shadow: none;
 }
 
 @media (min-width: 768px) {

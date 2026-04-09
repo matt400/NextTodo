@@ -24,15 +24,23 @@
 	cursor: pointer;
 	background: var(--sidebar-item-bg);
 	color: var(--sidebar-item-text);
-	transition: var(--transition-duration);
+	transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+	animation: fadeSlideIn 0.25s ease both;
 }
+
+.sidebarItem:nth-child(1) { animation-delay: 0ms; }
+.sidebarItem:nth-child(2) { animation-delay: 60ms; }
+.sidebarItem:nth-child(3) { animation-delay: 120ms; }
+
 .sidebarItem:hover {
 	background: var(--sidebar-item-hover);
+	transform: translateX(3px);
 }
 
 .sidebarItem.active {
 	background: var(--color-primary);
 	color: var(--sidebar-item-active-text);
+	box-shadow: var(--shadow-active);
 }
 
 .logout {
@@ -46,12 +54,13 @@
 	align-items: center;
 	gap: 10px;
 	cursor: pointer;
-	transition: var(--transition-duration);
+	transition: var(--transition);
 	font-size: 16px;
 }
 
 .logout:hover {
 	background: var(--sidebar-logout-hover);
+	transform: translateX(2px);
 }
 
 .closeBtn {
@@ -106,4 +115,9 @@
 	.closeBtn:hover {
 		background: var(--sidebar-item-hover);
 	}
+}
+
+@keyframes fadeSlideIn {
+	from { opacity: 0; transform: translateX(-8px); }
+	to   { opacity: 1; transform: translateX(0); }
 }

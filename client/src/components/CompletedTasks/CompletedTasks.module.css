@@ -8,13 +8,13 @@
 
 .activeHeader {
 	display: flex;
-	font-size: 10px;
 	justify-content: space-between;
 	align-items: center;
 	padding-bottom: 10px;
 
 	h2 {
 		font-size: 16px;
+		margin: 0;
 	}
 }
 
@@ -44,6 +44,39 @@
 	padding: 40px;
 	color: var(--text-muted);
 	font-size: 18px;
+	gap: 12px;
+	animation: fadeSlideIn 0.4s ease both;
+}
+
+.emptyContainer svg {
+	animation: float 3s ease-in-out infinite;
+	opacity: 0.45;
+	background: var(--color-primary-light);
+	padding: 20px;
+	border-radius: 50%;
+	box-shadow: 0 0 0 12px var(--hover-soft);
+	color: var(--color-primary);
+}
+
+.emptyContainer h3 {
+	margin: 0;
+	font-size: 17px;
+	color: var(--text-secondary);
+}
+
+.emptyContainer p {
+	margin: 0;
+	font-size: 14px;
+}
+
+@keyframes fadeSlideIn {
+	from { opacity: 0; transform: translateY(10px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+	0%, 100% { transform: translateY(0); }
+	50%       { transform: translateY(-8px); }
 }
 
 .emptyState {

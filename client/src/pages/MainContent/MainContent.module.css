@@ -1,7 +1,7 @@
 .dashboard {
 	height: 100dvh;
 	width: 100%;
-	background: var(--bg-main);
+	background: var(--bg-page);
 	display: flex;
 	flex-direction: column;
 }

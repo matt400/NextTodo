@@ -12,10 +12,14 @@
 	gap: 0.3rem;
 	padding: 6px 10px;
 
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 	transition:
-		background var(--transition-duration),
-		border var(--transition-duration);
+		background var(--transition),
+		border-color var(--transition),
+		box-shadow var(--transition),
+		transform var(--transition);
+
+	animation: fadeSlideIn 0.25s ease both;
 
 	-webkit-tap-highlight-color: transparent;
 	outline: none;
@@ -23,6 +27,7 @@
 
 .todoItem:active {
 	background: var(--bg-todo-item);
+	transform: translateY(0);
 }
 
 .clickable {
@@ -31,7 +36,9 @@
 
 .clickable:hover {
 	background: var(--todo-highlight);
-	border-color: var(--border-color);
+	border-color: rgba(37, 99, 235, 0.2);
+	box-shadow: var(--shadow-hover);
+	transform: translateY(-1px);
 }
 
 .todoMainRow {
@@ -54,16 +61,23 @@
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
-	transition: background 0.3s;
+	transition: background var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .todoCheckbox:hover {
 	background: var(--color-green);
 	border-color: var(--color-green);
+	transform: scale(1.1);
 }
 
 .todoCheckbox.checked {
 	background: var(--color-green);
+	border-color: var(--color-green);
+	animation: checkBounce 0.3s ease;
+}
+
+.todoCheckbox.checked:hover {
+	box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
 }
 
 .checkmark {
@@ -99,8 +113,8 @@
 
 .done {
 	text-decoration: line-through;
-	color: var(
-		--text-muted);
+	color: var(--text-muted);
+	opacity: 0.7;
 }
 .todoText,
 .todoDescriptionExpanded {
@@ -467,13 +481,38 @@
 }
 
 @keyframes fadeIn {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@keyframes fadeSlideIn {
 	from {
 		opacity: 0;
+		transform: translateY(8px);
 	}
 	to {
 		opacity: 1;
+		transform: translateY(0);
 	}
 }
+
+@keyframes checkBounce {
+	0%   { transform: scale(1); }
+	40%  { transform: scale(1.3); }
+	70%  { transform: scale(0.9); }
+	100% { transform: scale(1); }
+}
+
+.todoItem:nth-child(1)  { animation-delay: 0ms; }
+.todoItem:nth-child(2)  { animation-delay: 40ms; }
+.todoItem:nth-child(3)  { animation-delay: 80ms; }
+.todoItem:nth-child(4)  { animation-delay: 120ms; }
+.todoItem:nth-child(5)  { animation-delay: 160ms; }
+.todoItem:nth-child(6)  { animation-delay: 200ms; }
+.todoItem:nth-child(7)  { animation-delay: 240ms; }
+.todoItem:nth-child(8)  { animation-delay: 280ms; }
+.todoItem:nth-child(9)  { animation-delay: 320ms; }
+.todoItem:nth-child(10) { animation-delay: 360ms; }
 
 @keyframes scaleIn {
 	from {
