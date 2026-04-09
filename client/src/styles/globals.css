@@ -8,12 +8,37 @@ body {
 input,
 label,
 button {
-	transition-duration: var(--transition-duration);
+	transition: var(--transition);
 }
 
 :focus-visible {
-	outline: 2px dashed var(--color-primary);
-	outline-offset: 4px;
+	outline: none;
+	box-shadow: 0 0 0 3px var(--color-primary-light), 0 0 0 1px var(--color-primary);
+	outline-offset: 0;
 	transition-duration: 0s !important;
+}
+
+/* Custom scrollbar */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--border-color) transparent;
+}
+
+*::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background: var(--border-color);
+	border-radius: 99px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background: var(--text-muted);
 }
 

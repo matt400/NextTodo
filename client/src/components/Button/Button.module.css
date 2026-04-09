@@ -9,9 +9,19 @@
 	background-color: var(--color-primary);
 	border-radius: var(--border-radius);
 	gap: 0.5rem;
+	border: none;
+	cursor: pointer;
+	transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
 }
 
 .button:hover {
 	background-color: var(--color-primary-hover);
+	box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+	transform: translateY(-1px);
+}
+
+.button:active {
+	transform: translateY(0);
+	box-shadow: none;
 }
 

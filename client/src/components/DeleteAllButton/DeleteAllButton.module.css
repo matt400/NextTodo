@@ -2,18 +2,26 @@
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	font-weight: 400;
+	font-weight: 500;
 	border: none;
 	border-radius: var(--border-radius);
 	background: var(--sidebar-logout-bg);
 	color: var(--sidebar-logout-text);
 	cursor: pointer;
-	font-weight: 500;
 	font-size: 14px;
 	padding: 0.6rem 1rem;
+	transition: background var(--transition), transform var(--transition);
 }
 
 .deleteAllButton:hover {
-	
 	background: var(--sidebar-logout-hover);
+	animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+	0%, 100% { transform: translateX(0); }
+	20%       { transform: translateX(-3px); }
+	40%       { transform: translateX(3px); }
+	60%       { transform: translateX(-2px); }
+	80%       { transform: translateX(2px); }
 }

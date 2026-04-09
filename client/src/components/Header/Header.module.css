@@ -5,7 +5,26 @@
 	align-items: center;
 	justify-content: space-between;
 	border-bottom: 1px solid var(--border-color);
-	background-color: var(--bg-surface);
+	background: rgba(255, 255, 255, 0.8);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	position: sticky;
+	top: 0;
+	z-index: 10;
+}
+
+@media (prefers-color-scheme: dark) {
+	.dashboardHeader {
+		background: rgba(22, 32, 51, 0.85);
+	}
+}
+
+:global([data-theme='dark']) .dashboardHeader {
+	background: rgba(22, 32, 51, 0.85);
+}
+
+:global([data-theme='light']) .dashboardHeader {
+	background: rgba(255, 255, 255, 0.8);
 }
 
 .logo {
