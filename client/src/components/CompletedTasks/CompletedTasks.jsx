@@ -86,6 +86,8 @@ const CompletedTasks = () => {
 							onEdit={updateTask}
 							activePomodoroId={null}
 							setActivePomodoroId={() => {}}
+							activePomoData={null}
+							setActivePomoData={() => {}}
 						/>
 					))
 				)}

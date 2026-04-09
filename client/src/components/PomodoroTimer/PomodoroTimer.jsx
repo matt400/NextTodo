@@ -30,14 +30,18 @@ const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePo
 		const nextPaused = !isPaused;
 		setIsPaused(nextPaused);
 
-		if (nextPaused) {
-			await pausePomodoro(taskId);
-		} else {
-			await resumePomodoro(taskId);
-		}
+		try {
+			if (nextPaused) {
+				await pausePomodoro(taskId);
+			} else {
+				await resumePomodoro(taskId);
+			}
 
-		const data = await getPomodoro(taskId);
-		if (data) setActivePomoData(data);
+			const data = await getPomodoro(taskId);
+			if (data) setActivePomoData(data);
+		} catch {
+			setIsPaused(!nextPaused);
+		}
 	};
 
 	useEffect(() => {

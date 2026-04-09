@@ -51,7 +51,9 @@ const MainContent = () => {
 
 			const data = await getPomodoro(storedTaskId);
 
-			if (data && data.endedAt === null) {
+			if (data === null) return;
+
+			if (data.endedAt === null) {
 				setActivePomodoroId(data.taskId);
 				setActivePomoData(data);
 			} else {
