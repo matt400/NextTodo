@@ -4,7 +4,8 @@ import styles from './PomodoroTimer.module.css';
 import { pausePomodoro, resumePomodoro, endPomodoro, getPomodoro } from '../../api/taskApi';
 
 const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePomoData, setActivePomoData }) => {
-	const [pomodoroMinutes, setPomodoroMinutes] = useState(Number(localStorage.getItem('pomodoroTime')) || 25);
+	const rawMinutes = parseInt(localStorage.getItem('pomodoroTime'), 10);
+	const [pomodoroMinutes, setPomodoroMinutes] = useState(Number.isFinite(rawMinutes) && rawMinutes > 0 ? rawMinutes : 25);
 
 	const showPomodoro = activePomodoroId === taskId;
 	const [seconds, setSeconds] = useState(0);

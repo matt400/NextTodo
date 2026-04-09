@@ -1,12 +1,12 @@
 import { CheckSquare } from 'lucide-react';
 import styles from './Heading.module.css';
 
-const Heading = ({ text }) => {
+const Heading = ({ title, text }) => {
 	return (
 		<div className={`${styles.heading}`}>
 			<div className={styles.headingTitle}>
 				<CheckSquare className={styles.logo} size={36} strokeWidth={2.2} />
-				<h1>NextTodo</h1>
+				<h1>{title}</h1>
 			</div>
 			<p className={`${styles.headingText}`}>{text}</p>
 		</div>
