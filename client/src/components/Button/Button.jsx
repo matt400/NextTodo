@@ -5,6 +5,8 @@ const Button = ({ inner, to, onClick }) => {
   const navigate = useNavigate();
 
   const handleClick = (e) => {
+    let shouldNavigate = true;
+
     if (onClick) {
 			const result = onClick(e);
 			if (result === false) shouldNavigate = false;
