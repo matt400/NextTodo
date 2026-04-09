@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { changePassword, updateUserData, removeUser } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Button from '../Button';
@@ -31,6 +32,7 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	});
 
 	const { user, setUser } = useAuth();
+	const navigate = useNavigate();
 	const [newEmail, setNewEmail] = useState('');
 	const [openSection, setOpenSection] = useState(null);
 	const [successPomodoroChange, setSuccessPomodoroChange] = useState('');
@@ -158,20 +160,12 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	const handleDeleteAccount = async () => {
 		try {
 			await removeUser(user.email);
-
-			if (feedbackType === 'toast') {
-				addToast('success', 'Account deleted successfully');
-			} else {
-				handleFeedback('success', 'Account deleted successfully', setDeleteMessage);
-			}
-
-			window.location.href = '/';
+			setShowDeleteModal(false);
+			addToast('success', 'Account deleted successfully');
+			navigate('/login');
 		} catch (err) {
-			if (feedbackType === 'toast') {
-				addToast('error', err.message || 'Failed to delete account');
-			} else {
-				handleFeedback('error', err.message || 'Failed to delete account', setDeleteError);
-			}
+			setShowDeleteModal(false);
+			addToast('error', err.message || 'Failed to delete account');
 		}
 	};
 

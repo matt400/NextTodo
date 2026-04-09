@@ -8,9 +8,11 @@ import MainContent from './pages/MainContent';
 import NotFoundPage from './pages/NotFoundPage';
 import { FeedbackProvider } from './context/FeedbackContext';
 import Toasts from './components/Toasts';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 const App = () => {
 	return (
+		<ErrorBoundary>
 		<ThemeProvider>
 			<FeedbackProvider>
 				<Toasts />
@@ -30,6 +32,7 @@ const App = () => {
 				</Routes>
 			</FeedbackProvider>
 		</ThemeProvider>
+		</ErrorBoundary>
 	);
 };
 

@@ -26,50 +26,67 @@ const ActiveTasks = ({ activePomodoroId, setActivePomodoroId, activePomoData, se
 
 	const loadTasks = async () => {
 		setLoading(true);
-
-		const data = await fetchTasks();
-		setTasks(data);
-		setLoading(false);
+		try {
+			const data = await fetchTasks();
+			setTasks(data);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	useEffect(() => {
 		(async () => {
-			const data = await fetchTasks();
-			setTasks(data);
-			setLoading(false);
+			try {
+				const data = await fetchTasks();
+				setTasks(data);
+			} finally {
+				setLoading(false);
+			}
 		})();
 	}, []);
 
 	const addTask = async ({ title, description }) => {
-		await apiAddTask(title, description);
-		await loadTasks();
+		try {
+			await apiAddTask(title, description);
+		} finally {
+			await loadTasks();
+		}
 	};
 
 	const toggleTask = async (id) => {
 		const task = tasks.find((t) => t.id === id);
 		if (!task) return;
 
-		await apiEditTask(id, {
-			isFinished: !task.done,
-		});
-
-		await loadTasks();
+		try {
+			await apiEditTask(id, { isFinished: !task.done });
+		} finally {
+			await loadTasks();
+		}
 	};
 
 	const deleteTask = async (id) => {
-		await apiDeleteTask(id);
-		await loadTasks();
+		try {
+			await apiDeleteTask(id);
+		} finally {
+			await loadTasks();
+		}
 	};
 
 	const updateTask = async (id, data) => {
-		await apiEditTask(id, data);
-		await loadTasks();
+		try {
+			await apiEditTask(id, data);
+		} finally {
+			await loadTasks();
+		}
 	};
 
 	const handleConfirmDeleteAll = async () => {
-		await Promise.all(activeTasks.map((task) => apiDeleteTask(task.id)));
-		setShowDeleteModal(false);
-		await loadTasks();
+		try {
+			await Promise.all(activeTasks.map((task) => apiDeleteTask(task.id)));
+			setShowDeleteModal(false);
+		} finally {
+			await loadTasks();
+		}
 	};
 
 	return (

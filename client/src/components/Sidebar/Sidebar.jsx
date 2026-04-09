@@ -14,8 +14,11 @@ const Sidebar = ({ activeTab, onTabChange, isOpen, onClose }) => {
 	const navigate = useNavigate();
 
 	const handleLogout = async () => {
-		await logout();
-		navigate('/login');
+		try {
+			await logout();
+		} finally {
+			navigate('/login');
+		}
 	};
 
 	return (

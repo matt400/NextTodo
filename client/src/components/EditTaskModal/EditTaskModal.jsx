@@ -11,7 +11,7 @@ const EditTaskModal = ({ task, onUpdate, onClose }) => {
 		if (!value.trim()) return 'Title is required';
 		if (value.length > 50) return 'Title must be less than 50 characters';
 
-		const allowedPattern = /^[\p{L}\p{N}\s.,!?'-]+$/u;
+		const allowedPattern = /^[\p{L}\p{N}\s.,!?'"/:()#\p{Pd}]+$/u;
 		if (!allowedPattern.test(value)) {
 			return 'Title contains unsupported characters.';
 		}
