@@ -88,6 +88,34 @@ const tasksRepository = (prisma: PrismaClient) => ({
       where: { taskId: taskId },
     });
   },
+
+  deletePomoRecord: async (pomoId: string, userId: string) =>
+    await prisma.pomo.deleteMany({
+      where: { id: pomoId, userId },
+    }),
+
+  getPomoHistory: async (userId: string, limit: number = 5) => {
+    const pomos = await prisma.pomo.findMany({
+      where: { userId, endedAt: { not: null } },
+      orderBy: { endedAt: "desc" },
+      take: limit,
+    });
+
+    if (pomos.length === 0) return [];
+
+    const taskIds = [...new Set(pomos.map((p) => p.taskId))];
+    const tasks = await prisma.tasks.findMany({
+      where: { id: { in: taskIds } },
+      select: { id: true, taskName: true },
+    });
+
+    const taskMap = new Map(tasks.map((t) => [t.id, t.taskName]));
+
+    return pomos.map((p) => ({
+      ...p,
+      taskName: taskMap.get(p.taskId) ?? "Deleted task",
+    }));
+  },
 });
 
 export default tasksRepository;

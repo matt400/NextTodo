@@ -49,7 +49,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 200;
+	z-index: 10000;
 	animation: fadeIn 0.2s ease;
 }
 
@@ -124,4 +124,44 @@
 @keyframes pomodoroGlow {
 	0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 	50%       { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2); }
+}
+
+@media (max-width: 767px) {
+	.pomodoro {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		grid-template-rows: auto auto;
+		height: auto;
+		padding: 5px 8px;
+		gap: 1px 4px;
+	}
+
+	/* time — top left */
+	.time {
+		grid-column: 1;
+		grid-row: 1;
+		align-self: center;
+	}
+
+	/* PomodoroHistory wrapper — top right (3rd child) */
+	.pomodoro > *:nth-child(3) {
+		grid-column: 2;
+		grid-row: 1;
+		justify-self: end;
+		align-self: center;
+	}
+
+	/* play/pause btn — bottom left (2nd child) */
+	.pomodoro > *:nth-child(2) {
+		grid-column: 1;
+		grid-row: 2;
+		justify-self: start;
+	}
+
+	/* X btn — bottom right (4th child) */
+	.pomodoro > *:nth-child(4) {
+		grid-column: 2;
+		grid-row: 2;
+		justify-self: end;
+	}
 }

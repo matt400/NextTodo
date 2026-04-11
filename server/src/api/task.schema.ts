@@ -76,3 +76,13 @@ export const startPomoSchema = {
 export const pausePomoSchema = getPomoSchema;
 export const resumePomoSchema = getPomoSchema;
 export const endPomoSchema = getPomoSchema;
+export const getPomoHistorySchema = {};
+export const deletePomoRecordSchema = {
+  body: {
+    type: "object",
+    required: ["pomo_id"],
+    properties: {
+      pomo_id: { type: "string" },
+    },
+  },
+};

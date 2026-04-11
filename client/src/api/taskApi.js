@@ -119,6 +119,30 @@ export async function resumePomodoro(taskId) {
 	return res.json();
 }
 
+export async function deletePomoRecord(pomoId) {
+	const res = await fetch(`${API}/pomoHistory`, {
+		method: 'DELETE',
+		headers: { 'Content-Type': 'application/json' },
+		credentials: 'include',
+		body: JSON.stringify({ pomo_id: pomoId }),
+	});
+	if (!res.ok) return null;
+	return res.json();
+}
+
+export async function fetchPomoHistory() {
+	const res = await fetch(`${API}/pomoHistory`, {
+		method: 'GET',
+		credentials: 'include',
+	});
+	if (!res.ok) return [];
+	try {
+		return await res.json();
+	} catch {
+		return [];
+	}
+}
+
 export async function endPomodoro(taskId) {
 	const res = await fetch(`${API}/endPomo`, {
 		method: 'POST',

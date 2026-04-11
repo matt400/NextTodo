@@ -6,6 +6,8 @@ import {
   modifyTaskData,
   removeTask,
   getPomo,
+  getPomoHistory,
+  deletePomoRecord,
   startPomo,
   pauseOrResumePomo,
   endPomo,
@@ -21,6 +23,8 @@ import type {
   IPausePomoRequest,
   IResumePomoRequest,
   IEndPomoRequest,
+  IGetPomoHistoryRequest,
+  IDeletePomoRecordRequest,
 } from "@server/interfaces/ITask";
 
 import type { FastifyRequest, FastifyReply } from "fastify";
@@ -133,14 +137,33 @@ export async function resumePomoController(
   return reply.ok("POMO_RESUMED", userData);
 }
 
+export async function deletePomoRecordController(
+  request: FastifyRequest<IDeletePomoRecordRequest>,
+  reply: FastifyReply,
+) {
+  const { pomo_id } = request.body;
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  await deletePomoRecord(request.server.prisma, pomo_id, userData.id);
+  return reply.ok("POMO_RECORD_DELETED");
+}
+
+export async function getPomoHistoryController(
+  request: FastifyRequest<IGetPomoHistoryRequest>,
+  reply: FastifyReply,
+) {
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  const data = await getPomoHistory(request.server.prisma, userData.id);
+  return reply.code(200).send(data);
+}
+
 export async function endPomoController(
   request: FastifyRequest<IEndPomoRequest>,
   reply: FastifyReply,
 ) {
-  const { task_id, elapsed } = request.body;
+  const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  await endPomo(request.server.prisma, task_id, userData.id, elapsed);
+  await endPomo(request.server.prisma, task_id, userData.id);
 
   return reply.ok("POMO_ENDED");
 }

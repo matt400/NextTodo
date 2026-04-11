@@ -144,20 +144,47 @@ export async function pauseOrResumePomo(
   }
 }
 
+export async function deletePomoRecord(
+  prisma: PrismaClient,
+  pomoId: string,
+  userId: string,
+) {
+  try {
+    return await repository(prisma).deletePomoRecord(pomoId, userId);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
+  }
+}
+
+export async function getPomoHistory(prisma: PrismaClient, userId: string) {
+  try {
+    return await repository(prisma).getPomoHistory(userId);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
+  }
+}
+
 export async function endPomo(
   prisma: PrismaClient,
   taskId: number,
   userId: string,
-  elapsed: number,
 ) {
   try {
     const activePomo = await repository(prisma).getActivePomo(taskId, userId);
     if (!activePomo) throw new AppError(404, "POMO_NOT_FOUND");
 
+    const now = new Date();
+    const runningMs = activePomo.pausedAt
+      ? 0
+      : now.getTime() - activePomo.startedAt.getTime();
+    const totalElapsed = activePomo.elapsed + runningMs;
+
     return await repository(prisma).modifyPomoData(activePomo.id, {
       pausedAt: null,
-      elapsed: elapsed,
-      endedAt: new Date(),
+      elapsed: totalElapsed,
+      endedAt: now,
     });
   } catch (err) {
     if (err instanceof AppError) throw err;

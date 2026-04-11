@@ -41,9 +41,10 @@ export interface IStartPomoRequest {
 export type IEndPomoRequest = {
   Body: {
     task_id: number;
-    elapsed: number;
   };
 };
 
 export type IPausePomoRequest = IGetPomoRequest;
 export type IResumePomoRequest = IGetPomoRequest;
+export type IGetPomoHistoryRequest = { Querystring: Record<string, never> };
+export type IDeletePomoRecordRequest = { Body: { pomo_id: string } };

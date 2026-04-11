@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Play, Pause, X, AlarmClock } from 'lucide-react';
 import styles from './PomodoroTimer.module.css';
 import { pausePomodoro, resumePomodoro, endPomodoro, getPomodoro } from '../../api/taskApi';
+import PomodoroHistory from '../PomodoroHistory/PomodoroHistory';
 
 const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePomoData, setActivePomoData }) => {
 	const rawMinutes = parseInt(localStorage.getItem('pomodoroTime'), 10);
@@ -136,6 +138,8 @@ const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePo
 						{isPaused ? <Play size={16} /> : <Pause size={16} />}
 					</button>
 
+					<PomodoroHistory />
+
 					<button
 						className={styles.btn}
 						onClick={(e) => {
@@ -147,7 +151,7 @@ const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePo
 				</div>
 			)}
 
-			{showAlarm && (
+			{showAlarm && createPortal(
 				<div className={styles['alarmOverlay']}>
 					<div className={styles['alarmModal']}>
 						<div className={styles['alarmHeader']}>
@@ -174,7 +178,8 @@ const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePo
 							OK
 						</button>
 					</div>
-				</div>
+				</div>,
+				document.body
 			)}
 
 			<audio ref={audioRef} src='/alarm-clock-beep.wav' loop />
