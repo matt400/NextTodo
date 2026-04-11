@@ -105,9 +105,7 @@
 .todoDescriptionExpanded {
 	font-size: 14px;
 	color: var(--text-secondary);
-	margin-left: 34px;
 	line-height: 1.4;
-	
 	white-space: pre-line;
 }
 
@@ -122,36 +120,38 @@
 	word-break: break-word;
 }
 
+.descriptionWrapper {
+	display: grid;
+	grid-template-rows: 0fr;
+	margin-left: 34px;
+
+	transition: grid-template-rows 0.25s ease;
+}
+
+.descriptionWrapper.open {
+	grid-template-rows: 1fr;
+}
+
 .todoDescriptionExpanded {
-	position: relative;
-	max-height: 0;
+	min-height: 0;
 	overflow: hidden;
 
 	opacity: 0;
-	transform: translateY(-4px);
+	transform: translateY(-8px) scale(0.98);
 
 	transition:
-		max-height 0.25s ease,
 		opacity 0.2s ease,
 		transform 0.2s ease;
-
-	margin-left: 34px;
 }
 
-.todoDescriptionExpanded.open {
-	max-height: 1000px;
+.descriptionWrapper.open .todoDescriptionExpanded {
 	opacity: 1;
-	transform: translateY(0);
-}
+	transform: translateY(0) scale(1);
 
-.todoDescriptionExpanded.open::before {
-	content: '';
-	display: block;
-	height: 1px;
-	width: 100%;
-	background: var(--border-color);
-	margin-bottom: 6px;
-	opacity: 0.6;
+	border-left: 2px solid var(--color-primary);
+	padding-left: 10px;
+	padding-top: 4px;
+	padding-bottom: 2px;
 }
 
 .todoActionsHover {

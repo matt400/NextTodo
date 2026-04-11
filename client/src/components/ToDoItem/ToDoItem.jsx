@@ -166,9 +166,11 @@ const ToDoItem = ({
 					)}
 				</div>
 
-				<div
-					className={`${styles['todoDescriptionExpanded']} ${isExpanded ? styles.open : ''}  ${task.done ? styles.done : ''}`}>
-					{task.description}
+				<div className={`${styles['descriptionWrapper']} ${isExpanded ? styles.open : ''}`}>
+					<div
+						className={`${styles['todoDescriptionExpanded']} ${task.done ? styles.done : ''}`}>
+						{task.description}
+					</div>
 				</div>
 			</div>
 
