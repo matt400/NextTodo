@@ -39,17 +39,12 @@ export async function registerController(
 ) {
   const { username, email, password, confirm_password } = request.body;
 
-  const regUser = await registerUser(
+  const result = await registerUser(
     request.server.prisma,
     request.server.bcrypt,
-    {
-      username: username,
-      email: email,
-      password: password,
-      confirm_password: confirm_password,
-    },
+    { username, email, password, confirm_password },
   );
-  const errors = regUser.errors;
+  const errors = result.errors;
 
   if (errors.length > 0) {
     return reply.fail(errors[0] as string, 422);
