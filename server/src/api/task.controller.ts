@@ -33,24 +33,18 @@ export async function getTasksController(
   request: FastifyRequest<ITaskGetRequest>,
   reply: FastifyReply,
 ) {
-  const { single, task_id } = request.query ?? {};
+  const { single, task_id } = request.query;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
 
-  var results = [];
   if (single) {
     if (!task_id) return reply.fail("TASK_ID_REQUIRED");
-    const oneTask = await getOneTask(
-      request.server.prisma,
-      userData.id,
-      task_id,
-    );
-    results.push(oneTask);
-  } else {
-    const allTasks = await getAllTasks(request.server.prisma, userData.id);
-    results.push(allTasks);
+    const task = await getOneTask(request.server.prisma, userData.id, task_id);
+    return reply.code(200).send([task]);
   }
-  return JSON.stringify(results.flat());
+
+  const tasks = await getAllTasks(request.server.prisma, userData.id);
+  return reply.code(200).send(tasks);
 }
 
 export async function addTaskController(
@@ -120,9 +114,13 @@ export async function pausePomoController(
   const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  await pauseOrResumePomo(request.server.prisma, task_id, userData.id);
+  const pomoData = await pauseOrResumePomo(
+    request.server.prisma,
+    task_id,
+    userData.id,
+  );
 
-  return reply.ok("POMO_PAUSED", userData);
+  return reply.ok("POMO_PAUSED", pomoData);
 }
 
 export async function resumePomoController(
@@ -132,9 +130,14 @@ export async function resumePomoController(
   const { task_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  await pauseOrResumePomo(request.server.prisma, task_id, userData.id, true);
+  const pomoData = await pauseOrResumePomo(
+    request.server.prisma,
+    task_id,
+    userData.id,
+    true,
+  );
 
-  return reply.ok("POMO_RESUMED", userData);
+  return reply.ok("POMO_RESUMED", pomoData);
 }
 
 export async function deletePomoRecordController(
@@ -142,8 +145,10 @@ export async function deletePomoRecordController(
   reply: FastifyReply,
 ) {
   const { pomo_id } = request.body;
+
   const userData = await getUserData(request.server.prisma, request.user.email);
   await deletePomoRecord(request.server.prisma, pomo_id, userData.id);
+
   return reply.ok("POMO_RECORD_DELETED");
 }
 

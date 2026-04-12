@@ -1,14 +1,14 @@
 import { PrismaClient } from "@prismagl";
+import type { TaskModifyData } from "@server/interfaces/ITask";
 
 const tasksRepository = (prisma: PrismaClient) => ({
-  getAllTasks: async (userId: string) =>
-    await prisma.tasks.findMany({ where: { userId } }),
+  getAllTasks: (userId: string) => prisma.tasks.findMany({ where: { userId } }),
 
-  getOneTask: async (userId: string, taskId: number) =>
-    await prisma.tasks.findFirst({ where: { userId: userId, id: taskId } }),
+  getOneTask: (userId: string, taskId: number) =>
+    prisma.tasks.findFirst({ where: { userId: userId, id: taskId } }),
 
-  addTask: async (userId: string, taskName: string, taskDesc: string) =>
-    await prisma.tasks.create({
+  addTask: (userId: string, taskName: string, taskDesc: string) =>
+    prisma.tasks.create({
       data: {
         userId: userId,
         taskName: taskName,
@@ -16,33 +16,29 @@ const tasksRepository = (prisma: PrismaClient) => ({
       },
     }),
 
-  findUniqueTask: async (taskId: number, uId: string) =>
-    await prisma.tasks.findUnique({
+  findUniqueTask: (taskId: number, uId: string) =>
+    prisma.tasks.findUnique({
       where: { id: taskId, userId: uId },
     }),
 
-  modifyTaskData: async (taskId: number, userId: string, data: object) => {
-    if (Object.keys(data).length > 1)
-      return await prisma.tasks.updateMany({
-        where: { id: taskId, userId: userId },
-        data: data,
-      });
-    else
-      return await prisma.tasks.update({
-        where: { id: taskId, userId: userId },
-        data: data,
-      });
+  modifyTaskData: (taskId: number, userId: string, data: TaskModifyData) => {
+    const isMultiField = Object.keys(data).length > 1;
+    const where = { id: taskId, userId };
+
+    return isMultiField
+      ? prisma.tasks.updateMany({ where, data })
+      : prisma.tasks.update({ where, data });
   },
 
-  removeTask: async (taskId: number[], userId: string) => {
+  removeTask: (taskId: number[], userId: string) => {
     if (taskId.length > 1)
-      return await prisma.tasks.deleteMany({
+      return prisma.tasks.deleteMany({
         where: {
           id: { in: taskId },
           userId: userId,
         },
       });
-    return await prisma.tasks.delete({
+    return prisma.tasks.delete({
       where: {
         id: taskId[0],
         userId: userId,
@@ -50,13 +46,13 @@ const tasksRepository = (prisma: PrismaClient) => ({
     });
   },
 
-  getPomo: async (taskId: number, userId: string) =>
-    await prisma.pomo.findMany({
+  getPomo: (taskId: number, userId: string) =>
+    prisma.pomo.findMany({
       where: { taskId: taskId, userId: userId },
     }),
 
-  getActivePomo: async (taskId: number, userId: string) =>
-    await prisma.pomo.findFirst({
+  getActivePomo: (taskId: number, userId: string) =>
+    prisma.pomo.findFirst({
       where: {
         taskId: taskId,
         userId: userId,

@@ -2,6 +2,7 @@ import { AppError, handlePrismaError } from "@server/utils/errors";
 import repository from "./task.repository";
 
 import type { PrismaClient } from "@server/generated/prisma/client";
+import type { TaskModifyData } from "@server/interfaces/ITask";
 
 export async function getOneTask(
   prisma: PrismaClient,
@@ -43,7 +44,7 @@ export async function modifyTaskData(
   prisma: PrismaClient,
   taskId: number,
   userId: string,
-  data: object,
+  data: TaskModifyData,
 ) {
   try {
     const uniqueTask = await repository(prisma).findUniqueTask(taskId, userId);
@@ -62,8 +63,7 @@ export async function removeTask(
 ) {
   try {
     const result = await repository(prisma).removeTask(taskId, userId);
-    const getCount = JSON.parse(JSON.stringify(result));
-    if ("count" in getCount && getCount.count == 0)
+    if ("count" in result && result.count == 0)
       throw new AppError(404, "TASK_REMOVE_ERROR");
     return result;
   } catch (err) {
@@ -93,13 +93,14 @@ export async function startPomo(
 ) {
   try {
     const activePomo = await repository(prisma).getActivePomo(taskId, userId);
-    if (activePomo)
+    if (activePomo) {
       return await repository(prisma).modifyPomoData(activePomo?.id, {
         startedAt: new Date(),
         pausedAt: null,
         endedAt: null,
         elapsed: 0,
       });
+    }
     return await repository(prisma).createPomo(taskId, userId, duration);
   } catch (err) {
     if (err instanceof AppError) throw err;
@@ -114,7 +115,6 @@ export async function pauseOrResumePomo(
   isResume: boolean = false,
 ) {
   try {
-    const currentDate = new Date();
     const activePomo = await repository(prisma).getActivePomo(taskId, userId);
     if (!activePomo) throw new AppError(404, "POMO_NOT_FOUND");
 
@@ -122,6 +122,8 @@ export async function pauseOrResumePomo(
       throw new AppError(400, "POMO_ALREADY_PAUSED");
     if (isResume && activePomo.pausedAt === null)
       throw new AppError(400, "POMO_ALREADY_WORKING");
+
+    const currentDate = new Date();
 
     if (isResume) {
       return await repository(prisma).modifyPomoData(activePomo.id, {
@@ -176,14 +178,13 @@ export async function endPomo(
     if (!activePomo) throw new AppError(404, "POMO_NOT_FOUND");
 
     const now = new Date();
-    const runningMs = activePomo.pausedAt
-      ? 0
-      : now.getTime() - activePomo.startedAt.getTime();
-    const totalElapsed = activePomo.elapsed + runningMs;
+    const runningMs = !activePomo.pausedAt
+      ? now.getTime() - activePomo.startedAt.getTime()
+      : 0;
 
     return await repository(prisma).modifyPomoData(activePomo.id, {
       pausedAt: null,
-      elapsed: totalElapsed,
+      elapsed: activePomo.elapsed + runningMs,
       endedAt: now,
     });
   } catch (err) {
