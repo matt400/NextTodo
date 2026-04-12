@@ -147,8 +147,12 @@ export async function deletePomoRecordController(
   const { pomo_id } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  await deletePomoRecord(request.server.prisma, pomo_id, userData.id);
-
+  const pomoRecord = await deletePomoRecord(
+    request.server.prisma,
+    pomo_id,
+    userData.id,
+  );
+  if (pomoRecord.count === 0) return reply.fail("POMO_NOT_FOUND");
   return reply.ok("POMO_RECORD_DELETED");
 }
 

@@ -9,7 +9,7 @@ items:
   - info:
       name: '[Pomo] End event'
       type: http
-      seq: 17
+      seq: 18
     http:
       method: POST
       url: http://localhost:3000/api/task/endPomo
@@ -25,7 +25,7 @@ items:
   - info:
       name: '[Pomo] Get event'
       type: http
-      seq: 13
+      seq: 14
     http:
       method: POST
       url: http://localhost:3000/api/task/getPomo
@@ -41,7 +41,7 @@ items:
   - info:
       name: '[Pomo] Pause event'
       type: http
-      seq: 15
+      seq: 16
     http:
       method: POST
       url: http://localhost:3000/api/task/pausePomo
@@ -57,7 +57,7 @@ items:
   - info:
       name: '[Pomo] Resume event'
       type: http
-      seq: 16
+      seq: 17
     http:
       method: POST
       url: http://localhost:3000/api/task/resumePomo
@@ -73,7 +73,7 @@ items:
   - info:
       name: '[Pomo] Start event'
       type: http
-      seq: 14
+      seq: 15
     http:
       method: POST
       url: http://localhost:3000/api/task/startPomo
@@ -89,7 +89,7 @@ items:
   - info:
       name: '[Task] Add new'
       type: http
-      seq: 10
+      seq: 11
     http:
       method: POST
       url: http://localhost:3000/api/task
@@ -105,7 +105,7 @@ items:
   - info:
       name: '[Task] Get one or all'
       type: http
-      seq: 9
+      seq: 10
     http:
       method: GET
       url: http://localhost:3000/api/task?single=true&task_id=1
@@ -128,7 +128,7 @@ items:
   - info:
       name: '[Task] Modify data'
       type: http
-      seq: 11
+      seq: 12
     http:
       method: PATCH
       url: http://localhost:3000/api/task
@@ -144,7 +144,7 @@ items:
   - info:
       name: '[Task] Remove'
       type: http
-      seq: 12
+      seq: 13
     http:
       method: DELETE
       url: http://localhost:3000/api/task
@@ -253,7 +253,7 @@ items:
       followRedirects: true
       maxRedirects: 5
   - info:
-      name: '[User] Remove'
+      name: '[User] Delete'
       type: http
       seq: 8
     http:
@@ -271,7 +271,7 @@ items:
   - info:
       name: '[User] Settings'
       type: http
-      seq: 17
+      seq: 9
     http:
       method: PATCH
       url: http://localhost:3000/api/user/me/settings
@@ -280,10 +280,42 @@ items:
         data: |-
           {
             "userSettings": {
-              "pomodoroTime": "16",
+              "pomodoroTime": "13",
               "theme": "light"
             }
           }
+      auth: inherit
+    settings:
+      encodeUrl: true
+      timeout: 0
+      followRedirects: true
+      maxRedirects: 5
+  - info:
+      name: '[Pomo History] Delete'
+      type: http
+      seq: 20
+    http:
+      method: DELETE
+      url: http://localhost:3000/api/task/pomoHistory
+      body:
+        type: json
+        data: '{ "pomo_id": "83e243c7-3a58-4b79-9f95-5b3dd3dd1ba7" }'
+      auth: inherit
+    settings:
+      encodeUrl: true
+      timeout: 0
+      followRedirects: true
+      maxRedirects: 5
+  - info:
+      name: '[Pomo History] Get'
+      type: http
+      seq: 19
+    http:
+      method: GET
+      url: http://localhost:3000/api/task/pomoHistory
+      body:
+        type: json
+        data: ''
       auth: inherit
     settings:
       encodeUrl: true
@@ -296,5 +328,5 @@ extensions:
     ignore:
       - node_modules
       - .git
-    exportedAt: '2026-04-07T18:20:46.387Z'
+    exportedAt: '2026-04-12T17:00:22.263Z'
     exportedUsing: Bruno

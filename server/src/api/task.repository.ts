@@ -74,7 +74,6 @@ const tasksRepository = (prisma: PrismaClient) => ({
     });
 
     const taskMap = new Map(tasks.map((t) => [t.id, t.taskName]));
-
     return pomos.map((p) => ({
       ...p,
       taskName: taskMap.get(p.taskId) ?? "Deleted task",
@@ -90,8 +89,8 @@ const tasksRepository = (prisma: PrismaClient) => ({
       },
     }),
 
-  createPomo: async (taskId: number, userId: string, duration: number) => {
-    return await prisma.pomo.create({
+  createPomo: (taskId: number, userId: string, duration: number) => {
+    return prisma.pomo.create({
       data: {
         userId: userId,
         taskId: taskId,
@@ -100,8 +99,8 @@ const tasksRepository = (prisma: PrismaClient) => ({
     });
   },
 
-  modifyPomoData: async (pomoId: string, data: object) => {
-    return await prisma.pomo.update({
+  modifyPomoData: (pomoId: string, data: object) => {
+    return prisma.pomo.update({
       where: {
         id: pomoId,
       },
@@ -109,14 +108,14 @@ const tasksRepository = (prisma: PrismaClient) => ({
     });
   },
 
-  removePomosFromTask: async (taskId: number) => {
-    return await prisma.pomo.deleteMany({
+  removePomosFromTask: (taskId: number) => {
+    return prisma.pomo.deleteMany({
       where: { taskId: taskId },
     });
   },
 
-  deletePomoRecord: async (pomoId: string, userId: string) =>
-    await prisma.pomo.deleteMany({
+  deletePomoRecord: (pomoId: string, userId: string) =>
+    prisma.pomo.deleteMany({
       where: { id: pomoId, userId },
     }),
 });

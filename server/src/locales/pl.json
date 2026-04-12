@@ -30,6 +30,7 @@
   "POMO_RESUMED": "Pomodoro wznowione.",
   "POMO_ENDED": "Pomodoro zakończone.",
   "POMO_NOT_FOUND": "Nie znaleziono rekordu pomodoro.",
+  "POMO_RECORD_DELETED": "Rekord pomodoro został usunięty.",
   "EMAIL_TOO_SHORT": "Email jest zbyt krótki.",
   "EMAIL_TOO_LONG": "Email jest za długi.",
   "EMAIL_INVALID_FORMAT": "Email ma nieprawidłowy format.",
