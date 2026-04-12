@@ -4,23 +4,36 @@ import { validateEmail } from "@server/utils/email";
 import authRepository from "./auth.repository";
 import userRepository from "./user.repository";
 
-import type { PrismaClient } from "@server/generated/prisma/client";
+import type { PrismaClient, User } from "@server/generated/prisma/client";
+import type { UserUpdateData, UserSettings } from "@server/interfaces/IUser";
+
+interface PublicUserData {
+  id: string;
+  username: string;
+  email: string;
+  isActive: boolean;
+  settings: User["settings"];
+}
+
+interface FullUserData extends PublicUserData {
+  password: string;
+}
 
 export async function getUserData(
   prisma: PrismaClient,
   userEmail: string,
   isFull: true,
-): Promise<any>;
+): Promise<FullUserData>;
 export async function getUserData(
   prisma: PrismaClient,
   userEmail: string,
   isFull?: false,
-): Promise<any>;
+): Promise<PublicUserData>;
 export async function getUserData(
   prisma: PrismaClient,
   userEmail: string,
   isFull: boolean = false,
-) {
+): Promise<PublicUserData | FullUserData> {
   const valEmail = validateEmail(userEmail);
   if (!valEmail.isValid) throw new AppError(400, valEmail.errorKey as string);
 
@@ -28,7 +41,7 @@ export async function getUserData(
     const user = await authRepository(prisma).findByEmail(userEmail);
     if (!user) throw new AppError(404, "USER_NOT_FOUND");
 
-    const userData = {
+    const userData: PublicUserData = {
       id: user.id,
       username: user.username,
       email: user.email,
@@ -41,6 +54,7 @@ export async function getUserData(
   } catch (err) {
     if (err instanceof AppError) throw err;
     handlePrismaError(err);
+    throw err;
   }
 }
 
@@ -60,10 +74,23 @@ export async function changePassword(
 export async function updateData(
   prisma: PrismaClient,
   userId: string,
-  data: object,
+  data: UserUpdateData,
 ) {
   try {
     return await userRepository(prisma).updateData(userId, data);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
+  }
+}
+
+export async function updateSettings(
+  prisma: PrismaClient,
+  userId: string,
+  settings: UserSettings,
+) {
+  try {
+    return await userRepository(prisma).updateSettings(userId, settings);
   } catch (err) {
     if (err instanceof AppError) throw err;
     handlePrismaError(err);

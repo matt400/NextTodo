@@ -23,11 +23,14 @@ export interface IRemoveUser {
 export interface IUserSettings {
   Body: {
     userSettings: {
-      theme: string;
-      language: string;
-      view: string;
-      notificationType: string;
-      pomodoroTime: number;
+      theme?: string;
+      language?: string;
+      view?: string;
+      notificationType?: string;
+      pomodoroTime?: number;
     };
   };
 }
+
+export type UserUpdateData = IUpdateData["Body"];
+export type UserSettings = IUserSettings["Body"]["userSettings"];

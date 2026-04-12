@@ -1,15 +1,20 @@
-import { PrismaClient } from "@prismagl";
+import { PrismaClient, Prisma } from "@prismagl";
+
+import type { UserUpdateData, UserSettings } from "@server/interfaces/IUser";
 
 const userRepository = (prisma: PrismaClient) => ({
-  updateData: async (id: string, data: object) => {
-    await prisma.user.update({
+  updateData: (id: string, data: UserUpdateData) => {
+    return prisma.user.update({
       where: { id },
-      data: data,
+      data: data as Prisma.UserUpdateInput,
     });
   },
 
-  removeUser: async (id: string) => {
-    await prisma.user.delete({
+  updateSettings: (id: string, settings: UserSettings) =>
+    prisma.user.update({ where: { id }, data: { settings } }),
+
+  removeUser: (id: string) => {
+    return prisma.user.delete({
       where: { id },
     });
   },
