@@ -99,7 +99,12 @@ const ToDoItem = ({
 						/>
 
 						{effectiveDueDate && (
-							<div className={`${styles['todoDate']} ${isToday ? styles['todoDate--today'] : ''} ${isPast ? styles['todoDate--past'] : ''}`}>
+							<div
+								className={`${styles['todoDate']} ${isToday ? styles['todoDate--today'] : ''} ${isPast ? styles['todoDate--past'] : ''} ${styles['todoDate--clickable']}`}
+								onClick={(e) => {
+									e.stopPropagation();
+									setShowCalendarModal(true);
+								}}>
 								{new Date(effectiveDueDate).toLocaleDateString('en-US', {
 									day: 'numeric',
 									month: 'short',
@@ -236,7 +241,10 @@ const ToDoItem = ({
 						{activePomodoroId === null && (
 							<button
 								className={`${styles['todoActionBtn']} ${styles['pomodoroBtn']}`}
-								onClick={handleStartPomodoro}>
+								onClick={(e) => {
+									setShowMobileActions(false);
+									handleStartPomodoro(e);
+								}}>
 								<AlarmClock size={18} /> Pomodoro
 							</button>
 						)}
