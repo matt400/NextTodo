@@ -78,7 +78,7 @@ export async function getPomo(
   userId: string,
 ) {
   try {
-    return await repository(prisma).getPomo(taskId, userId);
+    return await repository(prisma).getPomos(userId, { taskId });
   } catch (err) {
     if (err instanceof AppError) throw err;
     handlePrismaError(err);
@@ -161,7 +161,10 @@ export async function deletePomoRecord(
 
 export async function getPomoHistory(prisma: PrismaClient, userId: string) {
   try {
-    return await repository(prisma).getPomoHistory(userId);
+    return await repository(prisma).getPomos(userId, {
+      historyOnly: true,
+      limit: 5,
+    });
   } catch (err) {
     if (err instanceof AppError) throw err;
     handlePrismaError(err);

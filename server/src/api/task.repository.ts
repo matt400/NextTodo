@@ -1,6 +1,12 @@
 import { PrismaClient } from "@prismagl";
 import type { TaskModifyData } from "@server/interfaces/ITask";
 
+interface GetPomosOptions {
+  taskId?: number;
+  historyOnly?: boolean;
+  limit?: number;
+}
+
 const tasksRepository = (prisma: PrismaClient) => ({
   getAllTasks: (userId: string) => prisma.tasks.findMany({ where: { userId } }),
 
@@ -46,10 +52,34 @@ const tasksRepository = (prisma: PrismaClient) => ({
     });
   },
 
-  getPomo: (taskId: number, userId: string) =>
-    prisma.pomo.findMany({
-      where: { taskId: taskId, userId: userId },
-    }),
+  getPomos: async (userId: string, options: GetPomosOptions = {}) => {
+    const { taskId, historyOnly = false, limit } = options;
+
+    const pomos = await prisma.pomo.findMany({
+      where: {
+        userId,
+        ...(taskId !== undefined && { taskId }),
+        ...(historyOnly && { endedAt: { not: null } }),
+      },
+      ...(historyOnly && { orderBy: { endedAt: "desc" } }),
+      ...(limit !== undefined && { take: limit }),
+    });
+
+    if (pomos.length === 0) return [];
+
+    const taskIds = [...new Set(pomos.map((p) => p.taskId))];
+    const tasks = await prisma.tasks.findMany({
+      where: { id: { in: taskIds } },
+      select: { id: true, taskName: true },
+    });
+
+    const taskMap = new Map(tasks.map((t) => [t.id, t.taskName]));
+
+    return pomos.map((p) => ({
+      ...p,
+      taskName: taskMap.get(p.taskId) ?? "Deleted task",
+    }));
+  },
 
   getActivePomo: (taskId: number, userId: string) =>
     prisma.pomo.findFirst({
@@ -89,29 +119,6 @@ const tasksRepository = (prisma: PrismaClient) => ({
     await prisma.pomo.deleteMany({
       where: { id: pomoId, userId },
     }),
-
-  getPomoHistory: async (userId: string, limit: number = 5) => {
-    const pomos = await prisma.pomo.findMany({
-      where: { userId, endedAt: { not: null } },
-      orderBy: { endedAt: "desc" },
-      take: limit,
-    });
-
-    if (pomos.length === 0) return [];
-
-    const taskIds = [...new Set(pomos.map((p) => p.taskId))];
-    const tasks = await prisma.tasks.findMany({
-      where: { id: { in: taskIds } },
-      select: { id: true, taskName: true },
-    });
-
-    const taskMap = new Map(tasks.map((t) => [t.id, t.taskName]));
-
-    return pomos.map((p) => ({
-      ...p,
-      taskName: taskMap.get(p.taskId) ?? "Deleted task",
-    }));
-  },
 });
 
 export default tasksRepository;
