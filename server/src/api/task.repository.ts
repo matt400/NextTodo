@@ -1,14 +1,20 @@
 import { PrismaClient } from "@prismagl";
+import type { TaskModifyData } from "@server/interfaces/ITask";
+
+interface GetPomosOptions {
+  taskId?: number;
+  historyOnly?: boolean;
+  limit?: number;
+}
 
 const tasksRepository = (prisma: PrismaClient) => ({
-  getAllTasks: async (userId: string) =>
-    await prisma.tasks.findMany({ where: { userId } }),
+  getAllTasks: (userId: string) => prisma.tasks.findMany({ where: { userId } }),
 
-  getOneTask: async (userId: string, taskId: number) =>
-    await prisma.tasks.findFirst({ where: { userId: userId, id: taskId } }),
+  getOneTask: (userId: string, taskId: number) =>
+    prisma.tasks.findFirst({ where: { userId: userId, id: taskId } }),
 
-  addTask: async (userId: string, taskName: string, taskDesc: string) =>
-    await prisma.tasks.create({
+  addTask: (userId: string, taskName: string, taskDesc: string) =>
+    prisma.tasks.create({
       data: {
         userId: userId,
         taskName: taskName,
@@ -16,33 +22,29 @@ const tasksRepository = (prisma: PrismaClient) => ({
       },
     }),
 
-  findUniqueTask: async (taskId: number, uId: string) =>
-    await prisma.tasks.findUnique({
+  findUniqueTask: (taskId: number, uId: string) =>
+    prisma.tasks.findUnique({
       where: { id: taskId, userId: uId },
     }),
 
-  modifyTaskData: async (taskId: number, userId: string, data: object) => {
-    if (Object.keys(data).length > 1)
-      return await prisma.tasks.updateMany({
-        where: { id: taskId, userId: userId },
-        data: data,
-      });
-    else
-      return await prisma.tasks.update({
-        where: { id: taskId, userId: userId },
-        data: data,
-      });
+  modifyTaskData: (taskId: number, userId: string, data: TaskModifyData) => {
+    const isMultiField = Object.keys(data).length > 1;
+    const where = { id: taskId, userId };
+
+    return isMultiField
+      ? prisma.tasks.updateMany({ where, data })
+      : prisma.tasks.update({ where, data });
   },
 
-  removeTask: async (taskId: number[], userId: string) => {
+  removeTask: (taskId: number[], userId: string) => {
     if (taskId.length > 1)
-      return await prisma.tasks.deleteMany({
+      return prisma.tasks.deleteMany({
         where: {
           id: { in: taskId },
           userId: userId,
         },
       });
-    return await prisma.tasks.delete({
+    return prisma.tasks.delete({
       where: {
         id: taskId[0],
         userId: userId,
@@ -50,13 +52,36 @@ const tasksRepository = (prisma: PrismaClient) => ({
     });
   },
 
-  getPomo: async (taskId: number, userId: string) =>
-    await prisma.pomo.findMany({
-      where: { taskId: taskId, userId: userId },
-    }),
+  getPomos: async (userId: string, options: GetPomosOptions = {}) => {
+    const { taskId, historyOnly = false, limit } = options;
 
-  getActivePomo: async (taskId: number, userId: string) =>
-    await prisma.pomo.findFirst({
+    const pomos = await prisma.pomo.findMany({
+      where: {
+        userId,
+        ...(taskId !== undefined && { taskId }),
+        ...(historyOnly && { endedAt: { not: null } }),
+      },
+      ...(historyOnly && { orderBy: { endedAt: "desc" } }),
+      ...(limit !== undefined && { take: limit }),
+    });
+
+    if (pomos.length === 0) return [];
+
+    const taskIds = [...new Set(pomos.map((p) => p.taskId))];
+    const tasks = await prisma.tasks.findMany({
+      where: { id: { in: taskIds } },
+      select: { id: true, taskName: true },
+    });
+
+    const taskMap = new Map(tasks.map((t) => [t.id, t.taskName]));
+    return pomos.map((p) => ({
+      ...p,
+      taskName: taskMap.get(p.taskId) ?? "Deleted task",
+    }));
+  },
+
+  getActivePomo: (taskId: number, userId: string) =>
+    prisma.pomo.findFirst({
       where: {
         taskId: taskId,
         userId: userId,
@@ -64,8 +89,8 @@ const tasksRepository = (prisma: PrismaClient) => ({
       },
     }),
 
-  createPomo: async (taskId: number, userId: string, duration: number) => {
-    return await prisma.pomo.create({
+  createPomo: (taskId: number, userId: string, duration: number) => {
+    return prisma.pomo.create({
       data: {
         userId: userId,
         taskId: taskId,
@@ -74,8 +99,8 @@ const tasksRepository = (prisma: PrismaClient) => ({
     });
   },
 
-  modifyPomoData: async (pomoId: string, data: object) => {
-    return await prisma.pomo.update({
+  modifyPomoData: (pomoId: string, data: object) => {
+    return prisma.pomo.update({
       where: {
         id: pomoId,
       },
@@ -83,11 +108,16 @@ const tasksRepository = (prisma: PrismaClient) => ({
     });
   },
 
-  removePomosFromTask: async (taskId: number) => {
-    return await prisma.pomo.deleteMany({
+  removePomosFromTask: (taskId: number) => {
+    return prisma.pomo.deleteMany({
       where: { taskId: taskId },
     });
   },
+
+  deletePomoRecord: (pomoId: string, userId: string) =>
+    prisma.pomo.deleteMany({
+      where: { id: pomoId, userId },
+    }),
 });
 
 export default tasksRepository;

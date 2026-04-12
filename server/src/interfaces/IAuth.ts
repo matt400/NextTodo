@@ -3,9 +3,6 @@ export interface ILoginRequest {
     email: string;
     password: string;
   };
-  user: {
-    email: string;
-  };
 }
 
 export interface IRegisterRequest {

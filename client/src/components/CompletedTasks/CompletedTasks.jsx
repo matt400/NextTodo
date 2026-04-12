@@ -88,7 +88,7 @@ const CompletedTasks = () => {
 				{completedTasks.length === 0 ? (
 					<div className={styles.emptyState}>
 						<div className={styles.emptyContainer}>
-							<Check size={48} />
+							<Check size={68} />
 							<h3>Nothing completed yet</h3>
 							<p>Your finished tasks will appear here</p>
 						</div>

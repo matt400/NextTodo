@@ -104,7 +104,7 @@ const ActiveTasks = ({ activePomodoroId, setActivePomodoroId, activePomoData, se
 				{activeTasks.length === 0 ? (
 					<div className={styles.emptyState}>
 						<div className={styles.emptyContainer}>
-							<Search size={48} />
+							<Search size={68} />
 							<h3>No active tasks</h3>
 							<p>Create your first task to get started</p>
 						</div>

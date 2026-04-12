@@ -9,6 +9,7 @@ export const loginSchema = {
       email: fastifyEmailProperty,
       password: { type: "string" },
     },
+    additionalProperties: false,
   },
 };
 
@@ -22,5 +23,6 @@ export const registerSchema = {
       password: fastifyPasswordProperty,
       confirm_password: { type: "string", minLength: 8 },
     },
+    additionalProperties: false,
   },
 };

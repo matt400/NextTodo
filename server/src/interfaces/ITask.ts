@@ -1,7 +1,7 @@
 export interface ITaskGetRequest {
   Querystring: {
-    single: boolean;
-    task_id: number;
+    single?: boolean;
+    task_id?: number;
   };
 }
 
@@ -15,7 +15,7 @@ export interface ITaskAddRequest {
 export interface ITaskModifyRequest {
   Body: {
     task_id: number;
-    data: object;
+    data: TaskModifyData;
   };
 }
 
@@ -38,12 +38,14 @@ export interface IStartPomoRequest {
   };
 }
 
-export type IEndPomoRequest = {
-  Body: {
-    task_id: number;
-    elapsed: number;
-  };
-};
+export interface TaskModifyData {
+  taskName?: string;
+  taskDesc?: string;
+  isFinished?: boolean;
+}
 
+export type IEndPomoRequest = IGetPomoRequest;
 export type IPausePomoRequest = IGetPomoRequest;
 export type IResumePomoRequest = IGetPomoRequest;
+export type IGetPomoHistoryRequest = { Querystring: Record<string, never> };
+export type IDeletePomoRecordRequest = { Body: { pomo_id: string } };

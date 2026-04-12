@@ -4,6 +4,7 @@ import {
   updateUserDataController,
   removeUserController,
   userSettingsController,
+  logoutController,
 } from "./user.controller";
 
 import {
@@ -62,8 +63,6 @@ export default async function userRoutes(fastify: FastifyInstance) {
   fastify.post(
     "/logout",
     { preHandler: [fastify.userAccessOnly] },
-    async (req, reply) => {
-      return reply.clearCookie("access_token").ok("LOGGED_OUT");
-    },
+    logoutController,
   );
 }

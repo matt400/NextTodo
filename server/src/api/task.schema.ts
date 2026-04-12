@@ -2,6 +2,7 @@ export const addTaskSchema = {
   body: {
     type: "object",
     required: ["task_name", "task_desc"],
+    additionalProperties: false,
     properties: {
       task_name: { type: "string", minLength: 3, maxLength: 60 },
       task_desc: { type: "string", minLength: 0, maxLength: 2000 },
@@ -12,6 +13,7 @@ export const addTaskSchema = {
 export const getTaskSchema = {
   querystring: {
     type: "object",
+    additionalProperties: false,
     properties: {
       single: { type: "boolean" },
       task_id: { type: "number" },
@@ -19,18 +21,20 @@ export const getTaskSchema = {
   },
 };
 
-export const modfiyTaskSchema = {
+export const modifyTaskSchema = {
   body: {
     type: "object",
     required: ["task_id", "data"],
+    additionalProperties: false,
     properties: {
       task_id: { type: "number" },
       data: {
         type: "object",
         minProperties: 1,
+        additionalProperties: false,
         properties: {
-          taskName: { type: "string" },
-          taskDesc: { type: "string" },
+          taskName: { type: "string", minLength: 3, maxLength: 60 },
+          taskDesc: { type: "string", minLength: 0, maxLength: 2000 },
           isFinished: { type: "boolean" },
         },
       },
@@ -42,6 +46,7 @@ export const removeTaskSchema = {
   body: {
     type: "object",
     required: ["task_id"],
+    additionalProperties: false,
     properties: {
       task_id: {
         type: "array",
@@ -52,27 +57,43 @@ export const removeTaskSchema = {
   },
 };
 
-export const getPomoSchema = {
+const taskIdBodySchema = {
   body: {
     type: "object",
     required: ["task_id"],
+    additionalProperties: false,
     properties: {
       task_id: { type: "number" },
     },
   },
 };
+
+export const getPomoSchema = taskIdBodySchema;
+export const pausePomoSchema = taskIdBodySchema;
+export const resumePomoSchema = taskIdBodySchema;
+export const endPomoSchema = taskIdBodySchema;
 
 export const startPomoSchema = {
   body: {
     type: "object",
     required: ["task_id", "duration"],
+    additionalProperties: false,
     properties: {
       task_id: { type: "number" },
-      duration: { type: "number" },
+      duration: { type: "number", minimum: 1 },
     },
   },
 };
 
-export const pausePomoSchema = getPomoSchema;
-export const resumePomoSchema = getPomoSchema;
-export const endPomoSchema = getPomoSchema;
+export const getPomoHistorySchema = {};
+
+export const deletePomoRecordSchema = {
+  body: {
+    type: "object",
+    required: ["pomo_id"],
+    additionalProperties: false,
+    properties: {
+      pomo_id: { type: "string" },
+    },
+  },
+};

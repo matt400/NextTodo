@@ -11,12 +11,17 @@ import type { Bcrypt } from "@server/typescript/fastify";
 import type { User, PrismaClient } from "@server/generated/prisma/client";
 import type { RegisterRequestBody } from "@server/interfaces/IAuth";
 
+interface ServiceResult<T = object> {
+  errors: string[];
+  userData: T | object;
+}
+
 export async function loginUser(
   prisma: PrismaClient,
   bcrypt: Bcrypt,
   email: string,
   password: string,
-): Promise<Boolean | User> {
+): Promise<User | false> {
   const user = await repository(prisma).findByEmail(email);
   if (!user) return false;
 
@@ -30,8 +35,8 @@ export async function registerUser(
   prisma: PrismaClient,
   bcrypt: Bcrypt,
   userData: RegisterRequestBody,
-) {
-  const data = { errors: [] as string[], userData: {} };
+): Promise<ServiceResult<User>> {
+  const data: ServiceResult<User> = { errors: [], userData: {} };
 
   // Validate email format
   const valEmail = validateEmail(userData.email);
@@ -66,11 +71,11 @@ export async function registerUser(
   if (data.errors.length > 0) return data;
 
   // Create user
-  const password = await bcrypt.hash(userData.password, 10);
+  const hashedPassword = await bcrypt.hash(userData.password, 10);
   const createUser = await repository(prisma).create({
     username: userData.username,
     email: userData.email,
-    password: password,
+    password: hashedPassword,
     isActive: true,
     lastLogin: new Date().toISOString(),
   });

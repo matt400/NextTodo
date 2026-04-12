@@ -2,6 +2,7 @@ import {
   getUserData,
   changePassword,
   updateData,
+  updateSettings,
   removeUser,
 } from "./user.service";
 
@@ -17,19 +18,15 @@ import type {
   IRemoveUser,
   IUpdateData,
   IUserSettings,
+  UserSettings,
 } from "@server/interfaces/IUser";
 
 export async function getDataController(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const userEmail = request.user.email;
-  try {
-    const userData = await getUserData(request.server.prisma, userEmail);
-    return reply.send(userData);
-  } catch {
-    return reply.fail("NO_SUCH_USER", 404);
-  }
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  return reply.code(200).send(userData);
 }
 
 export async function changePasswordController(
@@ -64,7 +61,7 @@ export async function changePasswordController(
 
   const isPasswordValid = await request.server.bcrypt.compare(
     current_password,
-    userData.password ?? "",
+    userData.password,
   );
   if (!isPasswordValid) return reply.fail("INVALID_CURRENT_PASSWORD", 401);
 
@@ -79,23 +76,25 @@ export async function updateUserDataController(
   reply: FastifyReply,
 ) {
   const { username, email, isActive } = request.body;
-  const userEmail = request.user.email;
 
-  const userData = await getUserData(request.server.prisma, userEmail);
+  const userData = await getUserData(request.server.prisma, request.user.email);
 
-  const errors = [];
-  if (username == userData.username) errors.push("USERNAME");
-  if (email == userData.email) errors.push("EMAIL");
-  if (isActive == userData.isActive) errors.push("ISACTIVE");
+  const errors: string[] = [];
+  if (username !== undefined && username === userData.username)
+    errors.push("USERNAME");
+  if (email !== undefined && email === userData.email) errors.push("EMAIL");
+  if (isActive !== undefined && isActive === userData.isActive)
+    errors.push("ISACTIVE");
 
   if (errors.length > 0)
     return reply.fail("UPDATE_VALIDATION_ERROR", 400, errors);
 
   await updateData(request.server.prisma, userData.id, {
-    username: username,
-    email: email,
-    isActive: isActive,
+    username,
+    email,
+    isActive,
   });
+
   return reply.ok("UPDATE_USER_DATA_SUCCESS");
 }
 
@@ -104,11 +103,12 @@ export async function removeUserController(
   reply: FastifyReply,
 ) {
   const { email } = request.body;
-  if (email != request.user.email) return reply.fail("EMAIL_NOT_MATCHING", 400);
+  if (email !== request.user.email)
+    return reply.fail("EMAIL_NOT_MATCHING", 400);
 
-  var user = await getUserData(request.server.prisma, request.user.email);
-
+  const user = await getUserData(request.server.prisma, request.user.email);
   await removeUser(request.server.prisma, user.id);
+
   return reply.ok("USER_REMOVED");
 }
 
@@ -117,14 +117,13 @@ export async function userSettingsController(
   reply: FastifyReply,
 ) {
   const { userSettings } = request.body;
-  const userData = await getUserData(request.server.prisma, request.user.email);
-  const prevSettings = userData.settings;
-  const skipped: string[] = [];
-  const changes: Partial<typeof prevSettings> = {};
 
-  for (const key of Object.keys(
-    userSettings,
-  ) as (keyof typeof userSettings)[]) {
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  const prevSettings = (userData.settings ?? {}) as UserSettings;
+  const skipped: string[] = [];
+  const changes: Record<string, unknown> = {};
+
+  for (const key of Object.keys(userSettings) as (keyof UserSettings)[]) {
     if (!(key in prevSettings)) {
       skipped.push(`${key} (unknown field)`);
       continue;
@@ -135,15 +134,23 @@ export async function userSettingsController(
       continue;
     }
 
-    changes[key] = userSettings[key] as never;
+    changes[key] = userSettings[key];
   }
 
   if (Object.keys(changes).length === 0)
     return reply.fail("USER_DATA_UPDATE_FAILED", 400, skipped);
 
-  await updateData(request.server.prisma, userData.id, {
-    settings: { ...prevSettings, ...changes },
+  await updateSettings(request.server.prisma, userData.id, {
+    ...prevSettings,
+    ...changes,
   });
 
   return reply.ok("USER_DATA_UPDATED", skipped);
+}
+
+export async function logoutController(
+  _request: FastifyRequest,
+  reply: FastifyReply,
+) {
+  return reply.clearCookie("access_token").ok("LOGGED_OUT");
 }

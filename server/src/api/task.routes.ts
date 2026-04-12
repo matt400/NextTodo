@@ -4,6 +4,8 @@ import {
   modifyTaskController,
   removeTaskController,
   getPomoController,
+  getPomoHistoryController,
+  deletePomoRecordController,
   startPomoController,
   pausePomoController,
   resumePomoController,
@@ -13,9 +15,11 @@ import {
 import {
   getTaskSchema,
   addTaskSchema,
-  modfiyTaskSchema,
+  modifyTaskSchema,
   removeTaskSchema,
   getPomoSchema,
+  getPomoHistorySchema,
+  deletePomoRecordSchema,
   startPomoSchema,
   pausePomoSchema,
   resumePomoSchema,
@@ -47,7 +51,7 @@ export default async function taskRoutes(fastify: FastifyInstance) {
     "/",
     {
       preHandler: [fastify.userAccessOnly],
-      schema: modfiyTaskSchema,
+      schema: modifyTaskSchema,
     },
     modifyTaskController,
   );
@@ -59,6 +63,24 @@ export default async function taskRoutes(fastify: FastifyInstance) {
       schema: removeTaskSchema,
     },
     removeTaskController,
+  );
+
+  fastify.get(
+    "/pomoHistory",
+    {
+      preHandler: [fastify.userAccessOnly],
+      schema: getPomoHistorySchema,
+    },
+    getPomoHistoryController,
+  );
+
+  fastify.delete(
+    "/pomoHistory",
+    {
+      preHandler: [fastify.userAccessOnly],
+      schema: deletePomoRecordSchema,
+    },
+    deletePomoRecordController,
   );
 
   fastify.post(
