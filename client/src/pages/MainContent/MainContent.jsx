@@ -10,7 +10,11 @@ import { getPomodoro } from '../../api/taskApi';
 const MainContent = () => {
 	const [activeTab, setActiveTab] = useState('active');
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(localStorage.getItem('isFullscreen') === 'true');
+
+	useEffect(() => {
+		localStorage.setItem('isFullscreen', isFullscreen);
+	}, [isFullscreen]);
 
 	const [activePomodoroId, setActivePomodoroId] = useState(null);
 	const [activePomoData, setActivePomoData] = useState(null);
