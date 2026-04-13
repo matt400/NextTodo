@@ -78,9 +78,7 @@ export async function getPomodoro(taskId) {
 	}
 }
 
-export async function startPomodoro(taskId) {
-	const rawMinutes = parseInt(localStorage.getItem('pomodoroTime'), 10);
-	const minutes = Number.isFinite(rawMinutes) && rawMinutes > 0 ? rawMinutes : 25;
+export async function startPomodoro(taskId, minutes = 25) {
 	const duration = minutes * 60;
 	const id = parseInt(taskId, 10);
 

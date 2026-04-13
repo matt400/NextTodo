@@ -131,17 +131,14 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 	};
 
 	const [newPomodoroTime, setNewPomodoroTime] = useState(
-		Number(user?.settings?.pomodoroTime) || Number(localStorage.getItem('pomodoroTime')) || 25
+		Number(user?.settings?.pomodoroTime) || 25
 	);
 
 	// Sync pomodoroTime from DB when user loads
 	useEffect(() => {
 		if (!user) return;
 		const dbTime = user.settings?.pomodoroTime;
-		if (dbTime) {
-			setNewPomodoroTime(dbTime);
-			localStorage.setItem('pomodoroTime', dbTime);
-		}
+		if (dbTime) setNewPomodoroTime(dbTime);
 	}, [user?.id]);
 
 	const handleSetPomodoroTime = async () => {
@@ -155,13 +152,12 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 			return;
 		}
 
-		localStorage.setItem('pomodoroTime', value);
 		window.dispatchEvent(new CustomEvent('pomodoroUpdate', { detail: { pomodoroTime: value } }));
 
 		try {
 			await updateUserSettings({ pomodoroTime: value });
 		} catch {
-			// silently fail - localStorage already updated
+			// silently fail
 		}
 
 		handleFeedback('success', 'Pomodoro time updated successfully.', setSuccessPomodoroChange);

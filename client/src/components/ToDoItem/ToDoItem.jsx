@@ -3,6 +3,7 @@ import EditTaskModal from '../EditTaskModal/EditTaskModal';
 import { DayPicker } from 'react-day-picker';
 import PomodoroTimer from '../PomodoroTimer';
 import { startPomodoro, getPomodoro } from '../../api/taskApi';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 import { Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown } from 'lucide-react';
 import styles from './ToDoItem.module.css';
@@ -18,6 +19,7 @@ const ToDoItem = ({
 	activePomoData,
 	setActivePomoData,
 }) => {
+	const { user } = useAuth();
 	// MODALS & EXPANSIONS
 
 	const [isExpanded, setIsExpanded] = useState(false);
@@ -51,7 +53,8 @@ const ToDoItem = ({
 	const handleStartPomodoro = async (e) => {
 		e.stopPropagation();
 
-		await startPomodoro(task.id);
+		const minutes = user?.settings?.pomodoroTime || 25;
+		await startPomodoro(task.id, minutes);
 		const data = await getPomodoro(task.id);
 
 		if (data) {

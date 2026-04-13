@@ -11,8 +11,8 @@ alarmAudio.loop = true;
 
 const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePomoData, setActivePomoData }) => {
 	const { user } = useAuth();
-	const rawMinutes = Number(user?.settings?.pomodoroTime) || parseInt(localStorage.getItem('pomodoroTime'), 10);
-	const [pomodoroMinutes, setPomodoroMinutes] = useState(Number.isFinite(rawMinutes) && rawMinutes > 0 ? rawMinutes : 25);
+	const rawMinutes = Number(user?.settings?.pomodoroTime);
+	const [pomodoroMinutes, setPomodoroMinutes] = useState(rawMinutes > 0 ? rawMinutes : 25);
 
 	const showPomodoro = activePomodoroId === taskId;
 	const [seconds, setSeconds] = useState(0);
@@ -117,7 +117,7 @@ const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePo
 
 	useEffect(() => {
 		const handler = (e) => {
-			const time = e.detail?.pomodoroTime || Number(localStorage.getItem('pomodoroTime'));
+			const time = e.detail?.pomodoroTime;
 			if (time) setPomodoroMinutes(time);
 		};
 

@@ -5,24 +5,18 @@ import { updateUserSettings } from '../api/auth';
 const FeedbackContext = createContext();
 
 export const FeedbackProvider = ({ children }) => {
-	const [feedbackType, setFeedbackTypeState] = useState(
-		localStorage.getItem('feedbackType') || 'toast'
-	);
+	const [feedbackType, setFeedbackTypeState] = useState('toast');
 	const { user, loading } = useAuth();
 
 	// Sync from DB once when user data loads
 	useEffect(() => {
 		if (loading || !user) return;
 		const dbType = user.settings?.notificationType;
-		if (dbType) {
-			setFeedbackTypeState(dbType);
-			localStorage.setItem('feedbackType', dbType);
-		}
+		if (dbType) setFeedbackTypeState(dbType);
 	}, [loading, user?.id]);
 
 	const setFeedbackType = (newType) => {
 		setFeedbackTypeState(newType);
-		localStorage.setItem('feedbackType', newType);
 		if (user) {
 			updateUserSettings({ notificationType: newType }).catch(() => {});
 		}
