@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { changePassword, updateUserData, removeUser } from '../../api/auth';
+import { changePassword, updateUserData, removeUser, updateUserSettings } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Button from '../Button';
 import Field from '../Field';
@@ -130,9 +130,21 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 		}
 	};
 
-	const [newPomodoroTime, setNewPomodoroTime] = useState(Number(localStorage.getItem('pomodoroTime')) || 25);
+	const [newPomodoroTime, setNewPomodoroTime] = useState(
+		Number(user?.settings?.pomodoroTime) || Number(localStorage.getItem('pomodoroTime')) || 25
+	);
 
-	const handleSetPomodoroTime = () => {
+	// Sync pomodoroTime from DB when user loads
+	useEffect(() => {
+		if (!user) return;
+		const dbTime = user.settings?.pomodoroTime;
+		if (dbTime) {
+			setNewPomodoroTime(dbTime);
+			localStorage.setItem('pomodoroTime', dbTime);
+		}
+	}, [user?.id]);
+
+	const handleSetPomodoroTime = async () => {
 		setSuccessPomodoroChange('');
 		setPomodoroErr('');
 
@@ -144,7 +156,13 @@ const UserSettings = ({ isFullscreen, setIsFullscreen }) => {
 		}
 
 		localStorage.setItem('pomodoroTime', value);
-		window.dispatchEvent(new Event('pomodoroUpdate'));
+		window.dispatchEvent(new CustomEvent('pomodoroUpdate', { detail: { pomodoroTime: value } }));
+
+		try {
+			await updateUserSettings({ pomodoroTime: value });
+		} catch {
+			// silently fail - localStorage already updated
+		}
 
 		handleFeedback('success', 'Pomodoro time updated successfully.', setSuccessPomodoroChange);
 	};

@@ -4,12 +4,14 @@ import { Play, Pause, X, AlarmClock } from 'lucide-react';
 import styles from './PomodoroTimer.module.css';
 import { pausePomodoro, resumePomodoro, endPomodoro, getPomodoro } from '../../api/taskApi';
 import PomodoroHistory from '../PomodoroHistory/PomodoroHistory';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 const alarmAudio = new Audio('/alarm-clock-beep.wav');
 alarmAudio.loop = true;
 
 const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePomoData, setActivePomoData }) => {
-	const rawMinutes = parseInt(localStorage.getItem('pomodoroTime'), 10);
+	const { user } = useAuth();
+	const rawMinutes = Number(user?.settings?.pomodoroTime) || parseInt(localStorage.getItem('pomodoroTime'), 10);
 	const [pomodoroMinutes, setPomodoroMinutes] = useState(Number.isFinite(rawMinutes) && rawMinutes > 0 ? rawMinutes : 25);
 
 	const showPomodoro = activePomodoroId === taskId;
@@ -114,9 +116,9 @@ const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePo
 	}, [activePomodoroId, taskId]);
 
 	useEffect(() => {
-		const handler = () => {
-			const stored = Number(localStorage.getItem('pomodoroTime'));
-			if (stored) setPomodoroMinutes(stored);
+		const handler = (e) => {
+			const time = e.detail?.pomodoroTime || Number(localStorage.getItem('pomodoroTime'));
+			if (time) setPomodoroMinutes(time);
 		};
 
 		window.addEventListener('pomodoroUpdate', handler);
