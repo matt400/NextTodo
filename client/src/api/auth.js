@@ -103,13 +103,32 @@ export async function removeUser(email) {
 			'Content-Type': 'application/json',
 		},
 		credentials: 'include',
-		body: JSON.stringify({ email }), 
+		body: JSON.stringify({ email }),
 	});
 
 	const data = await res.json();
 
 	if (!res.ok) {
 		throw new Error(data?.message || 'Failed to delete account');
+	}
+
+	return data;
+}
+
+export async function updateUserSettings(settings) {
+	const res = await fetch(`${USER_URL}/me/settings`, {
+		method: 'PATCH',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		credentials: 'include',
+		body: JSON.stringify({ userSettings: settings }),
+	});
+
+	const data = await res.json();
+
+	if (!res.ok) {
+		throw new Error(data?.message || 'Settings update failed');
 	}
 
 	return data;

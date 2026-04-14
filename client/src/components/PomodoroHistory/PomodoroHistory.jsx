@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { History, CheckCircle, XCircle, Clock, Trash2 } from 'lucide-react';
 import { fetchPomoHistory, deletePomoRecord } from '../../api/taskApi';
+import { useAuth } from '../../context/AuthContext.jsx';
 import styles from './PomodoroHistory.module.css';
 
 const PANEL_WIDTH = 280;
@@ -32,6 +33,7 @@ const formatDate = (dateStr) => {
 };
 
 const PomodoroHistory = () => {
+	const { user } = useAuth();
 	const [open, setOpen] = useState(false);
 	const [history, setHistory] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -40,10 +42,7 @@ const PomodoroHistory = () => {
 	const btnRef = useRef(null);
 	const btnRectRef = useRef(null);
 
-	const pomodoroMinutes = (() => {
-		const raw = parseInt(localStorage.getItem('pomodoroTime'), 10);
-		return Number.isFinite(raw) && raw > 0 ? raw : 25;
-	})();
+	const pomodoroMinutes = Number(user?.settings?.pomodoroTime) || 25;
 
 	useEffect(() => {
 		if (!open) return;

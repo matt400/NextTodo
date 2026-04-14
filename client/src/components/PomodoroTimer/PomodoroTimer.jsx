@@ -4,16 +4,20 @@ import { Play, Pause, X, AlarmClock } from 'lucide-react';
 import styles from './PomodoroTimer.module.css';
 import { pausePomodoro, resumePomodoro, endPomodoro, getPomodoro } from '../../api/taskApi';
 import PomodoroHistory from '../PomodoroHistory/PomodoroHistory';
+import { useAuth } from '../../context/AuthContext.jsx';
+
+const alarmAudio = new Audio('/alarm-clock-beep.wav');
+alarmAudio.loop = true;
 
 const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePomoData, setActivePomoData }) => {
-	const rawMinutes = parseInt(localStorage.getItem('pomodoroTime'), 10);
-	const [pomodoroMinutes, setPomodoroMinutes] = useState(Number.isFinite(rawMinutes) && rawMinutes > 0 ? rawMinutes : 25);
+	const { user } = useAuth();
+	const rawMinutes = Number(user?.settings?.pomodoroTime);
+	const [pomodoroMinutes, setPomodoroMinutes] = useState(rawMinutes > 0 ? rawMinutes : 25);
 
 	const showPomodoro = activePomodoroId === taskId;
 	const [seconds, setSeconds] = useState(0);
 	const [isPaused, setIsPaused] = useState(false);
 	const [showAlarm, setShowAlarm] = useState(false);
-	const audioRef = useRef(null);
 	const initializedRef = useRef(false);
 
 	const formatTime = (total) => {
@@ -53,10 +57,8 @@ const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePo
 		const duration = Number(activePomoData.duration) || pomodoroMinutes * 60;
 		if (seconds >= duration) {
 			setShowAlarm(true);
-			if (audioRef.current) {
-				audioRef.current.currentTime = 0;
-				audioRef.current.play();
-			}
+			alarmAudio.currentTime = 0;
+			alarmAudio.play();
 		}
 	}, [seconds, activePomoData, showAlarm, pomodoroMinutes]);
 
@@ -114,9 +116,9 @@ const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePo
 	}, [activePomodoroId, taskId]);
 
 	useEffect(() => {
-		const handler = () => {
-			const stored = Number(localStorage.getItem('pomodoroTime'));
-			if (stored) setPomodoroMinutes(stored);
+		const handler = (e) => {
+			const time = e.detail?.pomodoroTime;
+			if (time) setPomodoroMinutes(time);
 		};
 
 		window.addEventListener('pomodoroUpdate', handler);
@@ -170,10 +172,8 @@ const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePo
 								setSeconds(0);
 								setIsPaused(false);
 
-								if (audioRef.current) {
-									audioRef.current.pause();
-									audioRef.current.currentTime = 0;
-								}
+								alarmAudio.pause();
+								alarmAudio.currentTime = 0;
 							}}>
 							OK
 						</button>
@@ -182,7 +182,6 @@ const PomodoroTimer = ({ taskId, activePomodoroId, setActivePomodoroId, activePo
 				document.body
 			)}
 
-			<audio ref={audioRef} src='/alarm-clock-beep.wav' loop />
 		</>
 	);
 };

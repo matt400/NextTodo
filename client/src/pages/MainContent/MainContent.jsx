@@ -6,11 +6,34 @@ import ActiveTasks from '../../components/ActiveTasks';
 import CompletedTasks from '../../components/CompletedTasks/CompletedTasks.jsx';
 import UserSettings from '../../components/UserSettings/UserSettings.jsx';
 import { getPomodoro } from '../../api/taskApi';
+import { useAuth } from '../../context/AuthContext.jsx';
+import { updateUserSettings } from '../../api/auth';
 
 const MainContent = () => {
 	const [activeTab, setActiveTab] = useState('active');
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreenState] = useState(localStorage.getItem('isFullscreen') === 'true');
+
+	const { user } = useAuth();
+
+	// Sync from DB once when user data loads
+	useEffect(() => {
+		if (!user) return;
+		const dbView = user.settings?.view;
+		if (dbView) {
+			const fullscreen = dbView === 'full';
+			setIsFullscreenState(fullscreen);
+			localStorage.setItem('isFullscreen', fullscreen);
+		}
+	}, [user?.id]);
+
+	const setIsFullscreen = (value) => {
+		setIsFullscreenState(value);
+		localStorage.setItem('isFullscreen', value);
+		if (user) {
+			updateUserSettings({ view: value ? 'full' : 'window' }).catch(() => {});
+		}
+	};
 
 	const [activePomodoroId, setActivePomodoroId] = useState(null);
 	const [activePomoData, setActivePomoData] = useState(null);
