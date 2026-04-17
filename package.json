@@ -1,7 +1,25 @@
 {
   "name": "next-todo",
   "private": true,
+  "bin": "server/dist/bundle.js",
+  "pkg": {
+    "assets": [
+      "client/dist/**/*",
+      "node_modules/@prisma/client/runtime/*.js",
+      "node_modules/.prisma/client/*.node",
+      "node_modules/prisma/query-engine-*",
+      "node_modules/bcrypt/build/Release/bcrypt_lib.node"
+    ],
+    "targets": [
+      "node20-win-x64",
+      "node20-linux-x64"
+    ]
+  },
   "scripts": {
+    "bundle": "npm run build:client && npm run build:server && pkg .",
+    "build:client": "cd client && npm run build",
+    "build:server": "npx esbuild server/src/server.ts --bundle --platform=node --format=cjs --target=node20 --outfile=server/dist/bundle.js --external:fsevents --external:@prisma/client --external:bcrypt --define:import.meta.url=\"'file:///snapshot/NextTodo/server/dist/bundle.js'\"",
+    "app": "concurrently \"cd client && npm run dev\" \"cd server && npm run dev\"",
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
     "setup": "node setup.js setup",
@@ -23,7 +41,10 @@
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.16",
     "@vitest/ui": "^4.0.16",
+    "@yao-pkg/pkg": "^6.15.0",
+    "concurrently": "^9.2.1",
     "dotenv-cli": "^11.0.0",
+    "esbuild": "^0.28.0",
     "eslint": "^9.39.2",
     "globals": "^17.0.0",
     "vitest": "^4.0.16"

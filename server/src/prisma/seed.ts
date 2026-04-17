@@ -1,7 +1,7 @@
 import { prisma } from "@server/lib/prisma";
 import * as bcrypt from "bcrypt";
 
-import { todoData } from "./mockTasks.ts";
+import { todoData } from "./mockTasks";
 
 async function main() {
   const user = await prisma.user.upsert({
