@@ -1,24 +1,18 @@
 {
   "name": "next-todo",
   "private": true,
-  "bin": "server/dist/bundle.js",
-  "pkg": {
-    "assets": [
-      "client/dist/**/*",
-      "node_modules/@prisma/client/runtime/*.js",
-      "node_modules/.prisma/client/*.node",
-      "node_modules/prisma/query-engine-*",
-      "node_modules/bcrypt/build/Release/bcrypt_lib.node"
-    ],
-    "targets": [
-      "node20-win-x64",
-      "node20-linux-x64"
-    ]
-  },
+  "bin": "sea/dist/bundle.js",
+  "external": [
+    "better-sqlite3"
+  ],
   "scripts": {
-    "bundle": "npm run build:client && npm run build:server && pkg .",
+    "bundle": "npm run build:client && npm run build:server && cp -R server/dist sea/. && npm run copy-native && npm run build:sea && node --experimental-sea-config sea-config.json",
+    "bundle-linux": "npm run bundle && chmod +x build.sh && ./build.sh",
+    "build:server": "npx esbuild server/src/server.ts --bundle --platform=node --format=cjs --target=node22 --outfile=server/dist/bundle.js --external:fsevents --external:bcrypt --external:better-sqlite3 --define:import.meta.url=\"'file:///NextTodo/sea/dist/bundle.js'\"",
+    "build:sea": "node sea/build.mjs",
+    "copy-native": "node sea/copy-native.js",
+    "bundle-win": "npm run bundle && powershell -ExecutionPolicy Bypass -File ./build.ps1",
     "build:client": "cd client && npm run build",
-    "build:server": "npx esbuild server/src/server.ts --bundle --platform=node --format=cjs --target=node20 --outfile=server/dist/bundle.js --external:fsevents --external:@prisma/client --external:bcrypt --define:import.meta.url=\"'file:///snapshot/NextTodo/server/dist/bundle.js'\"",
     "app": "concurrently \"cd client && npm run dev\" \"cd server && npm run dev\"",
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
@@ -47,6 +41,11 @@
     "esbuild": "^0.28.0",
     "eslint": "^9.39.2",
     "globals": "^17.0.0",
+    "nexe": "^5.0.0-beta.4",
+    "postject": "^1.0.0-alpha.6",
     "vitest": "^4.0.16"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.9.0"
   }
 }

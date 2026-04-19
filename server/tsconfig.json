@@ -35,10 +35,9 @@
     ],
     "moduleResolution": "bundler",
 
-    "baseUrl": ".",
     "paths": {
-      "@server/*": ["src/*"],
-      "@prismagl": ["src/generated/prisma/client.ts"],
+      "@server/*": ["./src/*"],
+      "@prismagl": ["./src/generated/prisma/client.ts"],
     },
     "typeRoots": ["node_modules/@types", "src/typescript"],
   },

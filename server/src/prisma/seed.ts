@@ -1,5 +1,5 @@
 import { prisma } from "@server/lib/prisma";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 
 import { todoData } from "./mockTasks";
 

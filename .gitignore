@@ -25,5 +25,6 @@ dist-ssr
 *.sw?
 undefined
 
-next-todo-linux
+next-todo*
 *.exe
+*.node
