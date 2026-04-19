@@ -1,9 +1,30 @@
 import * as esbuild from "esbuild";
 import path from "path";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const serverBundlePath = path.resolve(__dirname, "dist", "server-bundle.js");
+const serverBundleUrl = pathToFileURL(serverBundlePath).href;
+
+// Build server
+await esbuild.build({
+  entryPoints: [path.resolve(__dirname, "../server/src/server.ts")],
+  bundle: true,
+  platform: "node",
+  format: "cjs",
+  target: "node22",
+  outfile: serverBundlePath,
+  external: ["fsevents", "bcrypt", "better-sqlite3", "client-bundle"],
+  define: {
+    "import.meta.url": JSON.stringify(serverBundleUrl),
+  },
+  allowOverwrite: true,
+});
+
+console.log("✅ dist/server-bundle.js built");
+
+// Build sea-bundle
 await esbuild.build({
   entryPoints: [path.resolve(__dirname, "sea.js")],
   bundle: true,
@@ -19,7 +40,7 @@ await esbuild.build({
     {
       name: "sea-native-modules",
       setup(build) {
-        // Intercept require("bindings") niezależnie od zagnieżdżenia
+        // Intercept require("bindings")
         build.onResolve({ filter: /^bindings$/ }, () => ({
           path: "bindings-stub",
           namespace: "bindings-stub",
@@ -60,4 +81,4 @@ await esbuild.build({
   allowOverwrite: true,
 });
 
-console.log("dist/sea-bundle.js built");
+console.log("✅ dist/sea-bundle.js built");
