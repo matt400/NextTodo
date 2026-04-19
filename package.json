@@ -1,21 +1,18 @@
 {
   "name": "next-todo",
   "private": true,
-  "bin": "sea/dist/bundle.js",
-  "external": [
-    "better-sqlite3"
-  ],
   "scripts": {
-    "bundle": "npm run build:client && npm run build:server && cp -R server/dist sea/. && npm run copy-native && npm run build:sea && node --experimental-sea-config sea-config.json",
-    "bundle-linux": "npm run bundle && chmod +x build.sh && ./build.sh",
-    "build:server": "npx esbuild server/src/server.ts --bundle --platform=node --format=cjs --target=node22 --outfile=server/dist/bundle.js --external:fsevents --external:bcrypt --external:better-sqlite3 --define:import.meta.url=\"'file:///NextTodo/sea/dist/bundle.js'\"",
-    "build:sea": "node sea/build.mjs",
-    "copy-native": "node sea/copy-native.js",
-    "bundle-win": "npm run bundle && powershell -ExecutionPolicy Bypass -File ./build.ps1",
-    "build:client": "cd client && npm run build",
-    "app": "concurrently \"cd client && npm run dev\" \"cd server && npm run dev\"",
+    "dev": "concurrently \"cd client && npm run dev\" \"cd server && npm run dev\"",
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
+    "build:client": "cd client && npm run build",
+    "build:client-embed": "node sea/build-client-embed.mjs",
+    "build:server": "npx esbuild server/src/server.ts --bundle --platform=node --format=cjs --target=node22 --outfile=sea/dist/server-bundle.js --external:fsevents --external:bcrypt --external:better-sqlite3 --external:client-bundle --define:import.meta.url=\"'file:///NextTodo/sea/dist/server-bundle.js'\"",
+    "build:sea": "node sea/build.mjs",
+    "build:native": "node sea/copy-native.js",
+    "bundle": "npm run build:client && npm run build:server && npm run build:client-embed && npm run build:native && npm run build:sea && node --experimental-sea-config sea-config.json",
+    "bundle-linux": "npm run bundle && chmod +x build.sh && ./build.sh",
+    "bundle-win": "npm run bundle && powershell -ExecutionPolicy Bypass -File ./build.ps1",
     "setup": "node setup.js setup",
     "install:all": "node setup.js install",
     "clean": "node setup.js clean:all",
@@ -25,9 +22,12 @@
     "db:seed": "node setup.js prisma:seed",
     "db:migrate": "node setup.js prisma:migrate",
     "db:generate": "node setup.js prisma:generate",
-    "ctest": "cd client && vitest",
-    "ctest:ui": "cd client && vitest --ui",
-    "stest": "cd server && vitest"
+    "test:client": "cd client && vitest",
+    "test:client:ui": "cd client && vitest --ui",
+    "test:server": "cd server && vitest"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.9.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
@@ -44,8 +44,5 @@
     "nexe": "^5.0.0-beta.4",
     "postject": "^1.0.0-alpha.6",
     "vitest": "^4.0.16"
-  },
-  "dependencies": {
-    "better-sqlite3": "^12.9.0"
   }
 }

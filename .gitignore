@@ -28,3 +28,4 @@ undefined
 next-todo*
 *.exe
 *.node
+*.db
