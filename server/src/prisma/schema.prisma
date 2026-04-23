@@ -31,6 +31,7 @@ model Tasks {
   scheduled  DateTime?
   modified   DateTime  @updatedAt
   isFinished Boolean   @default(false)
+  sortOrder  Int       @default(0)
 }
 
 model Pomo {
