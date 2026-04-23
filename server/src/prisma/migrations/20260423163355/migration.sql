@@ -18,7 +18,11 @@ CREATE TABLE "Tasks" (
     "created" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "scheduled" DATETIME,
     "modified" DATETIME NOT NULL,
-    "isFinished" BOOLEAN NOT NULL DEFAULT false
+    "isFinished" BOOLEAN NOT NULL DEFAULT false,
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
+    "categoryId" INTEGER,
+    CONSTRAINT "Tasks_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Tasks_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -30,7 +34,20 @@ CREATE TABLE "Pomo" (
     "startedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "pausedAt" DATETIME,
     "elapsed" INTEGER NOT NULL DEFAULT 0,
-    "endedAt" DATETIME
+    "endedAt" DATETIME,
+    "tasksId" INTEGER,
+    CONSTRAINT "Pomo_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Pomo_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Tasks" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Category" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "userId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "color" TEXT NOT NULL,
+    "icon" TEXT NOT NULL,
+    CONSTRAINT "Category_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex

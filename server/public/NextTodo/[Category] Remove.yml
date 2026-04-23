@@ -1,0 +1,18 @@
+info:
+  name: "[Category] Remove"
+  type: http
+  seq: 25
+
+http:
+  method: DELETE
+  url: http://localhost:3000/api/category
+  body:
+    type: json
+    data: '{ "category_id": 1 }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

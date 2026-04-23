@@ -1,0 +1,18 @@
+info:
+  name: "[Pomo] End event"
+  type: http
+  seq: 18
+
+http:
+  method: POST
+  url: http://localhost:3000/api/task/endPomo
+  body:
+    type: json
+    data: '{ "task_id": 1, "elapsed": 500 }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

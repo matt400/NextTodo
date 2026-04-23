@@ -1,0 +1,18 @@
+info:
+  name: "[Task] Add new"
+  type: http
+  seq: 11
+
+http:
+  method: POST
+  url: http://localhost:3000/api/task
+  body:
+    type: json
+    data: '{ "task_name": "First task", "task_desc": "This is a long description." }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

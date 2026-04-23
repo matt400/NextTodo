@@ -1,0 +1,18 @@
+info:
+  name: "[Task] Remove"
+  type: http
+  seq: 13
+
+http:
+  method: DELETE
+  url: http://localhost:3000/api/task
+  body:
+    type: json
+    data: '{ "task_id": [1,2,3] }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

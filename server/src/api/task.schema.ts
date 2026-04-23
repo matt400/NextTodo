@@ -36,6 +36,7 @@ export const modifyTaskSchema = {
           taskName: { type: "string", minLength: 3, maxLength: 60 },
           taskDesc: { type: "string", minLength: 0, maxLength: 2000 },
           isFinished: { type: "boolean" },
+          categoryId: { type: ["number", "null"] },
         },
       },
     },

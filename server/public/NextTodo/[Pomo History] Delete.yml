@@ -1,0 +1,18 @@
+info:
+  name: "[Pomo History] Delete"
+  type: http
+  seq: 20
+
+http:
+  method: DELETE
+  url: http://localhost:3000/api/task/pomoHistory
+  body:
+    type: json
+    data: '{ "pomo_id": "83e243c7-3a58-4b79-9f95-5b3dd3dd1ba7" }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,18 @@
+info:
+  name: "[Category] Create"
+  type: http
+  seq: 23
+
+http:
+  method: POST
+  url: http://localhost:3000/api/category
+  body:
+    type: json
+    data: '{ "name": "Work", "color": "#3b82f6", "icon": "Briefcase" }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
