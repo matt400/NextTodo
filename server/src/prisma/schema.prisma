@@ -24,6 +24,7 @@ model User {
   tasks      Tasks[]
   pomos      Pomo[]
   categories Category[]
+  tags       Tag[]
 }
 
 model Tasks {
@@ -37,26 +38,12 @@ model Tasks {
   isFinished Boolean   @default(false)
   sortOrder  Int       @default(0)
 
-  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   pomos      Pomo[]
   categoryId Int?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
-  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-}
-
-model Pomo {
-  id        String    @id @default(uuid())
-  userId    String
-  taskId    Int
-  duration  Int
-  startedAt DateTime  @default(now())
-  pausedAt  DateTime?
-  elapsed   Int       @default(0)
-  endedAt   DateTime?
-  tasksId   Int?
-
-  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  task Tasks @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tags Tag[] @relation("TaskToTag")
 }
 
 model Category {
@@ -68,4 +55,29 @@ model Category {
 
   user  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks Tasks[]
+}
+
+model Tag {
+  id     Int    @id @default(autoincrement())
+  name   String
+  userId String
+
+  user  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks Tasks[] @relation("TaskToTag")
+
+  @@unique([name, userId])
+}
+
+model Pomo {
+  id        String    @id @default(uuid())
+  userId    String
+  taskId    Int
+  duration  Int
+  startedAt DateTime  @default(now())
+  pausedAt  DateTime?
+  elapsed   Int       @default(0)
+  endedAt   DateTime?
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task Tasks @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }

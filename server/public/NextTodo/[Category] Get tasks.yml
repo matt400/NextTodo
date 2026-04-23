@@ -5,10 +5,13 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/api/category/tasks?category_id=1
+  url: http://localhost:3000/api/category/tasks?category_id=1&tag_id=5
   params:
     - name: category_id
       value: "1"
+      type: query
+    - name: tag_id
+      value: "5"
       type: query
   body:
     type: json

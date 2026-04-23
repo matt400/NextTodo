@@ -1,14 +1,39 @@
 const ALLOWED_COLORS = [
-  "#ef4444", "#f97316", "#eab308", "#22c55e",
-  "#14b8a6", "#3b82f6", "#8b5cf6", "#ec4899",
-  "#64748b", "#84cc16", "#06b6d4", "#f43f5e",
+  "#ef4444",
+  "#f97316",
+  "#eab308",
+  "#22c55e",
+  "#14b8a6",
+  "#3b82f6",
+  "#8b5cf6",
+  "#ec4899",
+  "#64748b",
+  "#84cc16",
+  "#06b6d4",
+  "#f43f5e",
 ];
 
 const ALLOWED_ICONS = [
-  "Briefcase", "Home", "Book", "Heart", "Star",
-  "ShoppingCart", "Dumbbell", "Code", "Music", "Camera",
-  "Plane", "Car", "Coffee", "Gamepad2", "Palette",
-  "Globe", "Leaf", "Zap", "Target", "Users",
+  "Briefcase",
+  "Home",
+  "Book",
+  "Heart",
+  "Star",
+  "ShoppingCart",
+  "Dumbbell",
+  "Code",
+  "Music",
+  "Camera",
+  "Plane",
+  "Car",
+  "Coffee",
+  "Gamepad2",
+  "Palette",
+  "Globe",
+  "Leaf",
+  "Zap",
+  "Target",
+  "Users",
 ];
 
 export const getCategorySchema = {
@@ -74,6 +99,7 @@ export const getCategoryTasksSchema = {
     additionalProperties: false,
     properties: {
       category_id: { type: "number" },
+      tag_id: { type: "number" },
     },
   },
 };

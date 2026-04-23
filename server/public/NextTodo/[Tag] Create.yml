@@ -1,0 +1,12 @@
+info:
+  name: "[Tag] Create"
+  type: http
+  seq: 27
+
+http:
+  method: POST
+  url: http://localhost:3000/api/tags
+  body:
+    type: json
+    data: '{ "name": "Work" }'
+  auth: inherit

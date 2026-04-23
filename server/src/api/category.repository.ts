@@ -14,12 +14,17 @@ const categoryRepository = (prisma: PrismaClient) => ({
       include: { _count: { select: { tasks: true } } },
     }),
 
-  createCategory: (
-    userId: string,
-    name: string,
-    color: string,
-    icon: string,
-  ) =>
+  getTasksByCategory: (categoryId: number, userId: string) =>
+    prisma.tasks.findMany({
+      where: { categoryId, userId },
+      include: {
+        tags: true,
+        category: true,
+      },
+      orderBy: { sortOrder: "asc" },
+    }),
+
+  createCategory: (userId: string, name: string, color: string, icon: string) =>
     prisma.category.create({
       data: { userId, name, color, icon },
     }),
@@ -43,12 +48,6 @@ const categoryRepository = (prisma: PrismaClient) => ({
     prisma.category.findUnique({
       where: { id: categoryId, userId },
       select: { id: true },
-    }),
-
-  getTasksByCategory: (categoryId: number, userId: string) =>
-    prisma.tasks.findMany({
-      where: { categoryId, userId },
-      orderBy: { sortOrder: "asc" },
     }),
 });
 
