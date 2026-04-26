@@ -1,0 +1,24 @@
+info:
+  name: "[User] Settings"
+  type: http
+  seq: 9
+
+http:
+  method: PATCH
+  url: http://localhost:3000/api/user/me/settings
+  body:
+    type: json
+    data: |-
+      {
+        "userSettings": {
+          "pomodoroTime": "13",
+          "theme": "light"
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

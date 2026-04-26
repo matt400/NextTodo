@@ -1,12 +1,12 @@
 {
   "$schema": "https://www.schemastore.org/tsconfig",
-  "display": "Node LTS (24)",
-  "_version": "24.0.0",
+  "display": "Node LTS (22)",
+  "_version": "22.0.0",
   "compilerOptions": {
     /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "es2024",
+    "target": "es2022",
     "allowJs": true,
     "resolveJsonModule": true,
     "moduleDetection": "force",

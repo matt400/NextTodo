@@ -1,0 +1,25 @@
+info:
+  name: "[Category] Get one"
+  type: http
+  seq: 22
+
+http:
+  method: GET
+  url: http://localhost:3000/api/category?single=true&category_id=1
+  params:
+    - name: single
+      value: "true"
+      type: query
+    - name: category_id
+      value: "1"
+      type: query
+  body:
+    type: json
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

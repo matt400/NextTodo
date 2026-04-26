@@ -1,0 +1,25 @@
+info:
+  name: "[Task] Get one or all"
+  type: http
+  seq: 10
+
+http:
+  method: GET
+  url: http://localhost:3000/api/task?single=true&task_id=1
+  params:
+    - name: single
+      value: "true"
+      type: query
+    - name: task_id
+      value: "1"
+      type: query
+  body:
+    type: json
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
