@@ -1,0 +1,18 @@
+info:
+  name: "[Task] Modify data"
+  type: http
+  seq: 12
+
+http:
+  method: PATCH
+  url: http://localhost:3000/api/task
+  body:
+    type: json
+    data: '{ "task_id": "1", "data": { "isFinished": "true", "taskName": "Task 2" } }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

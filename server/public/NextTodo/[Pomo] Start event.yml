@@ -1,0 +1,18 @@
+info:
+  name: "[Pomo] Start event"
+  type: http
+  seq: 15
+
+http:
+  method: POST
+  url: http://localhost:3000/api/task/startPomo
+  body:
+    type: json
+    data: '{ "task_id": 1, "duration": 3600 }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

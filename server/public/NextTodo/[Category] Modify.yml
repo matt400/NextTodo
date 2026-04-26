@@ -1,0 +1,18 @@
+info:
+  name: "[Category] Modify"
+  type: http
+  seq: 24
+
+http:
+  method: PATCH
+  url: http://localhost:3000/api/category
+  body:
+    type: json
+    data: '{ "category_id": 1, "data": { "name": "Personal", "color": "#22c55e", "icon": "Home" } }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

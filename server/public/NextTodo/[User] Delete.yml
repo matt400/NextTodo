@@ -1,0 +1,18 @@
+info:
+  name: "[User] Delete"
+  type: http
+  seq: 8
+
+http:
+  method: DELETE
+  url: http://localhost:3000/api/user/me
+  body:
+    type: json
+    data: '{ "email": "admin@example.io" }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

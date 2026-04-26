@@ -20,6 +20,11 @@ model User {
   isActive  Boolean  @default(true)
   lastLogin DateTime @default(now())
   settings  Json     @default(dbgenerated("'{}'"))
+
+  tasks      Tasks[]
+  pomos      Pomo[]
+  categories Category[]
+  tags       Tag[]
 }
 
 model Tasks {
@@ -31,6 +36,36 @@ model Tasks {
   scheduled  DateTime?
   modified   DateTime  @updatedAt
   isFinished Boolean   @default(false)
+  sortOrder  Int       @default(0)
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pomos      Pomo[]
+  categoryId Int?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  tags Tag[] @relation("TaskToTag")
+}
+
+model Category {
+  id     Int    @id @default(autoincrement())
+  userId String
+  name   String
+  color  String
+  icon   String
+
+  user  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks Tasks[]
+}
+
+model Tag {
+  id     Int    @id @default(autoincrement())
+  name   String
+  userId String
+
+  user  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks Tasks[] @relation("TaskToTag")
+
+  @@unique([name, userId])
 }
 
 model Pomo {
@@ -42,4 +77,7 @@ model Pomo {
   pausedAt  DateTime?
   elapsed   Int       @default(0)
   endedAt   DateTime?
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task Tasks @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
