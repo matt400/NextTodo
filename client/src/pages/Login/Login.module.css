@@ -22,6 +22,56 @@
 	box-shadow: none;
 }
 
+.loggingInOverlay {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	background: var(--bg-page);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+}
+
+.loggingInSpinner {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	position: relative;
+	animation: spin 1s linear infinite;
+}
+
+.loggingInSpinner::before {
+	content: '';
+	box-sizing: border-box;
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	border: 6px solid var(--color-primary);
+	animation: spinnerClip 2s linear infinite;
+}
+
+.loggingInText {
+	margin: 0;
+	font-size: 25px;
+	font-weight: 500;
+	line-height: 160%;
+	color: var(--text-secondary);
+}
+
+@keyframes spin {
+	100% { transform: rotate(360deg); }
+}
+
+@keyframes spinnerClip {
+	0%   { clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0); }
+	25%  { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0); }
+	50%  { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%); }
+	75%  { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%); }
+	100% { clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0); }
+}
+
 .successInfo {
 	color: var(--color-green);
 	text-align: center;

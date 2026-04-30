@@ -23,6 +23,7 @@ const Login = () => {
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
   const { setUser } = useAuth();
+  const [loggingIn, setLoggingIn] = useState(false);
   const [formMessage, setFormMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const { handleFeedback } = useFeedbackHandler();
@@ -56,7 +57,8 @@ const Login = () => {
       const me = await getMe();
       setUser(me);
 
-      navigate('/maincontent');
+      setLoggingIn(true);
+      setTimeout(() => navigate('/maincontent'), 1000);
     } catch {
       setErrors({
         password: 'Wrong email or password',
@@ -98,6 +100,12 @@ const Login = () => {
 
   return (
     <div className={styles.authLayout}>
+      {loggingIn && (
+        <div className={styles.loggingInOverlay}>
+          <span className={styles.loggingInSpinner} />
+          <p className={styles.loggingInText}>Logging in...</p>
+        </div>
+      )}
       <div className={styles.login}>
         <Heading title='Welcome Back' text='Sign in to manage your tasks' />
 

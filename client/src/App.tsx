@@ -9,10 +9,12 @@ import NotFoundPage from './pages/NotFoundPage';
 import { FeedbackProvider } from './context/FeedbackContext';
 import Toasts from './components/Toasts';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import SplashScreen from './components/SplashScreen/SplashScreen';
 
 const App = () => {
   return (
     <ErrorBoundary>
+      <SplashScreen />
       <ThemeProvider>
         <FeedbackProvider>
           <Toasts />
