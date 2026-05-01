@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../api/auth';
 import { ListTodo, CheckCircle2, X, Settings as SettingsIcon, LogOut, Plus } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 import type { Category } from '../../types';
 import CategoryItem from './CategoryItem';
 import styles from './Sidebar.module.css';
@@ -19,12 +18,6 @@ interface SidebarProps {
 	onCategoryDelete: (id: number) => void;
 }
 
-interface Tab {
-	id: string;
-	label: string;
-	icon: LucideIcon;
-}
-
 const Sidebar = ({
 	activeTab,
 	onTabChange,
@@ -37,12 +30,6 @@ const Sidebar = ({
 	onCategoryUpdate,
 	onCategoryDelete,
 }: SidebarProps) => {
-	const tabs: Tab[] = [
-		{ id: 'active', label: 'Active Tasks', icon: ListTodo },
-		{ id: 'completed', label: 'Completed Tasks', icon: CheckCircle2 },
-		{ id: 'settings', label: 'Settings', icon: SettingsIcon },
-	];
-
 	const navigate = useNavigate();
 
 	const handleLogout = async () => {
@@ -63,23 +50,16 @@ const Sidebar = ({
 				</button>
 
 				<nav className={styles.nav}>
-					{tabs.map((tab) => {
-						const Icon = tab.icon;
-
-						return (
-							<button
-								key={tab.id}
-								className={`${styles.sidebarItem} ${activeTab === tab.id && selectedCategoryId === null ? styles.active : ''}`}
-								onClick={() => {
-									onTabChange(tab.id);
-									onCategorySelect(null);
-									onClose();
-								}}>
-								<Icon size={18} strokeWidth={2} />
-								{tab.label}
-							</button>
-						);
-					})}
+					<button
+						className={`${styles.sidebarItem} ${activeTab === 'active' && selectedCategoryId === null ? styles.active : ''}`}
+						onClick={() => {
+							onTabChange('active');
+							onCategorySelect(null);
+							onClose();
+						}}>
+						<ListTodo size={18} strokeWidth={2} />
+						Active Tasks
+					</button>
 				</nav>
 
 				<div className={styles.categoriesSection}>
@@ -123,10 +103,36 @@ const Sidebar = ({
 					))}
 				</div>
 
-				<button className={styles.logout} onClick={handleLogout}>
-					<LogOut size={18} strokeWidth={2} />
-					Log Out
+				<hr className={styles.divider} />
+
+				<button
+					className={`${styles.sidebarItem} ${activeTab === 'completed' && selectedCategoryId === null ? styles.active : ''}`}
+					onClick={() => {
+						onTabChange('completed');
+						onCategorySelect(null);
+						onClose();
+					}}>
+					<CheckCircle2 size={18} strokeWidth={2} />
+					Completed Tasks
 				</button>
+
+				<div className={styles.bottomActions}>
+					<button
+						className={`${styles.sidebarItem} ${activeTab === 'settings' && selectedCategoryId === null ? styles.active : ''}`}
+						onClick={() => {
+							onTabChange('settings');
+							onCategorySelect(null);
+							onClose();
+						}}>
+						<SettingsIcon size={18} strokeWidth={2} />
+						Settings
+					</button>
+
+					<button className={styles.logout} onClick={handleLogout}>
+						<LogOut size={18} strokeWidth={2} />
+						Log Out
+					</button>
+				</div>
 			</aside>
 		</>
 	);
