@@ -96,13 +96,14 @@
 /* Color picker */
 .colorGrid {
 	display: flex;
+	justify-content: center;
 	flex-wrap: wrap;
 	gap: 8px;
 }
 
 .colorOption {
-	width: 30px;
-	height: 30px;
+	width: 23px;
+	height: 23px;
 	border-radius: 50%;
 	border: 2px solid transparent;
 	cursor: pointer;

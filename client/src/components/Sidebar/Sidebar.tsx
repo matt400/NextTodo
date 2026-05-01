@@ -51,7 +51,7 @@ const Sidebar = ({
 
 				<nav className={styles.nav}>
 					<button
-						className={`${styles.sidebarItem} ${activeTab === 'active' && selectedCategoryId === null ? styles.active : ''}`}
+						className={`${styles.sidebarItem} ${activeTab === 'active' ? styles.active : ''}`}
 						onClick={() => {
 							onTabChange('active');
 							onCategorySelect(null);

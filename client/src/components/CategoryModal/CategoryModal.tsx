@@ -102,7 +102,7 @@ const CategoryModal = ({ category, onSave, onClose }: CategoryModalProps) => {
 
   const validate = (value: string): string => {
     if (!value.trim()) return 'Name is required';
-    if (value.length > 40) return 'Name must be 40 characters or less';
+    if (value.length > 15) return 'Name must be 15 characters or less';
     return '';
   };
 
@@ -120,7 +120,7 @@ const CategoryModal = ({ category, onSave, onClose }: CategoryModalProps) => {
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
-          <h3 className={styles.title}>{category ? 'Edit Category' : 'New Category'}</h3>
+          <h3 className={styles.title}>{category ? 'Edit Category' : 'Add New Category'}</h3>
           <button onClick={onClose} className={styles.closeBtn}>
             <X size={20} />
           </button>
@@ -140,7 +140,7 @@ const CategoryModal = ({ category, onSave, onClose }: CategoryModalProps) => {
               className={`${styles.input} ${nameError ? styles.inputError : ''}`}
               placeholder='e.g. Work, Study, Personal...'
               autoFocus
-              maxLength={40}
+              maxLength={15}
             />
             {nameError && <p className={styles.inputErrorMsg}>{nameError}</p>}
           </div>
