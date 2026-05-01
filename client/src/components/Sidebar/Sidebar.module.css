@@ -10,7 +10,144 @@
 	display: flex;
 	flex-direction: column;
 	gap: 14px;
+}
+
+/* ── Categories section ───────────────────────── */
+.categoriesSection {
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
 	flex: 1;
+}
+
+.categoriesHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 8px;
+	margin-bottom: 4px;
+}
+
+.categoriesLabel {
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--text-muted);
+	font-weight: 600;
+}
+
+.addCategoryBtn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border: none;
+	background: transparent;
+	color: var(--text-muted);
+	border-radius: 6px;
+	cursor: pointer;
+	transition: var(--transition);
+}
+
+.addCategoryBtn:hover {
+	background: var(--sidebar-item-hover);
+	color: var(--text-primary);
+}
+
+.categoryItem {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 7px 8px;
+	border-radius: 12px;
+	border: none;
+	cursor: pointer;
+	width: 100%;
+	background: transparent;
+	color: var(--sidebar-item-text);
+	font-size: 14px;
+	text-align: left;
+	transition: background var(--transition), color var(--transition);
+	position: relative;
+}
+
+.categoryItem:hover {
+	background: var(--sidebar-item-hover);
+}
+
+.categoryActive {
+	background: var(--color-primary) !important;
+	color: var(--sidebar-item-active-text, white);
+}
+
+.categoryIcon {
+	width: 24px;
+	height: 24px;
+	border-radius: 7px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	color: white;
+}
+
+.categoryAllDot {
+	width: 24px;
+	height: 24px;
+	border-radius: 7px;
+	background: var(--sidebar-item-hover);
+	flex-shrink: 0;
+}
+
+.categoryActive .categoryAllDot {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+.categoryName {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.categoryActions {
+	display: none;
+	align-items: center;
+	gap: 2px;
+	margin-left: auto;
+	flex-shrink: 0;
+}
+
+.categoryItem:hover .categoryActions,
+.categoryActive .categoryActions {
+	display: flex;
+}
+
+.categoryActionBtn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border: none;
+	background: transparent;
+	color: inherit;
+	opacity: 0.7;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: var(--transition);
+}
+
+.categoryActionBtn:hover {
+	opacity: 1;
+	background: rgba(0, 0, 0, 0.1);
+}
+
+.categoryDeleteBtn:hover {
+	color: var(--color-red, #ef4444);
+	background: rgba(239, 68, 68, 0.12);
 }
 
 .sidebarItem {

@@ -106,6 +106,7 @@ const CompletedTasks = () => {
               setActivePomodoroId={() => {}}
               activePomoData={null}
               setActivePomoData={() => {}}
+              categories={[]}
             />
           ))
         )}

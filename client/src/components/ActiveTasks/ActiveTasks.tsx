@@ -5,7 +5,8 @@ import {
   editTask as apiEditTask,
   deleteTask as apiDeleteTask,
 } from '../../api/taskApi';
-import type { Task, PomoData } from '../../types';
+import { fetchTasksByCategory } from '../../api/categoryApi';
+import type { Task, PomoData, Category } from '../../types';
 
 import ToDoItem from '../ToDoItem';
 import CreateTaskButton from '../CreateTaskButton';
@@ -22,6 +23,8 @@ interface ActiveTasksProps {
   setActivePomodoroId: (id: number | null) => void;
   activePomoData: PomoData | null;
   setActivePomoData: (data: PomoData | null) => void;
+  categories: Category[];
+  selectedCategoryId: number | null;
 }
 
 const ActiveTasks = ({
@@ -29,6 +32,8 @@ const ActiveTasks = ({
   setActivePomodoroId,
   activePomoData,
   setActivePomoData,
+  categories,
+  selectedCategoryId,
 }: ActiveTasksProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +44,10 @@ const ActiveTasks = ({
   const loadTasks = async () => {
     setLoading(true);
     try {
-      const data = await fetchTasks();
+      const data =
+        selectedCategoryId !== null
+          ? await fetchTasksByCategory(selectedCategoryId)
+          : await fetchTasks();
       setTasks(data);
     } finally {
       setLoading(false);
@@ -47,19 +55,23 @@ const ActiveTasks = ({
   };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const data = await fetchTasks();
-        setTasks(data);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+    loadTasks();
+  }, [selectedCategoryId]);
 
-  const addTask = async ({ title, description }: { title: string; description: string }) => {
+  const addTask = async ({
+    title,
+    description,
+    categoryId,
+  }: {
+    title: string;
+    description: string;
+    categoryId: number | null;
+  }) => {
     try {
-      await apiAddTask(title, description);
+      const created = await apiAddTask(title, description);
+      if (categoryId !== null && created?.id) {
+        await apiEditTask(created.id, { categoryId });
+      }
     } finally {
       await loadTasks();
     }
@@ -101,13 +113,18 @@ const ActiveTasks = ({
     }
   };
 
+  const activeCategory = categories.find((c) => c.id === selectedCategoryId);
+  const headerLabel = activeCategory
+    ? `${activeCategory.name} (${activeTasks.length})`
+    : `Active tasks (${activeTasks.length})`;
+
   return (
     <div className={styles.container}>
       {loading && <Loader />}
 
       {activeTasks.length > 0 && (
         <div className={styles.activeHeader}>
-          <h2 className={styles.activeTasksCount}>Active tasks ({activeTasks.length})</h2>
+          <h2 className={styles.activeTasksCount}>{headerLabel}</h2>
           <DeleteAllButton onClick={() => setShowDeleteModal(true)} />
         </div>
       )}
@@ -133,6 +150,7 @@ const ActiveTasks = ({
               setActivePomodoroId={setActivePomodoroId}
               activePomoData={activePomoData}
               setActivePomoData={setActivePomoData}
+              categories={categories}
             />
           ))
         )}
@@ -144,7 +162,14 @@ const ActiveTasks = ({
         </CreateTaskButton>
       </div>
 
-      {showCreateModal && <AddTaskModal onAdd={addTask} onClose={() => setShowCreateModal(false)} />}
+      {showCreateModal && (
+        <AddTaskModal
+          onAdd={addTask}
+          onClose={() => setShowCreateModal(false)}
+          categories={categories}
+          defaultCategoryId={selectedCategoryId}
+        />
+      )}
 
       {showDeleteModal && (
         <DeleteAllModal

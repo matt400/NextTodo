@@ -4,7 +4,7 @@ import { DayPicker } from 'react-day-picker';
 import PomodoroTimer from '../PomodoroTimer';
 import { startPomodoro, getPomodoro } from '../../api/taskApi';
 import { useAuth } from '../../context/AuthContext';
-import type { Task, PomoData } from '../../types';
+import type { Task, PomoData, Category } from '../../types';
 
 import { Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown } from 'lucide-react';
 import styles from './ToDoItem.module.css';
@@ -19,6 +19,7 @@ interface ToDoItemProps {
   setActivePomodoroId: (id: number | null) => void;
   activePomoData: PomoData | null;
   setActivePomoData: (data: PomoData | null) => void;
+  categories: Category[];
 }
 
 const ToDoItem = ({
@@ -30,6 +31,7 @@ const ToDoItem = ({
   setActivePomodoroId,
   activePomoData,
   setActivePomoData,
+  categories,
 }: ToDoItemProps) => {
   const { user } = useAuth();
 
@@ -197,6 +199,7 @@ const ToDoItem = ({
           task={task}
           onUpdate={(id, updates) => onEdit(id, updates)}
           onClose={() => setShowEditModal(false)}
+          categories={categories}
         />
       )}
 
