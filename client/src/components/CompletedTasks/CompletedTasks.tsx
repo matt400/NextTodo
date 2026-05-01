@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchTasks, editTask as apiEditTask, deleteTask as apiDeleteTask } from '../../api/taskApi';
-import type { Task } from '../../types';
+import type { Task, Category } from '../../types';
 
 import ToDoItem from '../ToDoItem';
 import DeleteAllButton from '../DeleteAllButton';
@@ -10,7 +10,11 @@ import Loader from '../Loader';
 import { Check } from 'lucide-react';
 import styles from './CompletedTasks.module.css';
 
-const CompletedTasks = () => {
+interface CompletedTasksProps {
+  categories: Category[];
+}
+
+const CompletedTasks = ({ categories }: CompletedTasksProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -106,7 +110,7 @@ const CompletedTasks = () => {
               setActivePomodoroId={() => {}}
               activePomoData={null}
               setActivePomoData={() => {}}
-              categories={[]}
+              categories={categories}
             />
           ))
         )}

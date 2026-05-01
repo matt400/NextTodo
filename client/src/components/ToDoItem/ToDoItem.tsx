@@ -6,9 +6,22 @@ import { startPomodoro, getPomodoro } from '../../api/taskApi';
 import { useAuth } from '../../context/AuthContext';
 import type { Task, PomoData, Category } from '../../types';
 
-import { Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown } from 'lucide-react';
+import {
+  Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown,
+  Briefcase, Home, Book, Heart, Star, ShoppingCart, Dumbbell, Code,
+  Music, Camera, Plane, Car, Coffee, Gamepad2, Palette, Globe, Leaf,
+  Zap, Target, Users,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import type { CategoryIcon } from '../../types';
 import styles from './ToDoItem.module.css';
 import 'react-day-picker/dist/style.css';
+
+const ICON_MAP: Record<CategoryIcon, LucideIcon> = {
+  Briefcase, Home, Book, Heart, Star, ShoppingCart, Dumbbell, Code,
+  Music, Camera, Plane, Car, Coffee, Gamepad2, Palette, Globe, Leaf,
+  Zap, Target, Users,
+};
 
 interface ToDoItemProps {
   task: Task;
@@ -42,6 +55,7 @@ const ToDoItem = ({
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const effectiveDueDate = dueDate ?? (task.scheduled ? new Date(task.scheduled) : null);
+  const resolvedCategory = task.category ?? categories.find((c) => c.id === task.categoryId) ?? null;
 
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
@@ -94,8 +108,20 @@ const ToDoItem = ({
             {task.done && <span className={styles.checkmark}>✓</span>}
           </div>
 
+          {resolvedCategory && (() => {
+            const Icon = ICON_MAP[resolvedCategory.icon as CategoryIcon] ?? Briefcase;
+            return (
+              <span
+                className={styles.categoryChip}
+                style={{ backgroundColor: resolvedCategory.color }}
+                title={resolvedCategory.name}>
+                <Icon size={13} strokeWidth={2} color='white' />
+              </span>
+            );
+          })()}
+
           <p className={`${styles['todoText']} ${task.done ? styles.done : ''}`}>
-            {task.title}
+            <span className={styles.titleText}>{task.title}</span>
 
             {task.description && (
               <ChevronDown

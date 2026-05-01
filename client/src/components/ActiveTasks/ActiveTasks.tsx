@@ -134,8 +134,17 @@ const ActiveTasks = ({
           <div className={styles.emptyState}>
             <div className={styles.emptyContainer}>
               <Search size={68} />
-              <h3>No active tasks</h3>
-              <p>Create your first task to get started</p>
+              {selectedCategoryId !== null ? (
+                <>
+                  <h3>No tasks in this category</h3>
+                  <p>Add this category to an existing task or create a new one</p>
+                </>
+              ) : (
+                <>
+                  <h3>No active tasks</h3>
+                  <p>Create your first task to get started</p>
+                </>
+              )}
             </div>
           </div>
         ) : (

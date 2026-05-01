@@ -108,7 +108,7 @@ const MainContent = () => {
           />
         );
       case 'completed':
-        return <CompletedTasks />;
+        return <CompletedTasks categories={categories} />;
       case 'settings':
         return <UserSettings isFullscreen={isFullscreen} setIsFullscreen={setIsFullscreen} />;
       default:

@@ -62,20 +62,20 @@ const Sidebar = ({
 					</button>
 				</nav>
 
-				<div className={styles.categoriesSection}>
-					<div className={styles.categoriesHeader}>
-						<span className={styles.categoriesLabel}>Categories</span>
-						<button
-							className={styles.addCategoryBtn}
-							onClick={() => {
-                onClose();
-								onCategoryCreate();
-							}}
-							title='New category'>
-							<Plus size={15} />
-						</button>
-					</div>
+				<div className={styles.categoriesHeader}>
+					<span className={styles.categoriesLabel}>Categories</span>
+					<button
+						className={styles.addCategoryBtn}
+						onClick={() => {
+							onClose();
+							onCategoryCreate();
+						}}
+						title='New category'>
+						<Plus size={15} />
+					</button>
+				</div>
 
+				<div className={styles.categoriesSection}>
 					<button
 						className={`${styles.categoryItem} ${selectedCategoryId === null && activeTab === 'active' ? styles.categoryActive : ''}`}
 						onClick={() => {
@@ -84,7 +84,7 @@ const Sidebar = ({
 							onClose();
 						}}>
 						<span className={styles.categoryAllDot} />
-						<span className={styles.categoryName}>All tasks</span>
+						<span className={styles.categoryName}>All Tasks</span>
 					</button>
 
 					{categories.map((cat) => (

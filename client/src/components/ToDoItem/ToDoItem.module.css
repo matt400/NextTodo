@@ -70,6 +70,13 @@
 	transform: scale(1.1);
 }
 
+.todoCheckbox:not(.checked):hover::after {
+	content: '✓';
+	font-size: 14px;
+	color: white;
+	line-height: 1;
+}
+
 .todoCheckbox.checked {
 	background: var(--color-green);
 	border-color: var(--color-green);
@@ -85,20 +92,38 @@
 	color: var(--color-text-primary);
 }
 
+.categoryChip {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	min-width: 24px;
+	border-radius: 25%;
+	flex-shrink: 0;
+}
+
+
 .todoText {
 	display: flex;
 	align-items: center;
 	gap: 6px;
 
-	word-break: break-word;
-	overflow-wrap: anywhere;
 	font-size: 16px;
 	font-weight: 600;
 
 	min-width: 0;
-	max-width: 100%;
+	flex: 1;
+	overflow: hidden;
 
 	color: var(--color-dark-1);
+}
+
+.titleText {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	min-width: 0;
 }
 
 

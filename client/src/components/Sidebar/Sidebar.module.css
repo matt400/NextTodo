@@ -13,21 +13,23 @@
 }
 
 /* ── Categories section ───────────────────────── */
-.categoriesSection {
-	margin-top: 20px;
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	overflow-y: auto;
-	min-height: 0;
-}
-
 .categoriesHeader {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	padding: 0 8px;
+	margin-top: 20px;
 	margin-bottom: 4px;
+	flex-shrink: 0;
+}
+
+.categoriesSection {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	overflow-y: auto;
+	min-height: 0;
+	padding-right: 4px;
 }
 
 .categoriesLabel {
