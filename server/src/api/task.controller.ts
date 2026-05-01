@@ -54,9 +54,9 @@ export async function addTaskController(
   const { task_name, task_desc } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  await addTask(request.server.prisma, userData.id, task_name, task_desc);
+  const task = await addTask(request.server.prisma, userData.id, task_name, task_desc);
 
-  return reply.ok("NEW_TASK_ADDED");
+  return reply.code(201).send({ id: task?.id });
 }
 
 export async function modifyTaskController(
