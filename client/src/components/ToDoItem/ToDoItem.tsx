@@ -59,7 +59,17 @@ const ToDoItem = ({
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const effectiveDueDate = dueDate ?? (task.scheduled ? new Date(task.scheduled) : null);
-  const resolvedCategory = task.category ?? categories.find((c) => c.id === task.categoryId) ?? null;
+  const resolvedCategory = categories.find((c) => c.id === task.categoryId) ?? task.category ?? null;
+
+  const categoryGradient = resolvedCategory
+    ? (() => {
+        const hex = resolvedCategory.color.replace('#', '');
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        return `linear-gradient(to left, rgba(${r},${g},${b},0.3) 0%, transparent 65%)`;
+      })()
+    : undefined;
 
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
@@ -95,13 +105,22 @@ const ToDoItem = ({
     <>
       <div
         ref={setNodeRef}
-        style={dragStyle}
-        className={`${styles['todoItem']} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''} ${isDragging ? styles.dragging : ''}`}
+        style={{ ...dragStyle, backgroundImage: categoryGradient }}
+        className={`${styles['todoItem']} ${resolvedCategory ? styles.hasCategory : ''} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''} ${isDragging ? styles.dragging : ''}`}
         {...attributes}
         onClick={() => {
           if (!task.description) return;
           setIsExpanded((prev) => !prev);
         }}>
+        {resolvedCategory && (() => {
+          const Icon = ICON_MAP[resolvedCategory.icon as CategoryIcon] ?? Briefcase;
+          return (
+            <span className={styles.categoryBgIcon} style={{ color: resolvedCategory.color }} aria-hidden>
+              <Icon size={35} strokeWidth={1.5} />
+            </span>
+          );
+        })()}
+
         <div className={styles['todoMainRow']}>
           <button className={styles.dragHandle} {...listeners} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
             <GripVertical size={16} />
@@ -118,17 +137,6 @@ const ToDoItem = ({
             {task.done && <span className={styles.checkmark}>✓</span>}
           </div>
 
-          {resolvedCategory && (() => {
-            const Icon = ICON_MAP[resolvedCategory.icon as CategoryIcon] ?? Briefcase;
-            return (
-              <span
-                className={styles.categoryChip}
-                style={{ backgroundColor: resolvedCategory.color }}
-                title={resolvedCategory.name}>
-                <Icon size={13} strokeWidth={2} color='white' />
-              </span>
-            );
-          })()}
 
           <p className={`${styles['todoText']} ${task.done ? styles.done : ''}`}>
             <span className={styles.titleText}>{task.title}</span>
@@ -202,25 +210,36 @@ const ToDoItem = ({
             </button>
           </div>
 
-          {!task.done ? (
-            <button
-              className={styles.mobilePlus}
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowMobileActions(true);
-              }}>
-              <CirclePlus size={20} />
-            </button>
-          ) : (
-            <button
-              className={styles.mobilePlus}
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(task.id);
-              }}>
-              <Trash2 size={20} />
-            </button>
-          )}
+          <div className={styles.mobileRight}>
+            {resolvedCategory && (() => {
+              const Icon = ICON_MAP[resolvedCategory.icon as CategoryIcon] ?? Briefcase;
+              return (
+                <span className={styles.categoryMobileIcon} aria-hidden>
+                  <Icon size={20} strokeWidth={1.5} color={resolvedCategory.color} />
+                </span>
+              );
+            })()}
+
+            {!task.done ? (
+              <button
+                className={styles.mobilePlus}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMobileActions(true);
+                }}>
+                <CirclePlus size={20} />
+              </button>
+            ) : (
+              <button
+                className={styles.mobilePlus}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(task.id);
+                }}>
+                <Trash2 size={20} />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className={`${styles['descriptionWrapper']} ${isExpanded ? styles.open : ''}`}>
