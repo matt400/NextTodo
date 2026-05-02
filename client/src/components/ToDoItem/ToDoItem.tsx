@@ -5,8 +5,7 @@ import PomodoroTimer from '../PomodoroTimer';
 import { startPomodoro, getPomodoro } from '../../api/taskApi';
 import { useAuth } from '../../context/AuthContext';
 import type { Task, PomoData, Category } from '../../types';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { useSortable } from '@dnd-kit/react/sortable';
 
 import {
   Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown,
@@ -27,6 +26,8 @@ const ICON_MAP: Record<CategoryIcon, LucideIcon> = {
 
 interface ToDoItemProps {
   task: Task;
+  index: number;
+  draggable?: boolean;
   onToggle: (id: number) => void;
   onDelete: (id: number) => void;
   onEdit: (id: number, updates: Record<string, unknown>) => void;
@@ -39,6 +40,8 @@ interface ToDoItemProps {
 
 const ToDoItem = ({
   task,
+  index,
+  draggable = false,
   onToggle,
   onDelete,
   onEdit,
@@ -49,8 +52,7 @@ const ToDoItem = ({
   categories,
 }: ToDoItemProps) => {
   const { user } = useAuth();
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id });
-  const dragStyle = { transform: CSS.Transform.toString(transform), transition };
+  const { ref, isDragSource } = useSortable({ id: task.id, index, disabled: !draggable });
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [showMobileActions, setShowMobileActions] = useState(false);
@@ -104,11 +106,9 @@ const ToDoItem = ({
   return (
     <>
       <div
-        ref={setNodeRef}
-        style={{ ...dragStyle, backgroundImage: categoryGradient }}
-        className={`${styles['todoItem']} ${resolvedCategory ? styles.hasCategory : ''} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''} ${isDragging ? styles.dragging : ''}`}
-        {...attributes}
-        {...listeners}
+        ref={ref}
+        style={{ backgroundImage: categoryGradient }}
+        className={`${styles['todoItem']} ${resolvedCategory ? styles.hasCategory : ''} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''} ${isDragSource ? styles.dragging : ''} ${!draggable ? styles.notDraggable : ''}`}
         onClick={() => {
           if (!task.description) return;
           setIsExpanded((prev) => !prev);

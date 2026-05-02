@@ -8,9 +8,9 @@ import {
 } from '../../api/taskApi';
 import { fetchTasksByCategory } from '../../api/categoryApi';
 import type { Task, PomoData, Category } from '../../types';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
+import { DragDropProvider, DragOverlay } from '@dnd-kit/react';
+import type { DragEndEvent } from '@dnd-kit/react';
+import { move } from '@dnd-kit/helpers';
 
 import ToDoItem from '../ToDoItem';
 import CreateTaskButton from '../CreateTaskButton';
@@ -41,34 +41,19 @@ const ActiveTasks = ({
 }: ActiveTasksProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  const [draggedTask, setDraggedTask] = useState<Task | null>(null);
   const activeTasks = tasks.filter((task) => !task.done).sort((a, b) => a.sortOrder - b.sortOrder);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
-
-  const handleDragStart = (event: DragStartEvent) => {
-    setDraggedTask(activeTasks.find((t) => t.id === event.active.id) ?? null);
-  };
-
   const handleDragEnd = async (event: DragEndEvent) => {
-    setDraggedTask(null);
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = activeTasks.findIndex((t) => t.id === active.id);
-    const newIndex = activeTasks.findIndex((t) => t.id === over.id);
-    const reordered = arrayMove(activeTasks, oldIndex, newIndex);
+    if (event.canceled) return;
+    const reordered = move(activeTasks, event) as typeof activeTasks;
+    if (reordered === activeTasks) return;
 
     setTasks((prev) => {
       const completed = prev.filter((t) => t.done);
       return [...reordered.map((t, i) => ({ ...t, sortOrder: i })), ...completed];
     });
-
     await reorderTasks(reordered.map((t, i) => ({ id: t.id, sortOrder: i })));
   };
 
@@ -179,43 +164,45 @@ const ActiveTasks = ({
             </div>
           </div>
         ) : (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <SortableContext items={activeTasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-              {activeTasks.map((task) => (
-                <ToDoItem
-                  key={task.id}
-                  task={task}
-                  onToggle={toggleTask}
-                  onDelete={deleteTask}
-                  onEdit={updateTask}
-                  activePomodoroId={activePomodoroId}
-                  setActivePomodoroId={setActivePomodoroId}
-                  activePomoData={activePomoData}
-                  setActivePomoData={setActivePomoData}
-                  categories={categories}
-                />
-              ))}
-            </SortableContext>
+          <DragDropProvider onDragEnd={handleDragEnd}>
+            {activeTasks.map((task, index) => (
+              <ToDoItem
+                key={task.id}
+                task={task}
+                index={index}
+                draggable
+                onToggle={toggleTask}
+                onDelete={deleteTask}
+                onEdit={updateTask}
+                activePomodoroId={activePomodoroId}
+                setActivePomodoroId={setActivePomodoroId}
+                activePomoData={activePomoData}
+                setActivePomoData={setActivePomoData}
+                categories={categories}
+              />
+            ))}
             <DragOverlay dropAnimation={null}>
-              {draggedTask ? (
-                <div
-                  className={styles.dragOverlay}
-                  style={{
-                    backgroundImage: (() => {
-                      const cat = categories.find((c) => c.id === draggedTask.categoryId) ?? draggedTask.category ?? null;
-                      if (!cat) return undefined;
+              {(source) => {
+                const task = activeTasks.find((t) => t.id === source.id);
+                if (!task) return null;
+                const cat = categories.find((c) => c.id === task.categoryId) ?? task.category ?? null;
+                const backgroundImage = cat
+                  ? (() => {
                       const hex = cat.color.replace('#', '');
                       const r = parseInt(hex.slice(0, 2), 16);
                       const g = parseInt(hex.slice(2, 4), 16);
                       const b = parseInt(hex.slice(4, 6), 16);
                       return `linear-gradient(to left, rgba(${r},${g},${b},0.3) 0%, transparent 65%)`;
-                    })(),
-                  }}>
-                  {draggedTask.title}
-                </div>
-              ) : null}
+                    })()
+                  : undefined;
+                return (
+                  <div className={styles.dragOverlay} style={{ backgroundImage }}>
+                    {task.title}
+                  </div>
+                );
+              }}
             </DragOverlay>
-          </DndContext>
+          </DragDropProvider>
         )}
       </div>
 

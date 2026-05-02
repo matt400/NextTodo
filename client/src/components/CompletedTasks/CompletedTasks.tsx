@@ -99,10 +99,11 @@ const CompletedTasks = ({ categories }: CompletedTasksProps) => {
             </div>
           </div>
         ) : (
-          completedTasks.map((task) => (
+          completedTasks.map((task, index) => (
             <ToDoItem
               key={task.id}
               task={task}
+              index={index}
               onToggle={toggleTask}
               onDelete={deleteTask}
               onEdit={updateTask}

@@ -29,6 +29,10 @@
 	cursor: grab;
 }
 
+.notDraggable {
+	cursor: default;
+}
+
 .todoItem:active {
 	cursor: grabbing;
 	background-color: var(--bg-todo-item);
