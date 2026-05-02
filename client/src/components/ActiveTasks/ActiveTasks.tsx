@@ -8,8 +8,8 @@ import {
 } from '../../api/taskApi';
 import { fetchTasksByCategory } from '../../api/categoryApi';
 import type { Task, PomoData, Category } from '../../types';
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import type { DragEndEvent } from '@dnd-kit/core';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 
 import ToDoItem from '../ToDoItem';
@@ -41,6 +41,7 @@ const ActiveTasks = ({
 }: ActiveTasksProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [draggedTask, setDraggedTask] = useState<Task | null>(null);
   const activeTasks = tasks.filter((task) => !task.done).sort((a, b) => a.sortOrder - b.sortOrder);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -50,7 +51,12 @@ const ActiveTasks = ({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setDraggedTask(activeTasks.find((t) => t.id === event.active.id) ?? null);
+  };
+
   const handleDragEnd = async (event: DragEndEvent) => {
+    setDraggedTask(null);
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -173,7 +179,7 @@ const ActiveTasks = ({
             </div>
           </div>
         ) : (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <SortableContext items={activeTasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
               {activeTasks.map((task) => (
                 <ToDoItem
@@ -190,6 +196,25 @@ const ActiveTasks = ({
                 />
               ))}
             </SortableContext>
+            <DragOverlay dropAnimation={null}>
+              {draggedTask ? (
+                <div
+                  className={styles.dragOverlay}
+                  style={{
+                    backgroundImage: (() => {
+                      const cat = categories.find((c) => c.id === draggedTask.categoryId) ?? draggedTask.category ?? null;
+                      if (!cat) return undefined;
+                      const hex = cat.color.replace('#', '');
+                      const r = parseInt(hex.slice(0, 2), 16);
+                      const g = parseInt(hex.slice(2, 4), 16);
+                      const b = parseInt(hex.slice(4, 6), 16);
+                      return `linear-gradient(to left, rgba(${r},${g},${b},0.3) 0%, transparent 65%)`;
+                    })(),
+                  }}>
+                  {draggedTask.title}
+                </div>
+              ) : null}
+            </DragOverlay>
           </DndContext>
         )}
       </div>

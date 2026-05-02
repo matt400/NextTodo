@@ -26,41 +26,20 @@
 
 	-webkit-tap-highlight-color: transparent;
 	outline: none;
+	cursor: grab;
 }
 
 .todoItem:active {
+	cursor: grabbing;
 	background-color: var(--bg-todo-item);
 	transform: translateY(0);
 }
 
 .dragging {
-	opacity: 0.45;
-	box-shadow: var(--shadow-active, 0 8px 24px rgba(0,0,0,0.15));
-	z-index: 10;
+	opacity: 0 !important;
+	pointer-events: none;
 }
 
-.dragHandle {
-	display: none;
-	align-items: center;
-	justify-content: center;
-	width: 20px;
-	flex-shrink: 0;
-	border: none;
-	background: transparent;
-	color: var(--text-muted);
-	cursor: grab;
-	padding: 0;
-	border-radius: 4px;
-	touch-action: none;
-}
-
-.todoItem:hover .dragHandle {
-	display: flex;
-}
-
-.dragHandle:active {
-	cursor: grabbing;
-}
 
 .clickable {
 	cursor: pointer;
@@ -127,7 +106,7 @@
 .categoryBgIcon {
 	position: absolute;
 	right: 10px;
-	bottom: 5px;
+	top: 5px;
 	width: 35px;
 	height: 35px;
 	display: flex;

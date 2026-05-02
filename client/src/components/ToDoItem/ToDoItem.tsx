@@ -9,7 +9,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 import {
-  Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown, GripVertical,
+  Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown,
   Briefcase, Home, Book, Heart, Star, ShoppingCart, Dumbbell, Code,
   Music, Camera, Plane, Car, Coffee, Gamepad2, Palette, Globe, Leaf,
   Zap, Target, Users,
@@ -108,6 +108,7 @@ const ToDoItem = ({
         style={{ ...dragStyle, backgroundImage: categoryGradient }}
         className={`${styles['todoItem']} ${resolvedCategory ? styles.hasCategory : ''} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''} ${isDragging ? styles.dragging : ''}`}
         {...attributes}
+        {...listeners}
         onClick={() => {
           if (!task.description) return;
           setIsExpanded((prev) => !prev);
@@ -122,11 +123,9 @@ const ToDoItem = ({
         })()}
 
         <div className={styles['todoMainRow']}>
-          <button className={styles.dragHandle} {...listeners} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
-            <GripVertical size={16} />
-          </button>
           <div
             className={`${styles['todoCheckbox']} ${task.done ? styles.checked : ''}`}
+            onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
               if (activePomodoroId === task.id) {
@@ -161,6 +160,7 @@ const ToDoItem = ({
             {effectiveDueDate && (
               <div
                 className={`${styles['todoDate']} ${isToday ? styles['todoDate--today'] : ''} ${isPast ? styles['todoDate--past'] : ''} ${styles['todoDate--clickable']}`}
+                onPointerDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowCalendarModal(true);
@@ -173,7 +173,7 @@ const ToDoItem = ({
             )}
           </div>
 
-          <div className={styles['todoActionsHover']} onClick={(e) => e.stopPropagation()}>
+          <div className={styles['todoActionsHover']} onPointerDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()}>
             {!task.done && (
               <>
                 {activePomodoroId === null && (
@@ -210,7 +210,7 @@ const ToDoItem = ({
             </button>
           </div>
 
-          <div className={styles.mobileRight}>
+          <div className={styles.mobileRight} onPointerDown={(e) => e.stopPropagation()}>
             {resolvedCategory && (() => {
               const Icon = ICON_MAP[resolvedCategory.icon as CategoryIcon] ?? Briefcase;
               return (
