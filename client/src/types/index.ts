@@ -67,6 +67,7 @@ export interface Task {
   created: string;
   categoryId: number | null;
   category: Category | null;
+  sortOrder: number;
 }
 
 export interface PomoData {

@@ -11,6 +11,7 @@ interface ServerTask {
   created: string;
   categoryId?: number | null;
   category?: import('../types').Category | null;
+  sortOrder?: number;
 }
 
 interface TaskUpdate {
@@ -38,6 +39,7 @@ export async function fetchTasks(): Promise<Task[]> {
     created: task.created,
     categoryId: task.categoryId ?? null,
     category: task.category ?? null,
+    sortOrder: task.sortOrder ?? 0,
   }));
 }
 
@@ -74,6 +76,17 @@ export async function editTask(id: number, updates: TaskUpdate): Promise<void> {
     body: JSON.stringify({
       task_id: id,
       data: mapped,
+    }),
+  });
+}
+
+export async function reorderTasks(items: { id: number; sortOrder: number }[]): Promise<void> {
+  await fetch(`${API}/reorder`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({
+      items: items.map((i) => ({ task_id: i.id, sort_order: i.sortOrder })),
     }),
   });
 }

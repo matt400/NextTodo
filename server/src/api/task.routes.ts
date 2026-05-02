@@ -10,6 +10,7 @@ import {
   pausePomoController,
   resumePomoController,
   endPomoController,
+  reorderTasksController,
 } from "./task.controller";
 
 import {
@@ -24,6 +25,7 @@ import {
   pausePomoSchema,
   resumePomoSchema,
   endPomoSchema,
+  reorderTasksSchema,
 } from "./task.schema";
 
 import type { FastifyInstance } from "fastify";
@@ -54,6 +56,15 @@ export default async function taskRoutes(fastify: FastifyInstance) {
       schema: modifyTaskSchema,
     },
     modifyTaskController,
+  );
+
+  fastify.patch(
+    "/reorder",
+    {
+      preHandler: [fastify.userAccessOnly],
+      schema: reorderTasksSchema,
+    },
+    reorderTasksController,
   );
 
   fastify.delete(

@@ -5,9 +5,11 @@ import PomodoroTimer from '../PomodoroTimer';
 import { startPomodoro, getPomodoro } from '../../api/taskApi';
 import { useAuth } from '../../context/AuthContext';
 import type { Task, PomoData, Category } from '../../types';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 import {
-  Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown,
+  Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown, GripVertical,
   Briefcase, Home, Book, Heart, Star, ShoppingCart, Dumbbell, Code,
   Music, Camera, Plane, Car, Coffee, Gamepad2, Palette, Globe, Leaf,
   Zap, Target, Users,
@@ -47,6 +49,8 @@ const ToDoItem = ({
   categories,
 }: ToDoItemProps) => {
   const { user } = useAuth();
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id });
+  const dragStyle = { transform: CSS.Transform.toString(transform), transition };
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [showMobileActions, setShowMobileActions] = useState(false);
@@ -90,12 +94,18 @@ const ToDoItem = ({
   return (
     <>
       <div
-        className={`${styles['todoItem']} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''}`}
+        ref={setNodeRef}
+        style={dragStyle}
+        className={`${styles['todoItem']} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''} ${isDragging ? styles.dragging : ''}`}
+        {...attributes}
         onClick={() => {
           if (!task.description) return;
           setIsExpanded((prev) => !prev);
         }}>
         <div className={styles['todoMainRow']}>
+          <button className={styles.dragHandle} {...listeners} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
+            <GripVertical size={16} />
+          </button>
           <div
             className={`${styles['todoCheckbox']} ${task.done ? styles.checked : ''}`}
             onClick={(e) => {

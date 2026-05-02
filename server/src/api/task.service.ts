@@ -171,6 +171,19 @@ export async function getPomoHistory(prisma: PrismaClient, userId: string) {
   }
 }
 
+export async function reorderTasks(
+  prisma: PrismaClient,
+  userId: string,
+  items: { taskId: number; sortOrder: number }[],
+) {
+  try {
+    return await repository(prisma).reorderTasks(userId, items);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    handlePrismaError(err);
+  }
+}
+
 export async function endPomo(
   prisma: PrismaClient,
   taskId: number,

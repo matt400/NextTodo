@@ -11,6 +11,7 @@ interface ServerTask {
   created: string;
   categoryId: number | null;
   category: Category | null;
+  sortOrder?: number;
 }
 
 export async function fetchCategories(): Promise<Category[]> {
@@ -68,5 +69,6 @@ export async function fetchTasksByCategory(categoryId: number): Promise<Task[]> 
     created: task.created,
     categoryId: task.categoryId,
     category: task.category,
+    sortOrder: task.sortOrder ?? 0,
   }));
 }
