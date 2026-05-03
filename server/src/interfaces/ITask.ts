@@ -44,6 +44,10 @@ export interface TaskModifyData {
   isFinished?: boolean;
 }
 
+export interface IReorderTasksRequest {
+  Body: { items: { task_id: number; sort_order: number }[] };
+}
+
 export type IEndPomoRequest = IGetPomoRequest;
 export type IPausePomoRequest = IGetPomoRequest;
 export type IResumePomoRequest = IGetPomoRequest;

@@ -9,6 +9,9 @@ interface ServerTask {
   isFinished: boolean;
   scheduled: string | null;
   created: string;
+  categoryId?: number | null;
+  category?: import('../types').Category | null;
+  sortOrder?: number;
 }
 
 interface TaskUpdate {
@@ -16,6 +19,7 @@ interface TaskUpdate {
   description?: string;
   scheduled?: string | null;
   isFinished?: boolean;
+  categoryId?: number | null;
 }
 
 export async function fetchTasks(): Promise<Task[]> {
@@ -33,11 +37,14 @@ export async function fetchTasks(): Promise<Task[]> {
     done: task.isFinished,
     scheduled: task.scheduled,
     created: task.created,
+    categoryId: task.categoryId ?? null,
+    category: task.category ?? null,
+    sortOrder: task.sortOrder ?? 0,
   }));
 }
 
-export async function addTask(title: string, description: string): Promise<void> {
-  await fetch(API, {
+export async function addTask(title: string, description: string): Promise<{ id: number } | null> {
+  const res = await fetch(API, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -46,6 +53,11 @@ export async function addTask(title: string, description: string): Promise<void>
       task_desc: description,
     }),
   });
+  try {
+    return (await res.json()) as { id: number };
+  } catch {
+    return null;
+  }
 }
 
 export async function editTask(id: number, updates: TaskUpdate): Promise<void> {
@@ -54,6 +66,7 @@ export async function editTask(id: number, updates: TaskUpdate): Promise<void> {
     ...(updates.description !== undefined && { taskDesc: updates.description }),
     ...(updates.scheduled !== undefined && { scheduled: updates.scheduled }),
     ...(updates.isFinished !== undefined && { isFinished: updates.isFinished }),
+    ...(updates.categoryId !== undefined && { categoryId: updates.categoryId }),
   };
 
   await fetch(API, {
@@ -63,6 +76,17 @@ export async function editTask(id: number, updates: TaskUpdate): Promise<void> {
     body: JSON.stringify({
       task_id: id,
       data: mapped,
+    }),
+  });
+}
+
+export async function reorderTasks(items: { id: number; sortOrder: number }[]): Promise<void> {
+  await fetch(`${API}/reorder`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({
+      items: items.map((i) => ({ task_id: i.id, sort_order: i.sortOrder })),
     }),
   });
 }

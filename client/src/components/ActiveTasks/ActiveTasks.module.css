@@ -24,6 +24,21 @@
 	align-items: center;
 }
 
+.dragOverlay {
+	background-color: var(--bg-todo-item);
+	border: 1px solid var(--border-color);
+	border-radius: var(--border-radius);
+	padding: 6px 10px;
+	height: 48.4px;
+	display: flex;
+	align-items: center;
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--color-dark-1);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+	cursor: grabbing;
+}
+
 .tasksList {
 	flex: 1;
 	overflow-y: auto;

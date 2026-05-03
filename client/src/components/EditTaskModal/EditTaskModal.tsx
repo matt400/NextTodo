@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { X, Pencil, AlertCircle } from 'lucide-react';
-import type { Task } from '../../types';
+import type { Task, Category } from '../../types';
 import styles from './EditTaskModal.module.css';
 
 interface EditTaskModalProps {
   task: Task;
-  onUpdate: (id: number, updates: { title: string; description: string }) => void;
+  onUpdate: (id: number, updates: { title: string; description: string; categoryId: number | null }) => void;
   onClose: () => void;
+  categories: Category[];
 }
 
-const EditTaskModal = ({ task, onUpdate, onClose }: EditTaskModalProps) => {
+const EditTaskModal = ({ task, onUpdate, onClose, categories }: EditTaskModalProps) => {
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || '');
+  const [categoryId, setCategoryId] = useState<number | null>(task.categoryId);
   const [inputError, setInputError] = useState('');
 
   const validateTitle = (value: string): string => {
@@ -35,7 +37,7 @@ const EditTaskModal = ({ task, onUpdate, onClose }: EditTaskModalProps) => {
       return;
     }
 
-    onUpdate(task.id, { title, description });
+    onUpdate(task.id, { title, description, categoryId });
     onClose();
   };
 
@@ -85,6 +87,23 @@ const EditTaskModal = ({ task, onUpdate, onClose }: EditTaskModalProps) => {
               placeholder='Enter description...'
             />
           </div>
+
+          {categories.length > 0 && (
+            <div className={styles.inputGroup}>
+              <label>Category (optional)</label>
+              <select
+                className={styles.input}
+                value={categoryId ?? ''}
+                onChange={(e) => setCategoryId(e.target.value ? Number(e.target.value) : null)}>
+                <option value=''>No category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className={styles.footer}>
             <button type='button' onClick={onClose} className={`${styles.btn} ${styles.cancel}`}>

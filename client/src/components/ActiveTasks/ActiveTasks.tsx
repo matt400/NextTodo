@@ -4,8 +4,13 @@ import {
   addTask as apiAddTask,
   editTask as apiEditTask,
   deleteTask as apiDeleteTask,
+  reorderTasks,
 } from '../../api/taskApi';
-import type { Task, PomoData } from '../../types';
+import { fetchTasksByCategory } from '../../api/categoryApi';
+import type { Task, PomoData, Category } from '../../types';
+import { DragDropProvider, DragOverlay } from '@dnd-kit/react';
+import type { DragEndEvent } from '@dnd-kit/react';
+import { move } from '@dnd-kit/helpers';
 
 import ToDoItem from '../ToDoItem';
 import CreateTaskButton from '../CreateTaskButton';
@@ -22,6 +27,8 @@ interface ActiveTasksProps {
   setActivePomodoroId: (id: number | null) => void;
   activePomoData: PomoData | null;
   setActivePomoData: (data: PomoData | null) => void;
+  categories: Category[];
+  selectedCategoryId: number | null;
 }
 
 const ActiveTasks = ({
@@ -29,17 +36,34 @@ const ActiveTasks = ({
   setActivePomodoroId,
   activePomoData,
   setActivePomoData,
+  categories,
+  selectedCategoryId,
 }: ActiveTasksProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  const activeTasks = tasks.filter((task) => !task.done);
+  const activeTasks = tasks.filter((task) => !task.done).sort((a, b) => a.sortOrder - b.sortOrder);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    if (event.canceled) return;
+    const reordered = move(activeTasks, event) as typeof activeTasks;
+    if (reordered === activeTasks) return;
+
+    setTasks((prev) => {
+      const completed = prev.filter((t) => t.done);
+      return [...reordered.map((t, i) => ({ ...t, sortOrder: i })), ...completed];
+    });
+    await reorderTasks(reordered.map((t, i) => ({ id: t.id, sortOrder: i })));
+  };
 
   const loadTasks = async () => {
     setLoading(true);
     try {
-      const data = await fetchTasks();
+      const data =
+        selectedCategoryId !== null
+          ? await fetchTasksByCategory(selectedCategoryId)
+          : await fetchTasks();
       setTasks(data);
     } finally {
       setLoading(false);
@@ -47,19 +71,23 @@ const ActiveTasks = ({
   };
 
   useEffect(() => {
-    (async () => {
-      try {
-        const data = await fetchTasks();
-        setTasks(data);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+    loadTasks();
+  }, [selectedCategoryId]);
 
-  const addTask = async ({ title, description }: { title: string; description: string }) => {
+  const addTask = async ({
+    title,
+    description,
+    categoryId,
+  }: {
+    title: string;
+    description: string;
+    categoryId: number | null;
+  }) => {
     try {
-      await apiAddTask(title, description);
+      const created = await apiAddTask(title, description);
+      if (categoryId !== null && created?.id) {
+        await apiEditTask(created.id, { categoryId });
+      }
     } finally {
       await loadTasks();
     }
@@ -101,13 +129,18 @@ const ActiveTasks = ({
     }
   };
 
+  const activeCategory = categories.find((c) => c.id === selectedCategoryId);
+  const headerLabel = activeCategory
+    ? `${activeCategory.name} (${activeTasks.length})`
+    : `Active tasks (${activeTasks.length})`;
+
   return (
     <div className={styles.container}>
       {loading && <Loader />}
 
       {activeTasks.length > 0 && (
         <div className={styles.activeHeader}>
-          <h2 className={styles.activeTasksCount}>Active tasks ({activeTasks.length})</h2>
+          <h2 className={styles.activeTasksCount}>{headerLabel}</h2>
           <DeleteAllButton onClick={() => setShowDeleteModal(true)} />
         </div>
       )}
@@ -117,24 +150,59 @@ const ActiveTasks = ({
           <div className={styles.emptyState}>
             <div className={styles.emptyContainer}>
               <Search size={68} />
-              <h3>No active tasks</h3>
-              <p>Create your first task to get started</p>
+              {selectedCategoryId !== null ? (
+                <>
+                  <h3>No tasks in this category</h3>
+                  <p>Add this category to an existing task or create a new one</p>
+                </>
+              ) : (
+                <>
+                  <h3>No active tasks</h3>
+                  <p>Create your first task to get started</p>
+                </>
+              )}
             </div>
           </div>
         ) : (
-          activeTasks.map((task) => (
-            <ToDoItem
-              key={task.id}
-              task={task}
-              onToggle={toggleTask}
-              onDelete={deleteTask}
-              onEdit={updateTask}
-              activePomodoroId={activePomodoroId}
-              setActivePomodoroId={setActivePomodoroId}
-              activePomoData={activePomoData}
-              setActivePomoData={setActivePomoData}
-            />
-          ))
+          <DragDropProvider onDragEnd={handleDragEnd}>
+            {activeTasks.map((task, index) => (
+              <ToDoItem
+                key={task.id}
+                task={task}
+                index={index}
+                draggable
+                onToggle={toggleTask}
+                onDelete={deleteTask}
+                onEdit={updateTask}
+                activePomodoroId={activePomodoroId}
+                setActivePomodoroId={setActivePomodoroId}
+                activePomoData={activePomoData}
+                setActivePomoData={setActivePomoData}
+                categories={categories}
+              />
+            ))}
+            <DragOverlay dropAnimation={null}>
+              {(source) => {
+                const task = activeTasks.find((t) => t.id === source.id);
+                if (!task) return null;
+                const cat = categories.find((c) => c.id === task.categoryId) ?? task.category ?? null;
+                const backgroundImage = cat
+                  ? (() => {
+                      const hex = cat.color.replace('#', '');
+                      const r = parseInt(hex.slice(0, 2), 16);
+                      const g = parseInt(hex.slice(2, 4), 16);
+                      const b = parseInt(hex.slice(4, 6), 16);
+                      return `linear-gradient(to left, rgba(${r},${g},${b},0.3) 0%, transparent 65%)`;
+                    })()
+                  : undefined;
+                return (
+                  <div className={styles.dragOverlay} style={{ backgroundImage }}>
+                    {task.title}
+                  </div>
+                );
+              }}
+            </DragOverlay>
+          </DragDropProvider>
         )}
       </div>
 
@@ -144,7 +212,14 @@ const ActiveTasks = ({
         </CreateTaskButton>
       </div>
 
-      {showCreateModal && <AddTaskModal onAdd={addTask} onClose={() => setShowCreateModal(false)} />}
+      {showCreateModal && (
+        <AddTaskModal
+          onAdd={addTask}
+          onClose={() => setShowCreateModal(false)}
+          categories={categories}
+          defaultCategoryId={selectedCategoryId}
+        />
+      )}
 
       {showDeleteModal && (
         <DeleteAllModal

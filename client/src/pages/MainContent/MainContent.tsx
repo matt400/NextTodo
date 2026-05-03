@@ -5,10 +5,17 @@ import styles from './MainContent.module.css';
 import ActiveTasks from '../../components/ActiveTasks';
 import CompletedTasks from '../../components/CompletedTasks/CompletedTasks';
 import UserSettings from '../../components/UserSettings/UserSettings';
+import CategoryModal from '../../components/CategoryModal/CategoryModal';
 import { getPomodoro } from '../../api/taskApi';
+import {
+  fetchCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from '../../api/categoryApi';
 import { useAuth } from '../../context/AuthContext';
 import { updateUserSettings } from '../../api/auth';
-import type { PomoData } from '../../types';
+import type { PomoData, Category } from '../../types';
 
 type Tab = 'active' | 'completed' | 'settings';
 
@@ -42,6 +49,51 @@ const MainContent = () => {
   const [activePomodoroId, setActivePomodoroId] = useState<number | null>(null);
   const [activePomoData, setActivePomoData] = useState<PomoData | null>(null);
 
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+
+  const loadCategories = async () => {
+    const data = await fetchCategories();
+    setCategories(data);
+  };
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const handleCategorySelect = (id: number | null) => {
+    setSelectedCategoryId(id);
+    if (id !== null) setActiveTab('active');
+  };
+
+  const handleCategoryCreate = () => {
+    setEditingCategory(null);
+    setShowCategoryModal(true);
+  };
+
+  const handleCategoryUpdate = (cat: Category) => {
+    setEditingCategory(cat);
+    setShowCategoryModal(true);
+  };
+
+  const handleCategoryDelete = async (id: number) => {
+    await deleteCategory(id);
+    if (selectedCategoryId === id) setSelectedCategoryId(null);
+    await loadCategories();
+  };
+
+  const handleCategorySave = async (name: string, color: string, icon: string) => {
+    if (editingCategory) {
+      await updateCategory(editingCategory.id, { name, color, icon });
+    } else {
+      await createCategory(name, color, icon);
+    }
+    setShowCategoryModal(false);
+    await loadCategories();
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'active':
@@ -51,10 +103,12 @@ const MainContent = () => {
             setActivePomodoroId={setActivePomodoroId}
             activePomoData={activePomoData}
             setActivePomoData={setActivePomoData}
+            categories={categories}
+            selectedCategoryId={selectedCategoryId}
           />
         );
       case 'completed':
-        return <CompletedTasks />;
+        return <CompletedTasks categories={categories} />;
       case 'settings':
         return <UserSettings isFullscreen={isFullscreen} setIsFullscreen={setIsFullscreen} />;
       default:
@@ -103,12 +157,26 @@ const MainContent = () => {
               onTabChange={(tab) => setActiveTab(tab as Tab)}
               isOpen={isMenuOpen}
               onClose={() => setIsMenuOpen(false)}
+              categories={categories}
+              selectedCategoryId={selectedCategoryId}
+              onCategorySelect={handleCategorySelect}
+              onCategoryCreate={handleCategoryCreate}
+              onCategoryUpdate={handleCategoryUpdate}
+              onCategoryDelete={handleCategoryDelete}
             />
 
             <main className={styles.dashboardContent}>{renderContent()}</main>
           </div>
         </div>
       </div>
+
+      {showCategoryModal && (
+        <CategoryModal
+          category={editingCategory ?? undefined}
+          onSave={handleCategorySave}
+          onClose={() => setShowCategoryModal(false)}
+        />
+      )}
     </div>
   );
 };

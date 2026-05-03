@@ -98,3 +98,26 @@ export const deletePomoRecordSchema = {
     },
   },
 };
+
+export const reorderTasksSchema = {
+  body: {
+    type: "object",
+    required: ["items"],
+    additionalProperties: false,
+    properties: {
+      items: {
+        type: "array",
+        minItems: 1,
+        items: {
+          type: "object",
+          required: ["task_id", "sort_order"],
+          additionalProperties: false,
+          properties: {
+            task_id: { type: "number" },
+            sort_order: { type: "number", minimum: 0 },
+          },
+        },
+      },
+    },
+  },
+};

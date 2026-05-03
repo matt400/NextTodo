@@ -4,14 +4,30 @@ import { DayPicker } from 'react-day-picker';
 import PomodoroTimer from '../PomodoroTimer';
 import { startPomodoro, getPomodoro } from '../../api/taskApi';
 import { useAuth } from '../../context/AuthContext';
-import type { Task, PomoData } from '../../types';
+import type { Task, PomoData, Category } from '../../types';
+import { useSortable } from '@dnd-kit/react/sortable';
 
-import { Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown } from 'lucide-react';
+import {
+  Pencil, Trash2, CirclePlus, Calendar, AlarmClock, X, ChevronDown,
+  Briefcase, Home, Book, Heart, Star, ShoppingCart, Dumbbell, Code,
+  Music, Camera, Plane, Car, Coffee, Gamepad2, Palette, Globe, Leaf,
+  Zap, Target, Users,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import type { CategoryIcon } from '../../types';
 import styles from './ToDoItem.module.css';
 import 'react-day-picker/dist/style.css';
 
+const ICON_MAP: Record<CategoryIcon, LucideIcon> = {
+  Briefcase, Home, Book, Heart, Star, ShoppingCart, Dumbbell, Code,
+  Music, Camera, Plane, Car, Coffee, Gamepad2, Palette, Globe, Leaf,
+  Zap, Target, Users,
+};
+
 interface ToDoItemProps {
   task: Task;
+  index: number;
+  draggable?: boolean;
   onToggle: (id: number) => void;
   onDelete: (id: number) => void;
   onEdit: (id: number, updates: Record<string, unknown>) => void;
@@ -19,10 +35,13 @@ interface ToDoItemProps {
   setActivePomodoroId: (id: number | null) => void;
   activePomoData: PomoData | null;
   setActivePomoData: (data: PomoData | null) => void;
+  categories: Category[];
 }
 
 const ToDoItem = ({
   task,
+  index,
+  draggable = false,
   onToggle,
   onDelete,
   onEdit,
@@ -30,8 +49,10 @@ const ToDoItem = ({
   setActivePomodoroId,
   activePomoData,
   setActivePomoData,
+  categories,
 }: ToDoItemProps) => {
   const { user } = useAuth();
+  const { ref, isDragSource } = useSortable({ id: task.id, index, disabled: !draggable });
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [showMobileActions, setShowMobileActions] = useState(false);
@@ -40,6 +61,17 @@ const ToDoItem = ({
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const effectiveDueDate = dueDate ?? (task.scheduled ? new Date(task.scheduled) : null);
+  const resolvedCategory = categories.find((c) => c.id === task.categoryId) ?? task.category ?? null;
+
+  const categoryGradient = resolvedCategory
+    ? (() => {
+        const hex = resolvedCategory.color.replace('#', '');
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        return `linear-gradient(to left, rgba(${r},${g},${b},0.3) 0%, transparent 65%)`;
+      })()
+    : undefined;
 
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
@@ -74,14 +106,26 @@ const ToDoItem = ({
   return (
     <>
       <div
-        className={`${styles['todoItem']} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''}`}
+        ref={ref}
+        style={{ backgroundImage: categoryGradient }}
+        className={`${styles['todoItem']} ${resolvedCategory ? styles.hasCategory : ''} ${isExpanded ? styles.expanded : ''} ${task.description ? styles.clickable : ''} ${isDragSource ? styles.dragging : ''} ${!draggable ? styles.notDraggable : ''}`}
         onClick={() => {
           if (!task.description) return;
           setIsExpanded((prev) => !prev);
         }}>
+        {resolvedCategory && (() => {
+          const Icon = ICON_MAP[resolvedCategory.icon as CategoryIcon] ?? Briefcase;
+          return (
+            <span className={styles.categoryBgIcon} style={{ color: resolvedCategory.color }} aria-hidden>
+              <Icon size={35} strokeWidth={1.5} />
+            </span>
+          );
+        })()}
+
         <div className={styles['todoMainRow']}>
           <div
             className={`${styles['todoCheckbox']} ${task.done ? styles.checked : ''}`}
+            onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
               if (activePomodoroId === task.id) {
@@ -92,8 +136,9 @@ const ToDoItem = ({
             {task.done && <span className={styles.checkmark}>✓</span>}
           </div>
 
+
           <p className={`${styles['todoText']} ${task.done ? styles.done : ''}`}>
-            {task.title}
+            <span className={styles.titleText}>{task.title}</span>
 
             {task.description && (
               <ChevronDown
@@ -115,6 +160,7 @@ const ToDoItem = ({
             {effectiveDueDate && (
               <div
                 className={`${styles['todoDate']} ${isToday ? styles['todoDate--today'] : ''} ${isPast ? styles['todoDate--past'] : ''} ${styles['todoDate--clickable']}`}
+                onPointerDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowCalendarModal(true);
@@ -127,7 +173,7 @@ const ToDoItem = ({
             )}
           </div>
 
-          <div className={styles['todoActionsHover']} onClick={(e) => e.stopPropagation()}>
+          <div className={styles['todoActionsHover']} onPointerDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()}>
             {!task.done && (
               <>
                 {activePomodoroId === null && (
@@ -164,25 +210,36 @@ const ToDoItem = ({
             </button>
           </div>
 
-          {!task.done ? (
-            <button
-              className={styles.mobilePlus}
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowMobileActions(true);
-              }}>
-              <CirclePlus size={20} />
-            </button>
-          ) : (
-            <button
-              className={styles.mobilePlus}
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(task.id);
-              }}>
-              <Trash2 size={20} />
-            </button>
-          )}
+          <div className={styles.mobileRight} onPointerDown={(e) => e.stopPropagation()}>
+            {resolvedCategory && (() => {
+              const Icon = ICON_MAP[resolvedCategory.icon as CategoryIcon] ?? Briefcase;
+              return (
+                <span className={styles.categoryMobileIcon} aria-hidden>
+                  <Icon size={20} strokeWidth={1.5} color={resolvedCategory.color} />
+                </span>
+              );
+            })()}
+
+            {!task.done ? (
+              <button
+                className={styles.mobilePlus}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMobileActions(true);
+                }}>
+                <CirclePlus size={20} />
+              </button>
+            ) : (
+              <button
+                className={styles.mobilePlus}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(task.id);
+                }}>
+                <Trash2 size={20} />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className={`${styles['descriptionWrapper']} ${isExpanded ? styles.open : ''}`}>
@@ -197,6 +254,7 @@ const ToDoItem = ({
           task={task}
           onUpdate={(id, updates) => onEdit(id, updates)}
           onClose={() => setShowEditModal(false)}
+          categories={categories}
         />
       )}
 

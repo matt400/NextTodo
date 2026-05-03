@@ -4,7 +4,10 @@
 	width: 100%;
 	flex-shrink: 0;
 
-	background: var(--bg-todo-item);
+	position: relative;
+	overflow: hidden;
+
+	background-color: var(--bg-todo-item);
 	border: 1px solid var(--border-color);
 	border-radius: var(--border-radius);
 
@@ -23,12 +26,24 @@
 
 	-webkit-tap-highlight-color: transparent;
 	outline: none;
+	cursor: grab;
+}
+
+.notDraggable {
+	cursor: default;
 }
 
 .todoItem:active {
-	background: var(--bg-todo-item);
+	cursor: grabbing;
+	background-color: var(--bg-todo-item);
 	transform: translateY(0);
 }
+
+.dragging {
+	opacity: 0 !important;
+	pointer-events: none;
+}
+
 
 .clickable {
 	cursor: pointer;
@@ -70,6 +85,13 @@
 	transform: scale(1.1);
 }
 
+.todoCheckbox:not(.checked):hover::after {
+	content: '✓';
+	font-size: 14px;
+	color: white;
+	line-height: 1;
+}
+
 .todoCheckbox.checked {
 	background: var(--color-green);
 	border-color: var(--color-green);
@@ -85,20 +107,44 @@
 	color: var(--color-text-primary);
 }
 
+.categoryBgIcon {
+	position: absolute;
+	right: 10px;
+	top: 5px;
+	width: 35px;
+	height: 35px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0.2;
+	pointer-events: none;
+}
+
+.hasCategory {
+	padding-right: 50px;
+}
+
+
 .todoText {
 	display: flex;
 	align-items: center;
 	gap: 6px;
 
-	word-break: break-word;
-	overflow-wrap: anywhere;
 	font-size: 16px;
 	font-weight: 600;
 
 	min-width: 0;
-	max-width: 100%;
+	flex: 1;
+	overflow: hidden;
 
 	color: var(--color-dark-1);
+}
+
+.titleText {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	min-width: 0;
 }
 
 
@@ -434,10 +480,24 @@
 	color: var(--color-red);
 }
 
+.mobileRight {
+	display: none;
+	align-items: center;
+	gap: 4px;
+	margin-left: auto;
+	flex-shrink: 0;
+}
+
+.categoryMobileIcon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0.5;
+}
+
 .mobilePlus {
 	color: var(--color-text-primary);
-	display: none;
-	margin-left: auto;
+	display: flex;
 
 	align-items: center;
 	justify-content: center;
@@ -468,8 +528,16 @@
 		display: none;
 	}
 
-	.mobilePlus {
+	.mobileRight {
 		display: flex;
+	}
+
+	.categoryBgIcon {
+		display: none;
+	}
+
+	.hasCategory {
+		padding-right: 10px;
 	}
 }
 
@@ -479,9 +547,6 @@
 		pointer-events: auto;
 	}
 
-	.mobilePlus {
-		display: none;
-	}
 }
 
 @keyframes fadeIn {

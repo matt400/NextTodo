@@ -11,6 +11,7 @@ import {
   startPomo,
   pauseOrResumePomo,
   endPomo,
+  reorderTasks,
 } from "./task.service";
 
 import type {
@@ -25,6 +26,7 @@ import type {
   IEndPomoRequest,
   IGetPomoHistoryRequest,
   IDeletePomoRecordRequest,
+  IReorderTasksRequest,
 } from "@server/interfaces/ITask";
 
 import type { FastifyRequest, FastifyReply } from "fastify";
@@ -54,9 +56,9 @@ export async function addTaskController(
   const { task_name, task_desc } = request.body;
 
   const userData = await getUserData(request.server.prisma, request.user.email);
-  await addTask(request.server.prisma, userData.id, task_name, task_desc);
+  const task = await addTask(request.server.prisma, userData.id, task_name, task_desc);
 
-  return reply.ok("NEW_TASK_ADDED");
+  return reply.code(201).send({ id: task?.id });
 }
 
 export async function modifyTaskController(
@@ -175,4 +177,20 @@ export async function endPomoController(
   await endPomo(request.server.prisma, task_id, userData.id);
 
   return reply.ok("POMO_ENDED");
+}
+
+export async function reorderTasksController(
+  request: FastifyRequest<IReorderTasksRequest>,
+  reply: FastifyReply,
+) {
+  const { items } = request.body;
+
+  const userData = await getUserData(request.server.prisma, request.user.email);
+  await reorderTasks(
+    request.server.prisma,
+    userData.id,
+    items.map((i) => ({ taskId: i.task_id, sortOrder: i.sort_order })),
+  );
+
+  return reply.ok("TASKS_REORDERED");
 }

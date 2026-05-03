@@ -7,7 +7,7 @@ import AddTaskModal from '../AddTaskModal';
 function setup() {
   const onAdd = vi.fn();
   const onClose = vi.fn();
-  render(<AddTaskModal onAdd={onAdd} onClose={onClose} />);
+  render(<AddTaskModal onAdd={onAdd} onClose={onClose} categories={[]} />);
   return { onAdd, onClose };
 }
 
@@ -52,7 +52,7 @@ describe('AddTaskModal — submission', () => {
     await userEvent.type(screen.getByPlaceholderText(/enter description/i), 'From the store');
     await userEvent.click(screen.getByRole('button', { name: /add task/i }));
 
-    expect(onAdd).toHaveBeenCalledWith({ title: 'Buy milk', description: 'From the store' });
+    expect(onAdd).toHaveBeenCalledWith({ title: 'Buy milk', description: 'From the store', categoryId: null });
   });
 
   it('calls onClose after successful submit', async () => {

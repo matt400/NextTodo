@@ -118,6 +118,16 @@ const tasksRepository = (prisma: PrismaClient) => ({
     prisma.pomo.deleteMany({
       where: { id: pomoId, userId },
     }),
+
+  reorderTasks: (userId: string, items: { taskId: number; sortOrder: number }[]) =>
+    prisma.$transaction(
+      items.map(({ taskId, sortOrder }) =>
+        prisma.tasks.update({
+          where: { id: taskId, userId },
+          data: { sortOrder },
+        }),
+      ),
+    ),
 });
 
 export default tasksRepository;
