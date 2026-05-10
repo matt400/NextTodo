@@ -16,6 +16,7 @@ import authRoutes from "@server/api/auth.routes";
 import userRoutes from "@server/api/user.routes";
 import taskRoutes from "@server/api/task.routes";
 import categoryRoutes from "@server/api/category.routes";
+import tagRoutes from "@server/api/tag.routes";
 
 import type { FastifyInstance } from "fastify";
 
@@ -61,6 +62,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   fastify.register(userRoutes, { prefix: "/api/user" });
   fastify.register(taskRoutes, { prefix: "/api/task" });
   fastify.register(categoryRoutes, { prefix: "/api/category" });
+  fastify.register(tagRoutes, { prefix: "/api/tags" });
 
   return fastify;
 }

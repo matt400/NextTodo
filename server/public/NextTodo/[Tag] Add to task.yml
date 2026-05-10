@@ -1,14 +1,14 @@
 info:
-  name: "[Tag] Create"
+  name: "[Tag] Add to task"
   type: http
-  seq: 29
+  seq: 32
 
 http:
   method: POST
-  url: http://localhost:3000/api/tags
+  url: http://localhost:3000/api/tags/tasks
   body:
     type: json
-    data: '{ "name": "Work", "color": "#3b82f6" }'
+    data: '{ "task_id": 1, "tag_id": 1 }'
   auth: inherit
 
 settings:

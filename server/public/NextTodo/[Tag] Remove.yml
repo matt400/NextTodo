@@ -1,14 +1,14 @@
 info:
-  name: "[Tag] Create"
+  name: "[Tag] Remove"
   type: http
-  seq: 29
+  seq: 31
 
 http:
-  method: POST
+  method: DELETE
   url: http://localhost:3000/api/tags
   body:
     type: json
-    data: '{ "name": "Work", "color": "#3b82f6" }'
+    data: '{ "tag_id": 1 }'
   auth: inherit
 
 settings:

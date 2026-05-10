@@ -1,14 +1,14 @@
 info:
-  name: "[Tag] Create"
+  name: "[Tag] Get all"
   type: http
-  seq: 29
+  seq: 27
 
 http:
-  method: POST
+  method: GET
   url: http://localhost:3000/api/tags
   body:
     type: json
-    data: '{ "name": "Work", "color": "#3b82f6" }'
+    data: ''
   auth: inherit
 
 settings:

@@ -8,10 +8,18 @@ interface GetPomosOptions {
 }
 
 const tasksRepository = (prisma: PrismaClient) => ({
-  getAllTasks: (userId: string) => prisma.tasks.findMany({ where: { userId } }),
+  getAllTasks: (userId: string) =>
+    prisma.tasks.findMany({
+      where: { userId },
+      include: { tags: true, category: true },
+      orderBy: { sortOrder: "asc" },
+    }),
 
   getOneTask: (userId: string, taskId: number) =>
-    prisma.tasks.findFirst({ where: { userId: userId, id: taskId } }),
+    prisma.tasks.findFirst({
+      where: { userId, id: taskId },
+      include: { tags: true, category: true },
+    }),
 
   addTask: (userId: string, taskName: string, taskDesc: string) =>
     prisma.tasks.create({
@@ -119,7 +127,10 @@ const tasksRepository = (prisma: PrismaClient) => ({
       where: { id: pomoId, userId },
     }),
 
-  reorderTasks: (userId: string, items: { taskId: number; sortOrder: number }[]) =>
+  reorderTasks: (
+    userId: string,
+    items: { taskId: number; sortOrder: number }[],
+  ) =>
     prisma.$transaction(
       items.map(({ taskId, sortOrder }) =>
         prisma.tasks.update({
