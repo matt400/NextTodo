@@ -7,7 +7,7 @@ import AddTaskModal from '../AddTaskModal';
 function setup() {
   const onAdd = vi.fn();
   const onClose = vi.fn();
-  render(<AddTaskModal onAdd={onAdd} onClose={onClose} categories={[]} />);
+  render(<AddTaskModal onAdd={onAdd} onClose={onClose} categories={[]} tags={[]} />);
   return { onAdd, onClose };
 }
 

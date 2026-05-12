@@ -1,4 +1,4 @@
-import type { Task, PomoData, PomoRecord } from '../types';
+import type { Task, PomoData, PomoRecord, Tag } from '../types';
 
 const API = `${import.meta.env.VITE_API_URL}/api/task`;
 
@@ -12,6 +12,7 @@ interface ServerTask {
   categoryId?: number | null;
   category?: import('../types').Category | null;
   sortOrder?: number;
+  tags?: Tag[];
 }
 
 interface TaskUpdate {
@@ -40,6 +41,7 @@ export async function fetchTasks(): Promise<Task[]> {
     categoryId: task.categoryId ?? null,
     category: task.category ?? null,
     sortOrder: task.sortOrder ?? 0,
+    tags: task.tags ?? [],
   }));
 }
 

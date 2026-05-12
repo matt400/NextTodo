@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchTasks, editTask as apiEditTask, deleteTask as apiDeleteTask } from '../../api/taskApi';
-import type { Task, Category } from '../../types';
+import type { Task, Category, Tag } from '../../types';
 
 import ToDoItem from '../ToDoItem';
 import DeleteAllButton from '../DeleteAllButton';
@@ -12,9 +12,10 @@ import styles from './CompletedTasks.module.css';
 
 interface CompletedTasksProps {
   categories: Category[];
+  tags: Tag[];
 }
 
-const CompletedTasks = ({ categories }: CompletedTasksProps) => {
+const CompletedTasks = ({ categories, tags }: CompletedTasksProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -112,6 +113,7 @@ const CompletedTasks = ({ categories }: CompletedTasksProps) => {
               activePomoData={null}
               setActivePomoData={() => {}}
               categories={categories}
+              tags={tags}
             />
           ))
         )}

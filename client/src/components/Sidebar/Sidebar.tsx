@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../api/auth';
 import { ListTodo, CheckCircle2, X, Settings as SettingsIcon, LogOut, Plus } from 'lucide-react';
-import type { Category } from '../../types';
+import type { Category, Tag } from '../../types';
 import CategoryItem from './CategoryItem';
+import TagItem from './TagItem';
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {
@@ -16,6 +17,13 @@ interface SidebarProps {
 	onCategoryCreate: () => void;
 	onCategoryUpdate: (category: Category) => void;
 	onCategoryDelete: (id: number) => void;
+	tags: Tag[];
+	selectedTagIds: number[];
+	onTagToggle: (id: number) => void;
+	onTagsClear: () => void;
+	onTagCreate: () => void;
+	onTagEdit: (tag: Tag) => void;
+	onTagDelete: (id: number) => void;
 }
 
 const Sidebar = ({
@@ -29,6 +37,13 @@ const Sidebar = ({
 	onCategoryCreate,
 	onCategoryUpdate,
 	onCategoryDelete,
+	tags,
+	selectedTagIds,
+	onTagToggle,
+	onTagsClear,
+	onTagCreate,
+	onTagEdit,
+	onTagDelete,
 }: SidebarProps) => {
 	const navigate = useNavigate();
 
@@ -99,6 +114,43 @@ const Sidebar = ({
 							}}
 							onEdit={() => onCategoryUpdate(cat)}
 							onDelete={() => onCategoryDelete(cat.id)}
+						/>
+					))}
+				</div>
+
+				<div className={styles.categoriesHeader}>
+					<span className={styles.categoriesLabel}>Tags</span>
+					{selectedTagIds.length > 0 && (
+						<button
+							className={styles.clearTagsBtn}
+							onClick={onTagsClear}
+							title='Clear tag filter'>
+							Clear
+						</button>
+					)}
+					<button
+						className={styles.addCategoryBtn}
+						onClick={() => {
+							onClose();
+							onTagCreate();
+						}}
+						title='New tag'>
+						<Plus size={15} />
+					</button>
+				</div>
+
+				<div className={styles.tagsSection}>
+					{tags.map((tag) => (
+						<TagItem
+							key={tag.id}
+							tag={tag}
+							isSelected={selectedTagIds.includes(tag.id)}
+							onToggle={() => {
+								onTagToggle(tag.id);
+								onTabChange('active');
+							}}
+							onEdit={() => onTagEdit(tag)}
+							onDelete={() => onTagDelete(tag.id)}
 						/>
 					))}
 				</div>

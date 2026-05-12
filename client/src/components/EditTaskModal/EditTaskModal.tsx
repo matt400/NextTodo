@@ -1,19 +1,32 @@
 import { useState } from 'react';
 import { X, Pencil, AlertCircle } from 'lucide-react';
-import type { Task, Category } from '../../types';
+import type { Task, Category, Tag } from '../../types';
+import TagChipPicker from '../TagChipPicker/TagChipPicker';
 import styles from './EditTaskModal.module.css';
 
 interface EditTaskModalProps {
   task: Task;
-  onUpdate: (id: number, updates: { title: string; description: string; categoryId: number | null }) => void;
+  onUpdate: (
+    id: number,
+    updates: {
+      title: string;
+      description: string;
+      categoryId: number | null;
+      tagIds: number[];
+      originalTagIds: number[];
+    },
+  ) => void;
   onClose: () => void;
   categories: Category[];
+  tags: Tag[];
 }
 
-const EditTaskModal = ({ task, onUpdate, onClose, categories }: EditTaskModalProps) => {
+const EditTaskModal = ({ task, onUpdate, onClose, categories, tags }: EditTaskModalProps) => {
+  const originalTagIds = (task.tags ?? []).map((t) => t.id);
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || '');
   const [categoryId, setCategoryId] = useState<number | null>(task.categoryId);
+  const [tagIds, setTagIds] = useState<number[]>(originalTagIds);
   const [inputError, setInputError] = useState('');
 
   const validateTitle = (value: string): string => {
@@ -37,7 +50,7 @@ const EditTaskModal = ({ task, onUpdate, onClose, categories }: EditTaskModalPro
       return;
     }
 
-    onUpdate(task.id, { title, description, categoryId });
+    onUpdate(task.id, { title, description, categoryId, tagIds, originalTagIds });
     onClose();
   };
 
@@ -102,6 +115,12 @@ const EditTaskModal = ({ task, onUpdate, onClose, categories }: EditTaskModalPro
                   </option>
                 ))}
               </select>
+            </div>
+          )}
+
+          {tags.length > 0 && (
+            <div className={styles.inputGroup}>
+              <TagChipPicker tags={tags} selectedIds={tagIds} onChange={setTagIds} />
             </div>
           )}
 

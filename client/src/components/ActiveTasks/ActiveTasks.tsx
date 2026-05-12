@@ -7,7 +7,8 @@ import {
   reorderTasks,
 } from '../../api/taskApi';
 import { fetchTasksByCategory } from '../../api/categoryApi';
-import type { Task, PomoData, Category } from '../../types';
+import { fetchTasksByTags, addTagToTask, removeTagFromTask } from '../../api/tagApi';
+import type { Task, PomoData, Category, Tag } from '../../types';
 import { DragDropProvider, DragOverlay } from '@dnd-kit/react';
 import type { DragEndEvent } from '@dnd-kit/react';
 import { move } from '@dnd-kit/helpers';
@@ -29,6 +30,8 @@ interface ActiveTasksProps {
   setActivePomoData: (data: PomoData | null) => void;
   categories: Category[];
   selectedCategoryId: number | null;
+  tags: Tag[];
+  selectedTagIds: number[];
 }
 
 const ActiveTasks = ({
@@ -38,6 +41,8 @@ const ActiveTasks = ({
   setActivePomoData,
   categories,
   selectedCategoryId,
+  tags,
+  selectedTagIds,
 }: ActiveTasksProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,10 +65,17 @@ const ActiveTasks = ({
   const loadTasks = async () => {
     setLoading(true);
     try {
-      const data =
-        selectedCategoryId !== null
-          ? await fetchTasksByCategory(selectedCategoryId)
-          : await fetchTasks();
+      let data: Task[];
+      if (selectedTagIds.length > 0) {
+        data = await fetchTasksByTags(selectedTagIds);
+        if (selectedCategoryId !== null) {
+          data = data.filter((t) => t.categoryId === selectedCategoryId);
+        }
+      } else if (selectedCategoryId !== null) {
+        data = await fetchTasksByCategory(selectedCategoryId);
+      } else {
+        data = await fetchTasks();
+      }
       setTasks(data);
     } finally {
       setLoading(false);
@@ -72,21 +84,37 @@ const ActiveTasks = ({
 
   useEffect(() => {
     loadTasks();
-  }, [selectedCategoryId]);
+  }, [selectedCategoryId, selectedTagIds.join(',')]);
+
+  const applyTagsToTask = async (taskId: number, tagIds: number[]) => {
+    for (const tagId of tagIds) {
+      const res = await addTagToTask(taskId, tagId);
+      if (!res.ok && res.status !== 409) {
+        // 409 = already on task: ignore. Other errors stop further assignments.
+        break;
+      }
+    }
+  };
 
   const addTask = async ({
     title,
     description,
     categoryId,
+    tagIds,
   }: {
     title: string;
     description: string;
     categoryId: number | null;
+    tagIds: number[];
   }) => {
     try {
       const created = await apiAddTask(title, description);
-      if (categoryId !== null && created?.id) {
+      if (!created?.id) return;
+      if (categoryId !== null) {
         await apiEditTask(created.id, { categoryId });
+      }
+      if (tagIds.length > 0) {
+        await applyTagsToTask(created.id, tagIds);
       }
     } finally {
       await loadTasks();
@@ -114,7 +142,24 @@ const ActiveTasks = ({
 
   const updateTask = async (id: number, data: Record<string, unknown>) => {
     try {
-      await apiEditTask(id, data as Parameters<typeof apiEditTask>[1]);
+      const { tagIds, originalTagIds, ...rest } = data as {
+        tagIds?: number[];
+        originalTagIds?: number[];
+        [key: string]: unknown;
+      };
+
+      if (Object.keys(rest).length > 0) {
+        await apiEditTask(id, rest as Parameters<typeof apiEditTask>[1]);
+      }
+
+      if (tagIds && originalTagIds) {
+        const toAdd = tagIds.filter((tid) => !originalTagIds.includes(tid));
+        const toRemove = originalTagIds.filter((tid) => !tagIds.includes(tid));
+        await Promise.all([
+          ...toRemove.map((tid) => removeTagFromTask(id, tid)),
+          ...toAdd.map((tid) => addTagToTask(id, tid)),
+        ]);
+      }
     } finally {
       await loadTasks();
     }
@@ -130,9 +175,18 @@ const ActiveTasks = ({
   };
 
   const activeCategory = categories.find((c) => c.id === selectedCategoryId);
-  const headerLabel = activeCategory
-    ? `${activeCategory.name} (${activeTasks.length})`
-    : `Active tasks (${activeTasks.length})`;
+  const activeTagNames = tags
+    .filter((t) => selectedTagIds.includes(t.id))
+    .map((t) => `#${t.name}`)
+    .join(', ');
+
+  const headerLabel = (() => {
+    const count = `(${activeTasks.length})`;
+    if (activeCategory && activeTagNames) return `${activeCategory.name} · ${activeTagNames} ${count}`;
+    if (activeCategory) return `${activeCategory.name} ${count}`;
+    if (activeTagNames) return `${activeTagNames} ${count}`;
+    return `Active tasks ${count}`;
+  })();
 
   return (
     <div className={styles.container}>
@@ -150,7 +204,12 @@ const ActiveTasks = ({
           <div className={styles.emptyState}>
             <div className={styles.emptyContainer}>
               <Search size={68} />
-              {selectedCategoryId !== null ? (
+              {selectedTagIds.length > 0 ? (
+                <>
+                  <h3>No tasks with these tags</h3>
+                  <p>Try removing some tag filters or assign these tags to a task</p>
+                </>
+              ) : selectedCategoryId !== null ? (
                 <>
                   <h3>No tasks in this category</h3>
                   <p>Add this category to an existing task or create a new one</p>
@@ -179,6 +238,7 @@ const ActiveTasks = ({
                 activePomoData={activePomoData}
                 setActivePomoData={setActivePomoData}
                 categories={categories}
+                tags={tags}
               />
             ))}
             <DragOverlay dropAnimation={null}>
@@ -217,7 +277,9 @@ const ActiveTasks = ({
           onAdd={addTask}
           onClose={() => setShowCreateModal(false)}
           categories={categories}
+          tags={tags}
           defaultCategoryId={selectedCategoryId}
+          defaultTagIds={selectedTagIds}
         />
       )}
 
