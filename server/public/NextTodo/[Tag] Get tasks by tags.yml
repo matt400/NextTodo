@@ -1,0 +1,25 @@
+info:
+  name: "[Tag] Get tasks by tags"
+  type: http
+  seq: 34
+
+http:
+  method: GET
+  url: http://localhost:3000/api/tags/tasks?tag_ids=1&tag_ids=2
+  params:
+    - name: tag_ids
+      value: '1'
+      type: query
+    - name: tag_ids
+      value: '2'
+      type: query
+  body:
+    type: json
+    data: ''
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

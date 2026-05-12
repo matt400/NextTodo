@@ -58,12 +58,12 @@ model Category {
 }
 
 model Tag {
-  id     Int    @id @default(autoincrement())
+  id     Int     @id @default(autoincrement())
   name   String
+  color  String  @default("#64748b")
   userId String
-
-  user  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tasks Tasks[] @relation("TaskToTag")
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks  Tasks[] @relation("TaskToTag")
 
   @@unique([name, userId])
 }
