@@ -9,7 +9,7 @@
 	align-items: center;
 	gap: 8px;
 	color: var(--text-secondary);
-	font-size: 14px;
+	font-size: 16px;
 }
 
 .limitNote {
@@ -54,9 +54,3 @@
 	transform: none;
 }
 
-.dot {
-	width: 9px;
-	height: 9px;
-	border-radius: 50%;
-	flex-shrink: 0;
-}

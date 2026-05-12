@@ -1,4 +1,4 @@
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Hash } from 'lucide-react';
 import type { Tag } from '../../types';
 import styles from './Sidebar.module.css';
 
@@ -15,8 +15,10 @@ const TagItem = ({ tag, isSelected, onToggle, onEdit, onDelete }: TagItemProps) 
     <button
       className={`${styles.tagItem} ${isSelected ? styles.tagActive : ''}`}
       onClick={onToggle}>
-      <span className={styles.tagDot} style={{ backgroundColor: tag.color }} />
-      <span className={styles.tagName}>#{tag.name}</span>
+      <span className={styles.categoryIcon} style={{ backgroundColor: tag.color }}>
+        <Hash size={14} strokeWidth={2} />
+      </span>
+      <span className={styles.tagName}>{tag.name}</span>
       <span className={styles.categoryActions}>
         <button
           className={styles.categoryActionBtn}

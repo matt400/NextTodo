@@ -162,6 +162,7 @@ const Sidebar = ({
 					onClick={() => {
 						onTabChange('completed');
 						onCategorySelect(null);
+						onTagsClear();
 						onClose();
 					}}>
 					<CheckCircle2 size={18} strokeWidth={2} />
@@ -174,6 +175,7 @@ const Sidebar = ({
 						onClick={() => {
 							onTabChange('settings');
 							onCategorySelect(null);
+							onTagsClear();
 							onClose();
 						}}>
 						<SettingsIcon size={18} strokeWidth={2} />

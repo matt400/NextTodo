@@ -25,7 +25,7 @@ const TagChipPicker = ({ tags, selectedIds, onChange }: TagChipPickerProps) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.label}>
-        Tags
+        Tags (optional)
         {atLimit && <span className={styles.limitNote}>Max {MAX_TAGS_PER_TASK} per task</span>}
       </div>
       <div className={styles.chipList}>
@@ -45,7 +45,7 @@ const TagChipPicker = ({ tags, selectedIds, onChange }: TagChipPickerProps) => {
                   : { borderColor: tag.color, color: tag.color }
               }>
               <span className={styles.dot} style={{ backgroundColor: tag.color }} />
-              {tag.name}
+              # {tag.name}
             </button>
           );
         })}

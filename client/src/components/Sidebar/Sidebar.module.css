@@ -186,19 +186,8 @@
 }
 
 .tagActive {
-	background: var(--sidebar-item-hover);
-	color: var(--text-primary);
-	font-weight: 500;
-}
-
-.tagActive::before {
-	content: '';
-	position: absolute;
-	left: 0;
-	width: 3px;
-	height: 60%;
-	background: var(--color-primary);
-	border-radius: 2px;
+	background: var(--color-primary) !important;
+	color: var(--sidebar-item-active-text, white);
 }
 
 .tagItem:hover .categoryActions,

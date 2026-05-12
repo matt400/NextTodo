@@ -31,7 +31,10 @@ const TagModal = ({ tag, onSave, onClose }: TagModalProps) => {
 
   const validate = (value: string): string => {
     if (!value.trim()) return 'Name is required';
+    if (value.startsWith('#')) return 'Don\'t include the # — it\'s added automatically';
+    if (/\s/.test(value)) return 'Tag names cannot contain spaces';
     if (value.length > 30) return 'Name must be 30 characters or less';
+    if (!/^[\p{L}\p{N}_\-]+$/u.test(value.trim())) return 'Only letters, numbers, underscores and hyphens allowed';
     return '';
   };
 
