@@ -52,7 +52,7 @@ describe('AddTaskModal — submission', () => {
     await userEvent.type(screen.getByPlaceholderText(/enter description/i), 'From the store');
     await userEvent.click(screen.getByRole('button', { name: /add task/i }));
 
-    expect(onAdd).toHaveBeenCalledWith({ title: 'Buy milk', description: 'From the store', categoryId: null });
+    expect(onAdd).toHaveBeenCalledWith({ title: 'Buy milk', description: 'From the store', categoryId: null, tagIds: [] });
   });
 
   it('calls onClose after successful submit', async () => {

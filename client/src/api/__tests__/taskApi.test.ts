@@ -9,6 +9,10 @@ const serverTask = {
   isFinished: false,
   scheduled: null,
   created: '2024-01-01T00:00:00.000Z',
+  categoryId: null,
+  category: null,
+  sortOrder: 0,
+  tags: [],
 };
 
 // What our client Task type expects after mapping
@@ -19,6 +23,10 @@ const clientTask = {
   done: false,
   scheduled: null,
   created: '2024-01-01T00:00:00.000Z',
+  categoryId: null,
+  category: null,
+  sortOrder: 0,
+  tags: [],
 };
 
 beforeEach(() => {
