@@ -103,6 +103,7 @@ const CategoryModal = ({ category, onSave, onClose }: CategoryModalProps) => {
   const validate = (value: string): string => {
     if (!value.trim()) return 'Name is required';
     if (value.length > 15) return 'Name must be 15 characters or less';
+    if (!/^[\p{L}\p{N}\s\-]+$/u.test(value.trim())) return 'Only letters, numbers, spaces and hyphens allowed';
     return '';
   };
 

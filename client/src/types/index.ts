@@ -36,6 +36,17 @@ export type CategoryColor =
   | '#06b6d4'
   | '#f43f5e';
 
+export interface Tag {
+  id: number;
+  name: string;
+  color: string;
+  _count?: { tasks: number };
+}
+
+export type TagColor = CategoryColor;
+
+export const MAX_TAGS_PER_TASK = 10;
+
 export type CategoryIcon =
   | 'Briefcase'
   | 'Home'
@@ -68,6 +79,7 @@ export interface Task {
   categoryId: number | null;
   category: Category | null;
   sortOrder: number;
+  tags?: Tag[];
 }
 
 export interface PomoData {

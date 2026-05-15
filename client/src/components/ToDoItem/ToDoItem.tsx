@@ -4,7 +4,7 @@ import { DayPicker } from 'react-day-picker';
 import PomodoroTimer from '../PomodoroTimer';
 import { startPomodoro, getPomodoro } from '../../api/taskApi';
 import { useAuth } from '../../context/AuthContext';
-import type { Task, PomoData, Category } from '../../types';
+import type { Task, PomoData, Category, Tag } from '../../types';
 import { useSortable } from '@dnd-kit/react/sortable';
 
 import {
@@ -36,6 +36,7 @@ interface ToDoItemProps {
   activePomoData: PomoData | null;
   setActivePomoData: (data: PomoData | null) => void;
   categories: Category[];
+  tags: Tag[];
 }
 
 const ToDoItem = ({
@@ -50,6 +51,7 @@ const ToDoItem = ({
   activePomoData,
   setActivePomoData,
   categories,
+  tags,
 }: ToDoItemProps) => {
   const { user } = useAuth();
   const { ref, isDragSource } = useSortable({ id: task.id, index, disabled: !draggable });
@@ -62,6 +64,9 @@ const ToDoItem = ({
 
   const effectiveDueDate = dueDate ?? (task.scheduled ? new Date(task.scheduled) : null);
   const resolvedCategory = categories.find((c) => c.id === task.categoryId) ?? task.category ?? null;
+  const resolvedTags = (task.tags ?? [])
+    .map((t) => tags.find((x) => x.id === t.id))
+    .filter((t): t is Tag => t !== undefined);
 
   const categoryGradient = resolvedCategory
     ? (() => {
@@ -242,6 +247,19 @@ const ToDoItem = ({
           </div>
         </div>
 
+        {resolvedTags.length > 0 && (
+          <div className={styles.tagChipRow} onPointerDown={(e) => e.stopPropagation()}>
+            {resolvedTags.map((tag) => (
+              <span
+                key={tag.id}
+                className={styles.tagChip}
+                style={{ borderColor: tag.color, color: tag.color }}>
+                #{tag.name}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className={`${styles['descriptionWrapper']} ${isExpanded ? styles.open : ''}`}>
           <div className={`${styles['todoDescriptionExpanded']} ${task.done ? styles.done : ''}`}>
             {task.description}
@@ -255,6 +273,7 @@ const ToDoItem = ({
           onUpdate={(id, updates) => onEdit(id, updates)}
           onClose={() => setShowEditModal(false)}
           categories={categories}
+          tags={tags}
         />
       )}
 

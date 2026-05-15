@@ -1,19 +1,35 @@
 import { useState } from 'react';
 import { X, Plus, AlertCircle } from 'lucide-react';
-import type { Category } from '../../types';
+import type { Category, Tag } from '../../types';
+import TagChipPicker from '../TagChipPicker/TagChipPicker';
 import styles from './AddTaskModal.module.css';
 
 interface AddTaskModalProps {
-  onAdd: (task: { title: string; description: string; categoryId: number | null }) => void;
+  onAdd: (task: {
+    title: string;
+    description: string;
+    categoryId: number | null;
+    tagIds: number[];
+  }) => void;
   onClose: () => void;
   categories: Category[];
+  tags: Tag[];
   defaultCategoryId?: number | null;
+  defaultTagIds?: number[];
 }
 
-const AddTaskModal = ({ onAdd, onClose, categories, defaultCategoryId }: AddTaskModalProps) => {
+const AddTaskModal = ({
+  onAdd,
+  onClose,
+  categories,
+  tags,
+  defaultCategoryId,
+  defaultTagIds,
+}: AddTaskModalProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState<number | null>(defaultCategoryId ?? null);
+  const [tagIds, setTagIds] = useState<number[]>(defaultTagIds ?? []);
   const [inputError, setInputError] = useState('');
   const [serverError, setServerError] = useState('');
 
@@ -39,11 +55,12 @@ const AddTaskModal = ({ onAdd, onClose, categories, defaultCategoryId }: AddTask
       return;
     }
 
-    onAdd({ title, description, categoryId });
+    onAdd({ title, description, categoryId, tagIds });
 
     setTitle('');
     setDescription('');
     setCategoryId(null);
+    setTagIds([]);
     setInputError('');
     setServerError('');
     onClose();
@@ -112,6 +129,12 @@ const AddTaskModal = ({ onAdd, onClose, categories, defaultCategoryId }: AddTask
                   </option>
                 ))}
               </select>
+            </div>
+          )}
+
+          {tags.length > 0 && (
+            <div className={styles.inputGroup}>
+              <TagChipPicker tags={tags} selectedIds={tagIds} onChange={setTagIds} />
             </div>
           )}
 
