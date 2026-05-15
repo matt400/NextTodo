@@ -2,8 +2,17 @@
   "name": "next-todo",
   "private": true,
   "scripts": {
+    "dev": "concurrently \"cd client && npm run dev\" \"cd server && npm run dev\"",
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
+    "build:client": "cd client && npm run build",
+    "build:client-embed": "node sea/build-client-embed.mjs",
+    "build:server": "npx esbuild server/src/server.ts --bundle --platform=node --format=cjs --target=node22 --outfile=sea/dist/server-bundle.js --external:fsevents --external:bcrypt --external:better-sqlite3 --external:client-bundle",
+    "build:sea": "node sea/build.mjs",
+    "build:native": "node sea/copy-native.js",
+    "bundle": "npm run build:client && npm run build:client-embed && npm run build:native && npm run build:sea && node --experimental-sea-config sea-config.json",
+    "bundle-linux": "npm run bundle && chmod +x build.sh && ./build.sh",
+    "bundle-win": "npm run bundle && powershell -ExecutionPolicy Bypass -File ./build.ps1",
     "setup": "node setup.js setup",
     "install:all": "node setup.js install",
     "clean": "node setup.js clean:all",
@@ -13,9 +22,12 @@
     "db:seed": "node setup.js prisma:seed",
     "db:migrate": "node setup.js prisma:migrate",
     "db:generate": "node setup.js prisma:generate",
-    "ctest": "cd client && vitest",
-    "ctest:ui": "cd client && vitest --ui",
-    "stest": "cd server && vitest"
+    "test:client": "cd client && vitest",
+    "test:client:ui": "cd client && vitest --ui",
+    "test:server": "cd server && vitest"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.9.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
@@ -23,10 +35,13 @@
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.16",
     "@vitest/ui": "^4.0.16",
+    "concurrently": "^9.2.1",
     "bcrypt": "^6.0.0",
     "dotenv-cli": "^11.0.0",
+    "esbuild": "^0.28.0",
     "eslint": "^9.39.2",
     "globals": "^17.0.0",
+    "postject": "^1.0.0-alpha.6",
     "vitest": "^4.0.16"
   }
 }

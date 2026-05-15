@@ -1,0 +1,7 @@
+{
+  "main": "sea/dist/sea-bundle.js",
+  "output": "next-todo.blob",
+  "assets": {
+    "better-sqlite3.node": "sea/native/better_sqlite3.node"
+  }
+}

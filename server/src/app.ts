@@ -22,6 +22,7 @@ import type { FastifyInstance } from "fastify";
 
 export async function buildApp(): Promise<FastifyInstance> {
   const fastify = Fastify({ logger: true });
+  const isProduction = process.env.NODE_ENV === "production";
 
   // Errors
   fastify.setErrorHandler(errorHandler);
@@ -40,14 +41,48 @@ export async function buildApp(): Promise<FastifyInstance> {
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   });
 
-  fastify.register(fStatic, {
-    root: path.join(__dirname, "../../..", "public"),
-    prefix: "/",
-  });
+  if (isProduction) {
+    // Load embedded client files
+    const clientFiles: Record<string, string> = require("client-bundle");
 
-  fastify.get("/api_docs", function (_, reply) {
-    return reply.sendFile("api_docs.html");
-  });
+    const mime: Record<string, string> = {
+      ".html": "text/html",
+      ".js": "application/javascript",
+      ".css": "text/css",
+      ".svg": "image/svg+xml",
+      ".png": "image/png",
+      ".ico": "image/x-icon",
+      ".json": "application/json",
+      ".woff2": "font/woff2",
+      ".woff": "font/woff",
+      ".ttf": "font/ttf",
+    };
+
+    fastify.get("/*", (request, reply) => {
+      const url = (request.params as { "*": string })["*"];
+      const filePath = "/" + (url || "index.html");
+      const fileContent =
+        clientFiles[filePath] ?? clientFiles["/index.html"] ?? "";
+      const ext = path.extname(filePath) || ".html";
+
+      reply
+        .header("Content-Type", mime[ext] ?? "application/octet-stream")
+        .send(Buffer.from(fileContent, "base64"));
+    });
+
+    console.log("Running in production mode.");
+  } else {
+    fastify.register(fStatic, {
+      root: path.join(__dirname, "../../..", "public"),
+      prefix: "/",
+    });
+
+    fastify.get("/api_docs", function (_, reply) {
+      return reply.sendFile("api_docs.html");
+    });
+
+    console.log("Running in DEV mode.");
+  }
 
   fastify.register(jwt, {
     secret: "SUPER_SECRET_KEY123",

@@ -6,7 +6,7 @@
     /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "es2022",
+    "target": "es2020",
     "allowJs": true,
     "resolveJsonModule": true,
     "moduleDetection": "force",
@@ -17,12 +17,13 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
+    "allowImportingTsExtensions": false,
+    "noEmit": false,
 
     /* If transpiling with TypeScript: */
     "module": "preserve",
-    "outDir": "dist",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "sourceMap": true,
 
     "lib": [
@@ -34,10 +35,9 @@
     ],
     "moduleResolution": "bundler",
 
-    "baseUrl": ".",
     "paths": {
-      "@server/*": ["src/*"],
-      "@prismagl": ["src/generated/prisma/client.ts"],
+      "@server/*": ["./src/*"],
+      "@prismagl": ["./src/generated/prisma/client.ts"],
     },
     "typeRoots": ["node_modules/@types", "src/typescript"],
   },

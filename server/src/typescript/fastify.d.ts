@@ -2,7 +2,7 @@ import "fastify";
 import "@fastify/jwt";
 import { PrismaClient } from "@prisma/client";
 
-import type * as bcrypt from "bcrypt";
+import type * as bcrypt from "bcryptjs";
 import type { FastifyInstance } from "fastify";
 
 export type AuthenticateFunction = (
